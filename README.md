@@ -1,13 +1,11 @@
 # transformer-worker
 
-This repo contains the implementation of a `transformer-worker` (or simply a worker), a balena device that is able to run transformers. 
-
-A `transformer-worker` is composed by three services: [fleet-launcher](./fleet-launcher), [transformer-runner](./transformer-runner), and [docuum](./docuum)
+`transformer-worker` is a balena app that enables balena devices to run transformers. Is composed by three services: [fleet-launcher](./fleet-launcher), [transformer-runner](./transformer-runner), and [docuum](./docuum)
 
 ## Building and deploying
 
 1. Set the *NPM_TOKEN* value in `.balena/balena.yml`
-2. Run `balena push -m balena-worker-node`
+2. Run `balena push -m <Balena app>`
 
 ### fleet-launcher required env-variables
 * `FLEET_HOSTNAME`: Url to `transformers-fleet` server

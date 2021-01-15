@@ -27,13 +27,11 @@ const transformerCommonEnvVariables = [
 async function loginToJf() {
     const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+    console.log('[WORKER] Logging in...');
     while(true) {
         try{
-            console.log('[WORKER] Trying to log in...');
-            console.log(sdk);
             await sdk.setAuthToken(WORKER_JF_TOKEN);
             const user = await sdk.auth.whoami();
-            console.log(user);
             if(user && user.slug === WORKER_SLUG){
                 console.log('[WORKER] Logged in');
                 return user.id;
@@ -68,7 +66,6 @@ async function waitForTasks(workerId) {
         }
     };
 
-    console.log("about to wait for tasks");
     const stream = await sdk.stream(schema)
     console.log('[WORKER] Waiting for tasks');
 
@@ -185,15 +182,7 @@ async function runTransformer(transformerReference, input, actor, sessionToken) 
     }
 }
 
-function start() {
-    loginToJf().then((workerId) => {
-        waitForTasks(workerId);
-    });
-}
 
-if(process.argv[2] === "start"){
-    start();
-}
-
-
-exports.start = start
+loginToJf().then((workerId) => {
+    waitForTasks(workerId);
+});

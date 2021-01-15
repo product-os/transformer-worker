@@ -1,0 +1,3 @@
+transformer-runner/src/tester-*
+transformer-runner/src/node_modules
+.balena/*

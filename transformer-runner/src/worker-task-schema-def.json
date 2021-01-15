@@ -1,0 +1,18 @@
+{
+    $$links: {
+        'is owned by': {
+            type: 'object',
+            properties: {
+                id: {
+                    const: worker.id
+                }
+            }
+        }
+    },
+    type: 'object',
+    properties: {
+        type: {
+            const: 'task@1.0.0'
+        }
+    }
+}

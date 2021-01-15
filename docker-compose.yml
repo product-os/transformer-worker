@@ -1,0 +1,37 @@
+version: '2.1'
+
+services:
+
+  fleet-launcher:
+    build: ./fleet-launcher
+    restart: always
+    depends_on:
+      - transformer-runner
+    volumes:
+      - shared:/shared
+    labels:
+      io.balena.features.balena-socket: '1'
+      io.balena.features.supervisor-api: '1'
+
+  transformer-runner:
+    build: ./transformer-runner
+    restart: always
+    volumes:
+      - shared:/shared
+    labels:
+      io.balena.features.balena-socket: '1'
+      io.balena.features.supervisor-api: '1'
+
+  docuum:
+    build: ./docuum
+    restart: always
+    environment:
+      - DOCKER_HOST=unix:///var/run/balena-engine.sock
+    labels:
+      io.balena.features.balena-socket: '1'
+    volumes:
+      - docuum:/root
+
+volumes:
+  docuum:
+  shared:

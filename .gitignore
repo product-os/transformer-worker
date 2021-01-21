@@ -1,2 +1,3 @@
 *\.balena/balena.yml
 node_modules
+.idea

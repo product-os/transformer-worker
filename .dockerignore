@@ -1,3 +1,3 @@
-transformer-runner/src/tester-*
+transformer-runner/src/test
 transformer-runner/src/node_modules
 .balena/*

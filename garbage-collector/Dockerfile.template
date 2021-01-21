@@ -1,7 +1,7 @@
 FROM debian:buster-slim
 
 ENV DOCUUM_VERSION "v0.16.0"
-ENV DOCUUM_MAX_STORAGE_THRESHOLD "4GB"
+ENV GC_MAX_STORAGE_THRESHOLD "4GB"
 
 # Install the Docker CLI and Docuum
 RUN \
@@ -33,4 +33,4 @@ RUN \
 
 # Set the entrypoint to Docuum. Note that Docuum is not intended to be run as
 # an init process, so we run it indirectly via `sh`.
-CMD /usr/local/bin/docuum --threshold $DOCUUM_MAX_STORAGE_THRESHOLD
+CMD /usr/local/bin/docuum --threshold $GC_MAX_STORAGE_THRESHOLD

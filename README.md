@@ -1,6 +1,6 @@
 # transformer-worker
 
-`transformer-worker` is a balena app that enables balena devices to run transformers. Is composed by three services: [fleet-launcher](./fleet-launcher), [transformer-runner](./transformer-runner), and [docuum](./docuum)
+`transformer-worker` is a balena app that enables balena devices to run transformers. Is composed by three services: [fleet-launcher](./fleet-launcher), [transformer-runner](./transformer-runner), and [garbage-collector](./garbage-collector)
 
 ## Building and deploying
 
@@ -18,5 +18,5 @@
 * `REGISTRY_URL`: Url to the transformers private registry
 * `REGISTRY_PORT`: Port to be used when connecting to the registry. Default: 80
 
-### docuum required env variables
-* `DOCUUM_MAX_STORAGE_THRESHOLD`: Docuum will kick in when the disk space is below this threshold
+### garbage-collector required env variables
+* `GC_MAX_STORAGE_THRESHOLD`: GC will kick in when the disk space is below this threshold

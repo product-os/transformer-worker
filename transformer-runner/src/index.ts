@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const getSdk = require('@balena/jellyfish-client-sdk').getSdk;
 const Docker = require('dockerode');
 const streams = require('memory-streams');
@@ -25,7 +23,7 @@ const transformerCommonEnvVariables = [
 ];
 
 async function loginToJf() {
-    const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const snooze = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     console.log('[WORKER] Logging in...');
     while(true) {
@@ -45,7 +43,7 @@ async function loginToJf() {
     }
 }
 
-async function waitForTasks(workerId) {
+async function waitForTasks(workerId: string) {
 
     const schema ={
         $$links: {
@@ -69,27 +67,27 @@ async function waitForTasks(workerId) {
     const stream = await sdk.stream(schema)
     console.log('[WORKER] Waiting for tasks');
 
-    stream.on('update', (update) => {
+    stream.on('update', (update: any) => {
         if(update.data.after) {
             const taskData = extractTaskData(update.data.after);
             transform(taskData);
         }
     })
 
-    stream.on('streamError', (error) => {
+    stream.on('streamError', (error: Error) => {
         console.error(error);
     })
 }
 
-function extractTaskData(taskData) {
-return {
-        transformer: taskData.data.transformer,
-        input: taskData.data.input,
-        actorId: taskData.data.actor,
-    };
+function extractTaskData(taskData: any) {
+    return {
+            transformer: taskData.data.transformer,
+            input: taskData.data.input,
+            actorId: taskData.data.actor,
+        };
 }
 
-async function transform(task) {
+async function transform(task: any) {
     const transformer = task.transformer;
     const input = task.input;
     const actorSlug = await getActorSlugFromActorId(task.actorId);
@@ -106,13 +104,13 @@ function buildTransformerRegistryUrl() {
     return repo;
 }
 
-async function getActorSlugFromActorId(actorId) {
+async function getActorSlugFromActorId(actorId: string) {
     const actorCard = await sdk.card.get(actorId);
     return actorCard.slug;
 }
 
 
-async function getSessionTokenFromActorId(actorId) {
+async function getSessionTokenFromActorId(actorId: string) {
     const actorSessionCard = await sdk.card.create({
         type: 'session@1.0.0',
         data: {
@@ -123,24 +121,24 @@ async function getSessionTokenFromActorId(actorId) {
 }
 
 
-async function pullTransformerIfNeeded(transformerReference, actorSlug, sessionToken) {
+async function pullTransformerIfNeeded(transformerReference: any, actorSlug: string, sessionToken: string) {
     console.log(`[WORKER] Pulling transformer ${transformerReference}`);
 
     const auth = { username: actorSlug, password: sessionToken, serveraddress: buildTransformerRegistryUrl() };
 
     const pulled = await new Promise((resolve, reject) => {
-       docker.pull(transformerReference, { 'authconfig': auth }, (err, stream) => {
+       docker.pull(transformerReference, { 'authconfig': auth }, (err: Error, stream: any) => {
             if(err){
                 console.log(err);
                 return reject(false);
             }
             docker.modem.followProgress(stream, onFinished, onProgress);
 
-            function onFinished(err, output) {
+            function onFinished(_err: Error, _output: any) {
                 return resolve(true);
             }
 
-            function onProgress(event) {
+            function onProgress(event: any) {
                 console.log(event.status);
                 if(event.hasOwnProperty('progress')){
                     console.log(event.progress);
@@ -153,7 +151,7 @@ async function pullTransformerIfNeeded(transformerReference, actorSlug, sessionT
     return pulled;
 }
 
-async function runTransformer(transformerReference, input, actor, sessionToken) {
+async function runTransformer(transformerReference: any, input: any, actorSlug: string, sessionToken: string) {
     const inputAsBase64 = Buffer.from(JSON.stringify(input)).toString('base64');
 
     const stdout = new streams.WritableStream();
@@ -163,7 +161,7 @@ async function runTransformer(transformerReference, input, actor, sessionToken) 
         console.log(`[WORKER] Running transformer ${transformerReference}`);
         const runResult = await docker.run(
             transformerReference,
-            [inputAsBase64, actor, sessionToken],
+            [inputAsBase64, actorSlug, sessionToken],
             [stdout, stderr],
             {
                 Tty: false,

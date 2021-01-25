@@ -12,7 +12,7 @@
 * `FLEET_ENROLL_SECRET`: Secret used to enroll to the device to `transformers-fleet`
 * `FLEET_EXTRA_ARGS`: Extra arguments that should be passed to `fleet-launcher` at start time. 
 
-### transformer-worker required env variables
+### transformer-runner required env variables
 * `JF_API_URL`: Url to the JellyFish API server
 * `JF_API_PREFIX`: JellyFish API prefix
 * `REGISTRY_URL`: Url to the transformers private registry

@@ -8,4 +8,4 @@ fi
 
 export WORKER_JF_TOKEN=$(cat /shared/.token)
 export WORKER_SLUG="transformer-worker-${device_uuid}"
-node index.js
+node build/index.js

@@ -1,20 +1,17 @@
-const getJfSdk = require('@balena/jellyfish-client-sdk').getSdk;
-const Docker = require('dockerode');
-const streams = require('memory-streams');
+import Jellyfish from './jellyfish';
+import TransformerRegistry from './transformer-registry';
 
-const LOGIN_RETRY_INTERVAL_SECS=5
-const WORKER_SLUG = process.env.WORKER_SLUG;
-const WORKER_JF_TOKEN = process.env.WORKER_JF_TOKEN;
+import * as Docker from 'dockerode';
+import * as streams from 'memory-streams';
 
+const WORKER_SLUG = process.env.WORKER_SLUG || '';
+const WORKER_JF_TOKEN = process.env.WORKER_JF_TOKEN || '';
 const JF_API_URL = process.env.JF_API_URL || '';
 const JF_API_PREFIX = process.env.JF_API_PREFIX || '';
 const REGISTRY_URL = process.env.REGISTRY_URL || '';
-const REGISTRY_PORT = process.env.REGISTRY_PORT || '';
+const REGISTRY_PORT = process.env.REGISTRY_PORT;
 
-const jf = getJfSdk({apiUrl: JF_API_URL, apiPrefix: JF_API_PREFIX});
-const docker = new Docker();
-
-const transformerCommonEnvVariables = [
+const transformerCommonEnvVars = [
     `BLUEBIRD_DEBUG=1`,
     `JF_API_URL=${JF_API_URL}`,
     `JF_API_PREFIX=${JF_API_PREFIX}`,
@@ -22,149 +19,61 @@ const transformerCommonEnvVariables = [
     `REGISTRY_PORT=${REGISTRY_PORT}`
 ];
 
-async function loginToJf() {
-    const snooze = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const docker = new Docker();
+const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX, WORKER_JF_TOKEN, WORKER_SLUG)
+const transformerRegistry = new TransformerRegistry(REGISTRY_URL, REGISTRY_PORT);
 
-    console.log('[WORKER] Logging in...');
-    while(true) {
-        try{
-            await jf.setAuthToken(WORKER_JF_TOKEN);
-            const user = await jf.auth.whoami();
-            if(user?.slug === WORKER_SLUG){
-                console.log('[WORKER] Logged in');
-                return user.id;
-            }else{
-                console.log(`[WORKER] WARNING!! Unexpected user slug '${user?.slug}' received. Expected: '${WORKER_SLUG}'`);
-            }
-        }catch(e) {
-            console.log(e.stack);
-            await snooze(LOGIN_RETRY_INTERVAL_SECS * 1000);
-        }
-    }
-}
-
-async function waitForTasks(workerId: string) {
-
-    const schema ={
-        $$links: {
-            'is owned by': {
-                type: 'object',
-                properties: {
-                    id: {
-                        const: workerId
-                    }
-                }
-            }
-        },
-        type: 'object',
-        properties: {
-            type: {
-                const: 'task@1.0.0'
-            }
-        }
-    };
-
-    const stream = await jf.stream(schema)
+async function start() {
+    console.log(`[WORKER] ${WORKER_SLUG} starting...`);
+    const workerId = await jf.login()
+    
+    const taskStream = await jf.getTaskStream(workerId);
     console.log('[WORKER] Waiting for tasks');
 
-    stream.on('update', (update: any) => {
-        if(update.data.after) {
-            const taskData = extractTaskData(update.data.after);
-            processTask(taskData);
+    taskStream.on('update', (update: any) => {
+        const task = update?.data?.after;
+        if(task?.data) {
+            processTask({
+                transformer: task.data.transformer,
+                input: task.data.input,
+                actorId: task.data.actor,
+            });
+        } else {
+            console.error(`Update received from task stream with no data`);
         }
     })
 
-    stream.on('streamError', (error: Error) => {
+    taskStream.on('streamError', (error: Error) => {
         console.error(error);
     })
-}
-
-function extractTaskData(taskData: any) {
-    return {
-            transformer: taskData.data.transformer,
-            input: taskData.data.input,
-            actorId: taskData.data.actor,
-        };
 }
 
 async function processTask(task: any) {
     const transformerId = task.transformer?.id;
     const input = task.input;
-    const actorSlug = await getActorSlugFromActorId(task.actorId);
-    const actorSessionToken = await getSessionTokenFromActorId(task.actorId);
-    let transformerReference = `${buildTransformerRegistryUrl()}/${transformerId}`;
-    if(await pullTransformerIfNeeded(transformerReference, actorSlug, actorSessionToken)){
-        await runTransformer(transformerReference, input, actorSlug, actorSessionToken);
-    }
+    const actorSlug = await jf.getActorSlugFromActorId(task.actorId);
+    const actorSessionToken = await jf.getSessionTokenFromActorId(task.actorId);
+    
+    const transformerImageRef = await transformerRegistry.pullTransformerImage(transformerId, actorSlug, actorSessionToken);
+    await runTransformer(transformerImageRef, input, actorSlug, actorSessionToken);
 }
 
 
-function buildTransformerRegistryUrl() {
-    let repo = (REGISTRY_URL && REGISTRY_PORT) ? `${REGISTRY_URL}:${REGISTRY_PORT}` : REGISTRY_URL;
-    return repo;
-}
-
-async function getActorSlugFromActorId(actorId: string) {
-    const actorCard = await jf.card.get(actorId);
-    return actorCard.slug;
-}
-
-async function getSessionTokenFromActorId(actorId: string) {
-    const actorSessionCard = await jf.card.create({
-        type: 'session@1.0.0',
-        data: {
-            actor: actorId,
-        },
-    });
-    return actorSessionCard.id;
-}
-
-
-async function pullTransformerIfNeeded(transformerReference: string, actorSlug: string, sessionToken: string) {
-    console.log(`[WORKER] Pulling transformer ${transformerReference}`);
-
-    const auth = { username: actorSlug, password: sessionToken, serveraddress: buildTransformerRegistryUrl() };
-
-    const pulled = await new Promise((resolve, reject) => {
-       docker.pull(transformerReference, { 'authconfig': auth }, (err: Error, stream: any) => {
-            if(err){
-                console.log(err);
-                return reject(false);
-            }
-            docker.modem.followProgress(stream, onFinished, onProgress);
-
-            function onFinished(_err: Error, _output: any) {
-                return resolve(true);
-            }
-
-            function onProgress(event: any) {
-                console.log(event.status);
-                if(event.hasOwnProperty('progress')){
-                    console.log(event.progress);
-                }
-            }
-        });
-
-    });
-
-    return pulled;
-}
-
-async function runTransformer(transformerReference: any, input: any, actorSlug: string, sessionToken: string) {
+async function runTransformer(transformerImageRef: string, input: any, actorSlug: string, sessionToken: string) {
     const inputAsBase64 = Buffer.from(JSON.stringify(input)).toString('base64');
 
     const stdout = new streams.WritableStream();
     const stderr = new streams.WritableStream();
 
     try {
-        console.log(`[WORKER] Running transformer ${transformerReference}`);
+        console.log(`[WORKER] Running transformer ${transformerImageRef}`);
         const runResult = await docker.run(
-            transformerReference,
+            transformerImageRef,
             [inputAsBase64, actorSlug, sessionToken],
             [stdout, stderr],
             {
                 Tty: false,
-                Env: transformerCommonEnvVariables,
+                Env: transformerCommonEnvVars,
                 HostConfig: {
                     Privileged: true
                 }
@@ -173,13 +82,10 @@ async function runTransformer(transformerReference: any, input: any, actorSlug: 
         console.log(JSON.stringify(runResult));
         console.log(`stdout: ${stdout.toString()}`);
         console.log(`stderr: ${stderr.toString()}`);
-
-    }catch(err) {
-        console.log(err.stack);
+    }
+    catch(err) {
+        console.error(err.stack);
     }
 }
 
-
-loginToJf().then((workerId) => {
-    waitForTasks(workerId);
-});
+start();

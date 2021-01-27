@@ -1,4 +1,5 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
+import { ActorCredentials, Contract } from "./types";
 
 export default class Jellyfish {
     static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -7,26 +8,24 @@ export default class Jellyfish {
     
     constructor(
         apiUrl: string, 
-        apiPrefix: string, 
-        private readonly authToken: string, 
-        private readonly workerSlug: string
+        apiPrefix: string,
     ) {
         this.sdk = getSdk({apiUrl, apiPrefix});
     }
     
-    public async login() {
+    public async login(workerSlug: string, authToken: string) {
         const snooze = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         console.log('[WORKER] Logging in to jellyfish...');
         while(true) {
             try{
-                await this.sdk.setAuthToken(this.authToken);
+                await this.sdk.setAuthToken(authToken);
                 const user = await this.sdk.auth.whoami();
-                if(user?.slug === this.authToken){
+                if(user?.slug === workerSlug){
                     console.log('[WORKER] Logged in');
                     return user.id;
                 }else{
-                    console.error(`[WORKER] WARNING!! Unexpected user slug '${user?.slug}' received. Expected: '${this.workerSlug}'`);
+                    console.error(`[WORKER] WARNING!! Unexpected user slug '${user?.slug}' received. Expected: '${workerSlug}'`);
                 }
             }catch(e) {
                 console.log(e.stack);
@@ -34,6 +33,8 @@ export default class Jellyfish {
             }
         }
     }
+    
+    // TODO: Handle reconnection.
     
     public async getTaskStream(workerId: string) {
         const schema ={
@@ -57,13 +58,45 @@ export default class Jellyfish {
 
         return await this.sdk.stream(schema)
     }
-
-    public async getActorSlugFromActorId(actorId: string) {
+    
+    public async storeArtifactContract(contract: Contract) {
+        const newContract = await this.sdk.card.create(contract) as Contract;
+        return newContract.id;
+    }
+    
+    public async updateArtifactContact(contractId: string, artifactType: string, artifactName: string) {
+        await this.sdk.card.update(contractId, 'image-source', [
+            {
+                op: 'replace',
+                path: '/data/artefact/type',
+                value: artifactType
+            },
+            {
+                op: 'replace',
+                path: '/data/artefact/name',
+                value: artifactName
+            },
+            {
+                op: 'replace',
+                path: '/data/should_trigger',
+                value: true
+            }
+        ]);
+    }
+    
+    public async getActorCredentials(actorId: string) {
+         return {
+            slug: await this.getActorSlugFromActorId(actorId),
+            sessionToken: await this.getSessionTokenFromActorId(actorId),
+        } as ActorCredentials;
+    }
+    
+    private async getActorSlugFromActorId(actorId: string) {
         const actorCard = await this.sdk.card.get(actorId);
         return actorCard.slug;
     }
 
-    public async getSessionTokenFromActorId(actorId: string) {
+    private async getSessionTokenFromActorId(actorId: string) {
         const actorSessionCard = await this.sdk.card.create({
             type: 'session@1.0.0',
             data: {

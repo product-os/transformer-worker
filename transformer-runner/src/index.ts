@@ -17,7 +17,7 @@ const REGISTRY_PORT = process.env.REGISTRY_PORT;
 const INPUT_DIR = 'input';
 const OUTPUT_DIR = 'output';
 const CONTRACT_FILENAME = 'contract.json';
-// const ARTIFACT_FILENAME = 'artifact';
+// const ARTEFACT_FILENAME = 'artefact';
 
 const docker = new Docker();
 const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX, WORKER_SLUG, WORKER_JF_TOKEN);
@@ -46,7 +46,7 @@ async function runTask(task: TaskContract) {
     // Run transformer
     const transformerExitCode = await runTransformer(task, transformerImageRef);
     
-    // Validate output (status code, output artifact/contract)
+    // Validate output (status code, output artefact/contract)
     await validateOutput(task, transformerExitCode);
     
     // Push output
@@ -74,11 +74,11 @@ async function prepareInput(task: TaskContract, _actorCredentials: ActorCredenti
     const inputContract = task.data.input;
 
     // Add input contract
-    const contractJson = JSON.stringify(task.data.input, null, 4);
+    const contractJson = JSON.stringify(inputContract, null, 4);
     await fs.promises.writeFile(path.join(inputDir, CONTRACT_FILENAME), contractJson, 'utf8')
     
-    // Add input artifact
-    await registry.pullArtifact(inputContract, inputDir);
+    // Add input artefact
+    await registry.pullArtefact(inputContract, inputDir);
 }
 
 async function pullTransformer(task: TaskContract, actorCredentials: ActorCredentials) {
@@ -139,24 +139,29 @@ async function validateOutput(_task: TaskContract, _transformerExitCode: number)
     console.log(`[WORKER] Validating transformer output`);
 }
 
-async function pushOutput(_task: TaskContract, _actorCredentials: ActorCredentials) {
+async function pushOutput(task: TaskContract, _actorCredentials: ActorCredentials) {
     console.log(`[WORKER] Storing transformer output`);
 
     // Because storing an artefact requires an existing contract, 
     // but a contact may trigger another transformer,
     // this must be done in following order:
     // - store output contract (should_trigger: false)
-    // - push artifact
+    // - push artefact
     // - update output contract (should_trigger_true)
 
-    // Store output contract
-    // jf.storeArtifactContract
+    const outputDir = getDir.output(task);
 
-    // Store output artifact
-    // registry.pushArtifact
+    // Store output contract
+    const outputContract = JSON.parse(
+        await fs.promises.readFile(path.join(outputDir, CONTRACT_FILENAME), 'utf8')
+    );
+    const outputContractId = await jf.storeArtefactContract(outputContract);
+
+    // Store output artefact
+    await registry.pushArtefact(outputContract, path.join(outputDir, CONTRACT_FILENAME));
 
     // Update output contract
-    // jf.updateArtifactContract
+    await jf.updateArtefactContract(outputContractId);
 }
 
 async function finalizeTask(task: TaskContract) {

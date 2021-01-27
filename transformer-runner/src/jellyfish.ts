@@ -1,5 +1,5 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import {ActorCredentials, ArtefactContract} from "./types";
+import {ActorCredentials, ArtefactContract, TaskContract} from "./types";
 
 const STANDARD_ARTEFACT_TYPE: string = 'tgz';
 
@@ -11,11 +11,25 @@ export default class Jellyfish {
     constructor(
         apiUrl: string, 
         apiPrefix: string,
+        private readonly workerSlug: string,
+        private readonly authToken: string,
     ) {
         this.sdk = getSdk({apiUrl, apiPrefix});
     }
     
-    public async login(workerSlug: string, authToken: string) {
+    public async listenForTasks(taskHandler: (task: TaskContract) => void) {
+        const workerId = await this.login(this.workerSlug, this.authToken);
+
+        // Get task stream, and await tasks
+        const taskStream = await this.getTaskStream(workerId);
+        taskStream.on('update', taskHandler);
+
+        taskStream.on('streamError', (error: Error) => {
+            console.error(error);
+        })
+    }
+    
+    private async login(workerSlug: string, authToken: string) {
         const snooze = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         console.log('[WORKER] Logging in to jellyfish...');
@@ -24,7 +38,7 @@ export default class Jellyfish {
                 await this.sdk.setAuthToken(authToken);
                 const user = await this.sdk.auth.whoami();
                 if(user?.slug === workerSlug){
-                    console.log('[WORKER] Logged in');
+                    console.log('[WORKER] Logged in, id ${');
                     return user.id;
                 }else{
                     console.error(`[WORKER] WARNING!! Unexpected user slug '${user?.slug}' received. Expected: '${workerSlug}'`);
@@ -38,7 +52,7 @@ export default class Jellyfish {
     
     // TODO: Handle reconnection.
     
-    public async getTaskStream(workerId: string) {
+    private async getTaskStream(workerId: string) {
         const schema ={
             $$links: {
                 'is owned by': {

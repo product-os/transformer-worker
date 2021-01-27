@@ -78,7 +78,7 @@ export default class Jellyfish {
     public async storeArtifactContract(contract: ArtefactContract) {
         // Set as draft, 
         // so as not to trigger other transformers before artifact ready
-        contract.data.draft = true;
+        contract.data.artifact_ready = true;
         const newContract = await this.sdk.card.create(contract) as ArtefactContract;
         return newContract.id;
     }
@@ -99,8 +99,8 @@ export default class Jellyfish {
             },
             {
                 op: 'replace',
-                path: '/data/draft',
-                value: false
+                path: '/data/artifact_ready',
+                value: true
             }
         ]);
     }

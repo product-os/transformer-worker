@@ -32,7 +32,7 @@ export interface TaskContract extends Contract {
 export interface ArtefactContract extends Contract {
     data: {
         artefact: Artefact;
-        draft: boolean;
+        artifact_ready: boolean;
     }
 }
 

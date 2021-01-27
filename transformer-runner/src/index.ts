@@ -21,15 +21,7 @@ const docker = new Docker();
 const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX);
 const registry = new Registry(REGISTRY_HOST, REGISTRY_PORT);
 
-
-// TODO: 
-//  - Docker auth
-//  - Artefact push/pull
-//  - Contract update
-//  - Transformer in/out bind mounts
-//  - Match in/out expectations of Martins transformer
-
-async function start() {
+async function init() {
     console.log(`[WORKER] ${WORKER_SLUG} starting...`);
     
     // Login to JF
@@ -37,7 +29,7 @@ async function start() {
     
     // Get task stream, and await tasks
     const taskStream = await jf.getTaskStream(workerId);
-    taskStream.on('update', processTask);
+    taskStream.on('update', runTask);
 
     taskStream.on('streamError', (error: Error) => {
         console.error(error);
@@ -46,48 +38,61 @@ async function start() {
     console.log('[WORKER] Waiting for tasks');
 }
 
-async function processTask(task: TaskContract) {
-    console.log(`[WORKER] Processing task ${task.slug}`);
+async function runTask(task: TaskContract) {
+    console.log(`[WORKER] Running task ${task.slug}`);
     
-    // Get actor credentials for task
-    const actorCredentials = await jf.getActorCredentials(task.data.actor);
-    
-    // Prepare transformer input
+    // Initialize task
+    const actorCredentials = await initTask(task);
+
+    // Prepare Input
     await prepareInput(task, actorCredentials);
     
     // Pull transformer
-    const transformerId = task.data.transformer.id;
-    const transformerImageRef = await registry.pullTransformerImage(transformerId, actorCredentials)
+    const transformerImageRef = await pullTransformer(task, actorCredentials);
     
     // Run transformer
-    try {
-        await runTransformer(task, transformerImageRef);
-    } 
-    catch(e) {
-        console.error(`Failed to run transformer ${transformerImageRef} for task ${task.slug}`, e);
-        return;
-    }
-
-    // Validate transformer output
-    try {
-        await validateOutput(task);
-    }
-    catch(e) {
-        console.error(`Output validation failed for task ${task.slug}`, e);
-        return;
-    }
+    const transformerExitCode = await runTransformer(task, transformerImageRef);
     
-    // Store transformer output
-    await storeOutput(task, actorCredentials);
-
-    console.log(`[WORKER] Task ${task.slug} completed successfully`);
+    // Validate output (status code, output artifact/contract)
+    await validateOutput(task, transformerExitCode);
+    
+    // Push output
+    await pushOutput(task, actorCredentials);
+    
+    // Finalize task
+    await finalizeTask(task);
 }
 
+async function initTask(task: TaskContract) {
+    // Create task input/output dirs
+    await fs.promises.mkdir(getDir.input(task), { recursive: true });
+    await fs.promises.mkdir(getDir.output(task), { recursive: true });
+    
+    // Get actor credentials
+    const actorCredentials = await jf.getActorCredentials(task.data.actor);
+    
+    return actorCredentials;
+}
+
+async function prepareInput(_task: TaskContract, _actorCredentials: ActorCredentials) {
+    console.log(`[WORKER] Preparing transformer input`);
+
+    // Add input contract
+
+    // Add input artifact
+}
+
+async function pullTransformer(task: TaskContract, actorCredentials: ActorCredentials) {
+    const transformerId = task.data.transformer.id;
+    const transformerImageRef = await registry.pullTransformerImage(transformerId, actorCredentials);
+    
+    return transformerImageRef;
+}
 
 async function runTransformer(task: TaskContract, transformerImageRef: string) {
     const stdout = new streams.WritableStream();
     const stderr = new streams.WritableStream();
-    
+
     console.log(`[WORKER] Running transformer ${transformerImageRef}`);
     const runResult = await docker.run(
         transformerImageRef,
@@ -122,51 +127,43 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
     console.log(JSON.stringify(runResult));
     console.log(`stdout: ${stdout.toString()}`);
     console.log(`stderr: ${stderr.toString()}`);
-    
+
     const output = runResult[0];
     // const container = runResult[1];
-    
-    if(output.StatusCode !== 0) {
-        throw new Error(`Transformer container exited with non-zero status code: ${output.StatusCode}`)
-    }
+
+    return output.StatusCode;
 }
 
-async function prepareInput(task: TaskContract, _actorCredentials: ActorCredentials) {
-    console.log(`[WORKER] Preparing transformer input`);
-    // Create task input/output dirs
-    await fs.promises.mkdir(getDir.input(task), { recursive: true });
-    await fs.promises.mkdir(getDir.output(task), { recursive: true });
-    
-    // Add input contract
-    
-    // Add input artifact
-}
-
-async function validateOutput(_task: TaskContract) {
+async function validateOutput(_task: TaskContract, _transformerExitCode: number) {
     console.log(`[WORKER] Validating transformer output`);
 }
 
-async function storeOutput(task: TaskContract, _actorCredentials: ActorCredentials) {
+async function pushOutput(_task: TaskContract, _actorCredentials: ActorCredentials) {
     console.log(`[WORKER] Storing transformer output`);
-    
+
     // Because storing an artefact requires an existing contract, 
     // but a contact may trigger another transformer,
     // this must be done in following order:
-    // - Store output contract (should_trigger: false)
-    // - Store artifact
-    // - Update output contract (should_trigger_true)
+    // - store output contract (should_trigger: false)
+    // - push artifact
+    // - update output contract (should_trigger_true)
 
     // Store output contract
     // jf.storeArtifactContract
-    
+
     // Store output artifact
     // registry.pushArtifact
-    
+
     // Update output contract
     // jf.updateArtifactContract
-    
-    // Remove output dir
+}
+
+async function finalizeTask(task: TaskContract) {
+    // Delete input/output dir
+    await fs.promises.rmdir(getDir.input(task), { recursive: true });
     await fs.promises.rmdir(getDir.output(task), { recursive: true });
+    
+    console.log(`[WORKER] Task ${task.slug} completed successfully`);
 }
 
 const getDir = {
@@ -174,4 +171,4 @@ const getDir = {
     output: (task: TaskContract) => path.join(OUTPUT_DIR,`task-${task.id}`),
 }
 
-start();
+init();

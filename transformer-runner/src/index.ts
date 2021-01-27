@@ -16,6 +16,8 @@ const REGISTRY_PORT = process.env.REGISTRY_PORT;
 
 const INPUT_DIR = 'input';
 const OUTPUT_DIR = 'output';
+const CONTRACT_FILENAME = 'contract.json';
+// const ARTIFACT_FILENAME = 'artifact';
 
 const docker = new Docker();
 const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX, WORKER_SLUG, WORKER_JF_TOKEN);
@@ -65,12 +67,18 @@ async function initTask(task: TaskContract) {
     return actorCredentials;
 }
 
-async function prepareInput(_task: TaskContract, _actorCredentials: ActorCredentials) {
+async function prepareInput(task: TaskContract, _actorCredentials: ActorCredentials) {
     console.log(`[WORKER] Preparing transformer input`);
+    
+    const inputDir = getDir.input((task));
+    const inputContract = task.data.input;
 
     // Add input contract
-
+    const contractJson = JSON.stringify(task.data.input, null, 4);
+    await fs.promises.writeFile(path.join(inputDir, CONTRACT_FILENAME), contractJson, 'utf8')
+    
     // Add input artifact
+    await registry.pullArtifact(inputContract, inputDir);
 }
 
 async function pullTransformer(task: TaskContract, actorCredentials: ActorCredentials) {

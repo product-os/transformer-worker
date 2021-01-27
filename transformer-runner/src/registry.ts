@@ -1,6 +1,6 @@
 import * as Docker from 'dockerode';
 import type { ActorCredentials, ArtefactContract } from "./types";
-import Oras from './oras';
+import spawn from "@ahmadnassri/spawn-promise";
 
 export default class Registry {
     public readonly registryUrl: string;
@@ -11,7 +11,6 @@ export default class Registry {
     constructor(registryHost: string, registryPort?: string) {
         this.registryUrl = registryPort ? `${registryHost}:${registryPort}` : registryHost;
         this.docker = new Docker();
-        this.oras = new Oras(this.registryUrl);
     }
 
     public async pullTransformerImage(transformerId: string, actorCredentials: ActorCredentials) {
@@ -47,14 +46,35 @@ export default class Registry {
     public async pullArtifact(contract: ArtefactContract, _destiDir: string) {
         const artefact = contract.data.artefact;
         console.log(`[WORKER] Pulling artefact ${artefact.name}`);
-        
-        // TODO
+        try {
+            const streams = await spawn(`oras`, [`pull`, `${this.registryUrl}/${name}:latest`]);
+            const output = streams.stdout.toString('utf8');
+            console.log(`* Oras output: ${output}`);
+            const m = output.match(/Downloaded .* (.*)/);
+            if (m[1]) {
+                return m[1];
+            } else {
+                throw new Error('[ERROR] Could not determine what was pulled from the registry');
+            }
+        } catch (e) {
+            this.logErrorAndThrow(e);
+        }
     }
     
     public async pushArtifact(contract: ArtefactContract, _artefactPath: string) {
         const artefact = contract.data.artefact;
         console.log(`[WORKER] Pushing artefact ${artefact.name}`);
         // TODO
+    }
+    
+    private logErrorAndThrow = (e: any) => {
+        if (e.spawnargs) {
+            console.error(e.spawnargs);
+            console.error(e.stderr.toString('utf8'));
+        } else {
+            console.error(e);
+        }
+        throw e;
     }
 }
 

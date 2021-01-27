@@ -26,14 +26,13 @@ export interface TaskContract extends Contract {
         actor: string;
         input: ArtefactContract;
         transformer: TransformerContract;
-        workerFilter: any;
     }
 }
 
 export interface ArtefactContract extends Contract {
     data: {
         artefact: Artefact;
-        should_trigger: boolean;
+        draft: boolean;
     }
 }
 
@@ -46,17 +45,12 @@ export interface TransformerContract extends Contract {
         requirements: {
             os: string;
             architecture: string;
-            workerFilter: any;
         }
     }
-    
 }
 
 export type Artefact = {
     name: string;
-    type: ArtefactType;
+    type: string;
+    // NOTE: Artifacts are transported in a single format (e.g. targz) 
 }
-
-// Possible artifact type values
-export type ArtefactType =
-    'image';

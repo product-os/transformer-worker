@@ -1,5 +1,7 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import { ActorCredentials, Contract } from "./types";
+import {ActorCredentials, ArtefactContract} from "./types";
+
+const STANDARD_ARTEFACT_TYPE: string = 'tgz';
 
 export default class Jellyfish {
     static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -59,13 +61,18 @@ export default class Jellyfish {
         return await this.sdk.stream(schema)
     }
     
-    public async storeArtifactContract(contract: Contract) {
-        const newContract = await this.sdk.card.create(contract) as Contract;
+    public async storeArtifactContract(contract: ArtefactContract) {
+        // Set as draft, 
+        // so as not to trigger other transformers before artifact ready
+        contract.data.draft = true;
+        const newContract = await this.sdk.card.create(contract) as ArtefactContract;
         return newContract.id;
     }
     
     public async updateArtifactContact(contractId: string, artifactType: string, artifactName: string) {
-        await this.sdk.card.update(contractId, 'image-source', [
+        // TODO:
+        //  Why do we need to set artifact type and name here?
+        await this.sdk.card.update(contractId, STANDARD_ARTEFACT_TYPE, [
             {
                 op: 'replace',
                 path: '/data/artefact/type',
@@ -78,8 +85,8 @@ export default class Jellyfish {
             },
             {
                 op: 'replace',
-                path: '/data/should_trigger',
-                value: true
+                path: '/data/draft',
+                value: false
             }
         ]);
     }

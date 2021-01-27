@@ -18,23 +18,14 @@ const INPUT_DIR = 'input';
 const OUTPUT_DIR = 'output';
 
 const docker = new Docker();
-const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX);
+const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX, WORKER_SLUG, WORKER_JF_TOKEN);
 const registry = new Registry(REGISTRY_HOST, REGISTRY_PORT);
 
 async function init() {
     console.log(`[WORKER] ${WORKER_SLUG} starting...`);
     
-    // Login to JF
-    const workerId = await jf.login(WORKER_SLUG, WORKER_JF_TOKEN);
+    await jf.listenForTasks(runTask);
     
-    // Get task stream, and await tasks
-    const taskStream = await jf.getTaskStream(workerId);
-    taskStream.on('update', runTask);
-
-    taskStream.on('streamError', (error: Error) => {
-        console.error(error);
-    })
-
     console.log('[WORKER] Waiting for tasks');
 }
 
@@ -84,16 +75,18 @@ async function prepareInput(_task: TaskContract, _actorCredentials: ActorCredent
 
 async function pullTransformer(task: TaskContract, actorCredentials: ActorCredentials) {
     const transformerId = task.data.transformer.id;
+    console.log(`[WORKER] Pulling transformer ${transformerId}`);
     const transformerImageRef = await registry.pullTransformerImage(transformerId, actorCredentials);
     
     return transformerImageRef;
 }
 
 async function runTransformer(task: TaskContract, transformerImageRef: string) {
+    console.log(`[WORKER] Running transformer image ${transformerImageRef}`);
+    
     const stdout = new streams.WritableStream();
     const stderr = new streams.WritableStream();
-
-    console.log(`[WORKER] Running transformer ${transformerImageRef}`);
+    
     const runResult = await docker.run(
         transformerImageRef,
         [],

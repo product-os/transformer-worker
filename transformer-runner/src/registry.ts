@@ -5,8 +5,6 @@ import spawn from "@ahmadnassri/spawn-promise";
 export default class Registry {
     public readonly registryUrl: string;
     private readonly docker: any;
-    // @ts-ignore
-    private readonly oras: any;
     
     constructor(registryHost: string, registryPort?: string) {
         this.registryUrl = registryPort ? `${registryHost}:${registryPort}` : registryHost;
@@ -43,7 +41,7 @@ export default class Registry {
         return transformerImageRef;
     }
 
-    public async pullArtifact(contract: ArtefactContract, _destiDir: string) {
+    public async pullArtefact(contract: ArtefactContract, _destiDir: string) {
         const artefact = contract.data.artefact;
         console.log(`[WORKER] Pulling artefact ${artefact.name}`);
         try {
@@ -61,7 +59,7 @@ export default class Registry {
         }
     }
     
-    public async pushArtifact(contract: ArtefactContract, _artefactPath: string) {
+    public async pushArtefact(contract: ArtefactContract, _artefactPath: string) {
         const artefact = contract.data.artefact;
         console.log(`[WORKER] Pushing artefact ${artefact.name}`);
         // TODO

@@ -1,7 +1,7 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import {ActorCredentials, ArtefactContract, TaskContract} from "./types";
+import { ActorCredentials, ArtefactContract, TaskContract } from "./types";
 
-const STANDARD_ARTEFACT_TYPE: string = 'tgz';
+const STANDARD_artefact_TYPE: string = 'tgz';
 
 export default class Jellyfish {
     static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -75,28 +75,30 @@ export default class Jellyfish {
         return await this.sdk.stream(schema)
     }
     
-    public async storeArtifactContract(contract: ArtefactContract) {
+    public async storeArtefactContract(contract: ArtefactContract) {
         // Set as draft, 
         // so as not to trigger other transformers before artifact ready
-        contract.data.artifact_ready = true;
+        contract.data.artefact_ready = true;
         const newContract = await this.sdk.card.create(contract) as ArtefactContract;
         return newContract.id;
     }
-    
-    public async updateArtifactContact(contractId: string, artifactType: string, artifactName: string) {
-        // TODO:
-        //  Why do we need to set artifact type and name here?
-        await this.sdk.card.update(contractId, STANDARD_ARTEFACT_TYPE, [
+
+    // TODO:
+    //  Why do we need to set artifact type and name here?
+    public async updateArtefactContract(contractId: string) { //}, artefactType: string, artefactName: string) {
+        await this.sdk.card.update(contractId, STANDARD_artefact_TYPE, [
+            /*
             {
                 op: 'replace',
                 path: '/data/artefact/type',
-                value: artifactType
+                value: artefactType
             },
             {
                 op: 'replace',
                 path: '/data/artefact/name',
-                value: artifactName
+                value: artefactName
             },
+             */
             {
                 op: 'replace',
                 path: '/data/artifact_ready',

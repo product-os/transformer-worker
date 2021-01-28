@@ -20,12 +20,13 @@ const CONTRACT_FILENAME = 'contract.json';
 // const ARTEFACT_FILENAME = 'artefact';
 
 const docker = new Docker();
-const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX, WORKER_SLUG, WORKER_JF_TOKEN);
+const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX);
 const registry = new Registry(REGISTRY_HOST, REGISTRY_PORT);
 
 async function init() {
-    console.log(`[WORKER] ${WORKER_SLUG} starting...`);
+    console.log(`[WORKER] ${WORKER_SLUG} starting...`)
     
+    await jf.login(WORKER_SLUG, WORKER_JF_TOKEN);
     await jf.listenForTasks(runTask);
     
     console.log('[WORKER] Waiting for tasks');

@@ -2,7 +2,7 @@ import { getSdk } from '@balena/jellyfish-client-sdk';
 import * as mockSdk from './mock-jellyfish-client-sdk';
 import { ActorCredentials, ArtefactContract, TaskContract } from "./types";
 
-const STANDARD_artefact_TYPE: string = 'tgz';
+const STANDARD_ARTEFACT_TYPE: string = 'tgz';
 const MOCK_JF_SDK = process.env.JF_API_PREFIX || true;
 
 export default class Jellyfish {
@@ -13,8 +13,6 @@ export default class Jellyfish {
     constructor(
         apiUrl: string, 
         apiPrefix: string,
-        private readonly workerSlug: string,
-        private readonly authToken: string,
     ) {
         this.sdk = MOCK_JF_SDK ? 
             mockSdk.getSdk({apiUrl, apiPrefix}) :
@@ -22,10 +20,10 @@ export default class Jellyfish {
     }
     
     public async listenForTasks(taskHandler: (task: TaskContract) => void) {
-        const workerId = await this.login(this.workerSlug, this.authToken);
+        const user = await this.sdk.auth.whoami();
 
         // Get task stream, and await tasks
-        const taskStream = await this.getTaskStream(workerId);
+        const taskStream = await this.getTaskStream(user.id);
         taskStream.on('update', taskHandler);
 
         taskStream.on('streamError', (error: Error) => {
@@ -33,7 +31,7 @@ export default class Jellyfish {
         })
     }
     
-    private async login(workerSlug: string, authToken: string) {
+    public async login(workerSlug: string, authToken: string) {
         const snooze = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         console.log('[WORKER] Logging in to jellyfish...');
@@ -90,7 +88,7 @@ export default class Jellyfish {
     // TODO:
     //  Why do we need to set artifact type and name here?
     public async updateArtefactContract(contractId: string) { //}, artefactType: string, artefactName: string) {
-        await this.sdk.card.update(contractId, STANDARD_artefact_TYPE, [
+        await this.sdk.card.update(contractId, STANDARD_ARTEFACT_TYPE, [
             /*
             {
                 op: 'replace',

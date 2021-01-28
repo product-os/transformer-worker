@@ -1,7 +1,9 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
+import * as mockSdk from './mock-jellyfish-client-sdk';
 import { ActorCredentials, ArtefactContract, TaskContract } from "./types";
 
 const STANDARD_artefact_TYPE: string = 'tgz';
+const MOCK_JF_SDK = process.env.JF_API_PREFIX || true;
 
 export default class Jellyfish {
     static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -14,7 +16,9 @@ export default class Jellyfish {
         private readonly workerSlug: string,
         private readonly authToken: string,
     ) {
-        this.sdk = getSdk({apiUrl, apiPrefix});
+        this.sdk = MOCK_JF_SDK ? 
+            mockSdk.getSdk({apiUrl, apiPrefix}) :
+            getSdk({apiUrl, apiPrefix});
     }
     
     public async listenForTasks(taskHandler: (task: TaskContract) => void) {

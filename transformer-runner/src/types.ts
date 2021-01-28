@@ -54,3 +54,19 @@ export type Artefact = {
     type: string;
     // NOTE: Artifacts are transported in a single format (e.g. targz) 
 }
+
+export type InputManifest = {
+    input: {
+        contract: ArtefactContract,
+        artifactPath : string;
+    }
+}
+
+export type OutputManifest = {
+    results: [
+        {
+            contract: ArtefactContract,
+            artifactPath: string;
+        }
+    ]
+}

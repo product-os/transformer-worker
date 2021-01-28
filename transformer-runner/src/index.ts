@@ -1,6 +1,6 @@
 import Jellyfish from './jellyfish';
 import Registry from './registry';
-import type { ActorCredentials, TaskContract } from './types';
+import type { ActorCredentials, TaskContract, InputManifest, OutputManifest } from './types';
 
 import * as fs from 'fs';
 import * as Docker from 'dockerode';
@@ -16,8 +16,10 @@ const REGISTRY_PORT = process.env.REGISTRY_PORT;
 
 const INPUT_DIR = 'input';
 const OUTPUT_DIR = 'output';
+const INPUT_MANIFEST_FILENAME = 'input.json';
+const OUTPUT_MANIFEST_FILENAME = 'output.json';
 const CONTRACT_FILENAME = 'contract.json';
-// const ARTEFACT_FILENAME = 'artefact';
+const ARTIFACT_FILENAME = 'artifact';
 
 const docker = new Docker();
 const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX);
@@ -73,13 +75,19 @@ async function prepareInput(task: TaskContract, _actorCredentials: ActorCredenti
     
     const inputDir = getDir.input((task));
     const inputContract = task.data.input;
-
-    // Add input contract
-    const contractJson = JSON.stringify(inputContract, null, 4);
-    await fs.promises.writeFile(path.join(inputDir, CONTRACT_FILENAME), contractJson, 'utf8')
     
     // Add input artefact
     await registry.pullArtefact(inputContract, inputDir);
+    
+    // Add input manifest
+    const inputManifest : InputManifest = {
+        input : {
+            contract : inputContract,
+            artifactPath : ARTIFACT_FILENAME,
+        }
+    }
+    const manifestJson = JSON.stringify(inputManifest, null, 4);
+    await fs.promises.writeFile(path.join(inputDir, INPUT_MANIFEST_FILENAME), manifestJson, 'utf8')
 }
 
 async function pullTransformer(task: TaskContract, actorCredentials: ActorCredentials) {
@@ -103,8 +111,8 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
         {
             Tty: false,
             Env: {
-                IN_DIR: '/in',
-                OUT_DIR: '/out'
+                INPUT: `/input/${INPUT_MANIFEST_FILENAME}`,
+                OUTPUT: `/output/${OUTPUT_MANIFEST_FILENAME}`,
             },
             HostConfig: {
                 Privileged: true
@@ -113,13 +121,13 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
                 {
                     Type: 'bind',
                     Source: path.resolve(getDir.input(task)),
-                    Destination: '/in',
+                    Destination: '/input',
                     RW: false,
                 },
                 {
                     Type: 'bind',
                     Source: path.resolve(getDir.output(task)),
-                    Destination: '/out',
+                    Destination: '/output',
                     RW: true,
                 }
             ],
@@ -138,31 +146,40 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 
 async function validateOutput(_task: TaskContract, _transformerExitCode: number) {
     console.log(`[WORKER] Validating transformer output`);
+    // TODO:
+    //  Check exit code
+    //  Check output manifest
+    //  Check output artifact(s)
 }
 
 async function pushOutput(task: TaskContract, _actorCredentials: ActorCredentials) {
     console.log(`[WORKER] Storing transformer output`);
-
-    // Because storing an artefact requires an existing contract, 
-    // but a contact may trigger another transformer,
-    // this must be done in following order:
-    // - store output contract (should_trigger: false)
-    // - push artefact
-    // - update output contract (should_trigger_true)
-
+    
     const outputDir = getDir.output(task);
+    
+    // Read output manifest
+    const outputManifest = JSON.parse(
+        await fs.promises.readFile(path.join(outputDir, OUTPUT_MANIFEST_FILENAME), 'utf8')
+    ) as OutputManifest;
+    
+    for (const result of outputManifest.results) {
+        // Because storing an artefact requires an existing contract, 
+        // but a contact may trigger another transformer,
+        // this must be done in following order:
+        // - store output contract (should_trigger: false)
+        // - push artefact
+        // - update output contract (should_trigger_true)
+        
+        // Store output contract
+        const outputContract = result.contract;
+        const outputContractId = await jf.storeArtefactContract(outputContract);
 
-    // Store output contract
-    const outputContract = JSON.parse(
-        await fs.promises.readFile(path.join(outputDir, CONTRACT_FILENAME), 'utf8')
-    );
-    const outputContractId = await jf.storeArtefactContract(outputContract);
+        // Store output artefact
+        await registry.pushArtefact(outputContract, path.join(outputDir, CONTRACT_FILENAME));
 
-    // Store output artefact
-    await registry.pushArtefact(outputContract, path.join(outputDir, CONTRACT_FILENAME));
-
-    // Update output contract
-    await jf.updateArtefactContract(outputContractId);
+        // Update output contract
+        await jf.updateArtefactContract(outputContractId);
+    }
 }
 
 async function finalizeTask(task: TaskContract) {

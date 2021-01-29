@@ -1,8 +1,8 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
 import * as mockSdk from './mock-jellyfish-client-sdk';
-import { ActorCredentials, ArtefactContract, TaskContract } from "./types";
+import { ActorCredentials, ArtifactContract, TaskContract } from "./types";
 
-const STANDARD_ARTEFACT_TYPE: string = 'tgz';
+const STANDARD_ARTIFACT_TYPE: string = 'tgz';
 const MOCK_JF_SDK = process.env.JF_API_PREFIX || true;
 
 export default class Jellyfish {
@@ -69,28 +69,28 @@ export default class Jellyfish {
         return await this.sdk.stream(schema)
     }
     
-    public async storeArtefactContract(contract: ArtefactContract) {
+    public async storeArtifactContract(contract: ArtifactContract) {
         // Set as draft, 
         // so as not to trigger other transformers before artifact ready
-        contract.data.artefact_ready = true;
-        const newContract = await this.sdk.card.create(contract) as ArtefactContract;
+        contract.data.artifact_ready = true;
+        const newContract = await this.sdk.card.create(contract) as ArtifactContract;
         return newContract.id;
     }
 
     // TODO:
     //  Why do we need to set artifact type and name here?
-    public async updateArtefactContract(contractId: string) { //}, artefactType: string, artefactName: string) {
-        await this.sdk.card.update(contractId, STANDARD_ARTEFACT_TYPE, [
+    public async updateArtifactContract(contractId: string) { //}, artifactType: string, artifactName: string) {
+        await this.sdk.card.update(contractId, STANDARD_ARTIFACT_TYPE, [
             /*
             {
                 op: 'replace',
-                path: '/data/artefact/type',
-                value: artefactType
+                path: '/data/artifact/type',
+                value: artifactType
             },
             {
                 op: 'replace',
-                path: '/data/artefact/name',
-                value: artefactName
+                path: '/data/artifact/name',
+                value: artifactName
             },
              */
             {

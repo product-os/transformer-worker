@@ -25,7 +25,7 @@ const docker = new Docker();
 const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX);
 const registry = new Registry(REGISTRY_HOST, REGISTRY_PORT);
 
-async function init() {
+export async function init() {
     console.log(`[WORKER] ${WORKER_SLUG} starting...`)
     
     await jf.login(WORKER_SLUG, WORKER_JF_TOKEN);
@@ -190,9 +190,7 @@ async function finalizeTask(task: TaskContract) {
     console.log(`[WORKER] Task ${task.slug} completed successfully`);
 }
 
-const getDir = {
+export const getDir = {
     input: (task: TaskContract) => path.join(INPUT_DIR, `task-${task.id}`),
     output: (task: TaskContract) => path.join(OUTPUT_DIR,`task-${task.id}`),
 }
-
-init();

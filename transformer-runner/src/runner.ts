@@ -49,7 +49,7 @@ async function runTask(task: TaskContract) {
     // Run transformer
     const transformerExitCode = await runTransformer(task, transformerImageRef);
     
-    // Validate output (status code, output artefact/contract)
+    // Validate output (status code, output artifact/contract)
     await validateOutput(task, transformerExitCode);
     
     // Push output
@@ -76,8 +76,8 @@ async function prepareInput(task: TaskContract, _actorCredentials: ActorCredenti
     const inputDir = getDir.input((task));
     const inputContract = task.data.input;
     
-    // Add input artefact
-    await registry.pullArtefact(inputContract, inputDir);
+    // Add input artifact
+    await registry.pullArtifact(inputContract, inputDir);
     
     // Add input manifest
     const inputManifest : InputManifest = {
@@ -163,22 +163,22 @@ async function pushOutput(task: TaskContract, _actorCredentials: ActorCredential
     ) as OutputManifest;
     
     for (const result of outputManifest.results) {
-        // Because storing an artefact requires an existing contract, 
+        // Because storing an artifact requires an existing contract, 
         // but a contact may trigger another transformer,
         // this must be done in following order:
         // - store output contract (should_trigger: false)
-        // - push artefact
+        // - push artifact
         // - update output contract (should_trigger_true)
         
         // Store output contract
         const outputContract = result.contract;
-        const outputContractId = await jf.storeArtefactContract(outputContract);
+        const outputContractId = await jf.storeArtifactContract(outputContract);
 
-        // Store output artefact
-        await registry.pushArtefact(outputContract, path.join(outputDir, CONTRACT_FILENAME));
+        // Store output artifact
+        await registry.pushArtifact(outputContract, path.join(outputDir, CONTRACT_FILENAME));
 
         // Update output contract
-        await jf.updateArtefactContract(outputContractId);
+        await jf.updateArtifactContract(outputContractId);
     }
 }
 

@@ -24,15 +24,15 @@ export interface Contract {
 export interface TaskContract extends Contract {
     data : {
         actor: string;
-        input: ArtefactContract;
+        input: ArtifactContract;
         transformer: TransformerContract;
     }
 }
 
-export interface ArtefactContract extends Contract {
+export interface ArtifactContract extends Contract {
     data: {
-        artefact: Artefact;
-        artefact_ready: boolean;
+        artifact: Artifact;
+        artifact_ready: boolean;
     }
 }
 
@@ -49,7 +49,7 @@ export interface TransformerContract extends Contract {
     }
 }
 
-export type Artefact = {
+export type Artifact = {
     name: string;
     type: string;
     // NOTE: Artifacts are transported in a single format (e.g. targz) 
@@ -57,7 +57,7 @@ export type Artefact = {
 
 export type InputManifest = {
     input: {
-        contract: ArtefactContract,
+        contract: ArtifactContract,
         artifactPath : string;
     }
 }
@@ -65,7 +65,7 @@ export type InputManifest = {
 export type OutputManifest = {
     results: [
         {
-            contract: ArtefactContract,
+            contract: ArtifactContract,
             artifactPath: string;
         }
     ]

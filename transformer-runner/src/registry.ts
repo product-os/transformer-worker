@@ -1,5 +1,5 @@
 import * as Docker from "dockerode";
-import type { ActorCredentials, ArtefactContract } from "./types";
+import type { ActorCredentials, ArtifactContract } from "./types";
 import * as spawn from "@ahmadnassri/spawn-promise";
 
 export default class Registry {
@@ -54,13 +54,13 @@ export default class Registry {
     return transformerImageRef;
   }
 
-  public async pullArtefact(contract: ArtefactContract, _destiDir: string) {
-    const artefact = contract.data.artefact;
-    console.log(`[WORKER] Pulling artefact ${artefact.name}`);
+  public async pullArtifact(contract: ArtifactContract, _destiDir: string) {
+    const artifact = contract.data.artifact;
+    console.log(`[WORKER] Pulling artifact ${artifact.name}`);
     try {
       const streams = await spawn(`oras`, [
         `pull`,
-        `${this.registryUrl}/${artefact.name}:latest`,
+        `${this.registryUrl}/${artifact.name}:latest`,
       ]);
       const output = streams.stdout.toString("utf8");
       console.log(streams.stderr.toString("utf8"));
@@ -78,9 +78,9 @@ export default class Registry {
     }
   }
 
-  public async pushArtefact(contract: ArtefactContract, _artefactPath: string) {
-    const artefact = contract.data.artefact;
-    console.log(`[WORKER] Pushing artefact ${artefact.name}`);
+  public async pushArtifact(contract: ArtifactContract, _artifactPath: string) {
+    const artifact = contract.data.artifact;
+    console.log(`[WORKER] Pushing artifact ${artifact.name}`);
     // TODO
   }
 

@@ -1,6 +1,4 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import env from './env';
-import * as mockSdk from './mock-jellyfish-client-sdk';
 import { ActorCredentials, ArtifactContract, TaskContract } from './types';
 
 export default class Jellyfish {
@@ -10,9 +8,7 @@ export default class Jellyfish {
 	constructor(private apiUrl: string, private apiPrefix: string) {}
 
 	public async init() {
-		this.sdk = env.mockJfSdk
-			? await mockSdk.getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix })
-			: getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
+		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
 	}
 
 	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {
@@ -20,20 +16,22 @@ export default class Jellyfish {
 
 		// Get task stream, and await tasks
 		const taskStream = await this.getTaskStream(user.id);
-		taskStream.on('update', async (t: TaskContract) => {
-			try {
-				await taskHandler(t);
-			} catch(e) {
-				console.log(`[WORKER] ERROR occured during task processing: ${e}`);
-			}
-		});
+    taskStream.on('update', async (update: any) => {
+      if (update.data.after) {
+        try {
+          await taskHandler(update.data.after)
+        } catch(e) {
+          console.log(`[WORKER] ERROR occured during task processing: ${e}`);
+        }
+      }
+    });
 
 		taskStream.on('streamError', (error: Error) => {
 			console.error(error);
 		});
-		
+
 		// TODO: Need to define high level jf-worker protocol. I.e. support:
-		//  - Working signaling: 
+		//  - Working signaling:
 		// 		- ready for task
 		// 		- acceptance of task
 		// 		- rejection of task
@@ -90,7 +88,7 @@ export default class Jellyfish {
 		)) as ArtifactContract;
 		return newContract.id;
 	}
-	
+
 	public async markArtifactContractReady(contractId: string) {
 		const cardType = 'xxx'; //TODO: What should this be?
 		await this.sdk.card.update(contractId, cardType, [

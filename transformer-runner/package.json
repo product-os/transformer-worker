@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "node build/start.js",
     "clean": "rm -rf build",
     "build": "npm run clean && tsc --project tsconfig.json",
     "watch": "tsc --watch --project tsconfig.json",

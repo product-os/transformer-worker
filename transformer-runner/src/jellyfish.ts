@@ -3,7 +3,7 @@ import * as mockSdk from './mock-jellyfish-client-sdk';
 import { ActorCredentials, ArtifactContract, TaskContract } from "./types";
 
 const STANDARD_ARTIFACT_TYPE: string = 'tgz';
-const MOCK_JF_SDK = process.env.JF_API_PREFIX || true;
+const MOCK_JF_SDK = process.env.MOCK_JF_SDK;
 
 export default class Jellyfish {
     static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;

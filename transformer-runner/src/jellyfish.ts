@@ -32,27 +32,19 @@ export default class Jellyfish {
     }
     
     public async login(workerSlug: string, authToken: string) {
-        const snooze = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-        console.log('[WORKER] Logging in to jellyfish...');
-        while(true) {
-            try{
-                await this.sdk.setAuthToken(authToken);
-                const user = await this.sdk.auth.whoami();
-                if(user?.slug === workerSlug){
-                    console.log('[WORKER] Logged in, id ${');
-                    return user.id;
-                }else{
-                    console.error(`[WORKER] WARNING!! Unexpected user slug '${user?.slug}' received. Expected: '${workerSlug}'`);
-                }
-            }catch(e) {
-                console.log(e.stack);
-                await snooze(Jellyfish.LOGIN_RETRY_INTERVAL_SECS * 1000);
-            }
+        // TODO:
+        //  - retry
+        //  - reconnection
+        
+        await this.sdk.setAuthToken(authToken);
+        const user = await this.sdk.auth.whoami();
+        if(user?.slug === workerSlug){
+            console.log(`[WORKER] Logged in to JF, id ${user.id}`);
+            return user.id;
+        }else{
+            throw new Error(`Unexpected user slug '${user?.slug}' received. Expected: '${workerSlug}'`);
         }
     }
-    
-    // TODO: Handle reconnection.
     
     private async getTaskStream(workerId: string) {
         const schema ={

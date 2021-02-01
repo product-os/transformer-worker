@@ -4,7 +4,7 @@ import * as spawn from "@ahmadnassri/spawn-promise";
 
 export default class Registry {
   public readonly registryUrl: string;
-  private readonly docker: any;
+  public readonly docker: Docker;
 
   constructor(registryHost: string, registryPort?: string) {
     this.registryUrl = registryPort

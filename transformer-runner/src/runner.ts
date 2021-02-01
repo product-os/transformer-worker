@@ -1,6 +1,7 @@
 import Jellyfish from './jellyfish';
 import Registry from './registry';
 import type { ActorCredentials, TaskContract, InputManifest, OutputManifest } from './types';
+import { validateOutputManifest } from './validation';
 
 import * as fs from 'fs';
 import * as streams from 'memory-streams';
@@ -48,10 +49,10 @@ async function runTask(task: TaskContract) {
     const transformerExitCode = await runTransformer(task, transformerImageRef);
     
     // Validate output (status code, output artifact/contract)
-    await validateOutput(task, transformerExitCode);
+    const outputManifest = await validateOutput(task, transformerExitCode);
     
     // Push output
-    await pushOutput(task, actorCredentials);
+    await pushOutput(task, outputManifest, actorCredentials);
     
     // Finalize task
     await finalizeTask(task);
@@ -144,23 +145,34 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
     return output.StatusCode;
 }
 
-async function validateOutput(_task: TaskContract, _transformerExitCode: number) {
+async function validateOutput(task: TaskContract, transformerExitCode: number) {
     console.log(`[WORKER] Validating transformer output`);
-    // TODO:
-    //  Check exit code
-    //  Check output manifest
-    //  Check output artifact(s)
+    
+    if(transformerExitCode !== 0) {
+        throw new Error(`Transformer ${task.data.transformer.id} exited with non-zero status code: ${transformerExitCode}`);
+    }
+
+    const outputDir = getDir.output(task);
+    
+    let outputManifest;
+    try {
+        outputManifest = JSON.parse(
+            await fs.promises.readFile(path.join(outputDir, OUTPUT_MANIFEST_FILENAME), 'utf8')
+        ) as OutputManifest;
+    } catch(e) {
+        e.message = `Could not load output manifest: ${e.message}`;
+        throw(e);
+    }
+    
+    await validateOutputManifest(outputManifest, outputDir);
+    
+    return outputManifest;
 }
 
-async function pushOutput(task: TaskContract, _actorCredentials: ActorCredentials) {
+async function pushOutput(task: TaskContract, outputManifest: OutputManifest, _actorCredentials: ActorCredentials) {
     console.log(`[WORKER] Storing transformer output`);
     
     const outputDir = getDir.output(task);
-    
-    // Read output manifest
-    const outputManifest = JSON.parse(
-        await fs.promises.readFile(path.join(outputDir, OUTPUT_MANIFEST_FILENAME), 'utf8')
-    ) as OutputManifest;
     
     for (const result of outputManifest.results) {
         // Because storing an artifact requires an existing contract, 

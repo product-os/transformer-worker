@@ -2,6 +2,8 @@ import * as Docker from "dockerode";
 import type { ActorCredentials, ArtifactContract } from "./types";
 import * as spawn from "@ahmadnassri/spawn-promise";
 
+const isLocalRegistry = (registryUri: string) => !registryUri.includes(".");
+
 export default class Registry {
   public readonly registryUrl: string;
   public readonly docker: Docker;
@@ -58,10 +60,12 @@ export default class Registry {
     const artifact = contract.data.artifact;
     console.log(`[WORKER] Pulling artifact ${artifact.name}`);
     try {
-      const streams = await spawn(`oras`, [
-        `pull`,
-        `${this.registryUrl}/${artifact.name}:latest`,
-      ]);
+      let orasArgs = [`pull`, `${this.registryUrl}/${artifact.name}:latest`];
+      if (isLocalRegistry(this.registryUrl)) {
+        // this is a local name. therefore we allow http
+        orasArgs.push("--plain-http");
+      }
+      const streams = await spawn(`oras`, orasArgs);
       const output = streams.stdout.toString("utf8");
       console.log(streams.stderr.toString("utf8"));
       console.log(`* Oras output: ${output}`);

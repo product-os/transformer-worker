@@ -3,7 +3,6 @@ import Registry from './registry';
 import type { ActorCredentials, TaskContract, InputManifest, OutputManifest } from './types';
 
 import * as fs from 'fs';
-import * as Docker from 'dockerode';
 import * as streams from 'memory-streams';
 import * as path from 'path';
 
@@ -21,7 +20,6 @@ const OUTPUT_MANIFEST_FILENAME = 'output.json';
 const CONTRACT_FILENAME = 'contract.json';
 const ARTIFACT_FILENAME = 'artifact';
 
-const docker = new Docker();
 const jf = new Jellyfish(JF_API_URL, JF_API_PREFIX);
 const registry = new Registry(REGISTRY_HOST, REGISTRY_PORT);
 
@@ -103,6 +101,8 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
     
     const stdout = new streams.WritableStream();
     const stderr = new streams.WritableStream();
+    
+    const docker = registry.docker;
     
     const runResult = await docker.run(
         transformerImageRef,

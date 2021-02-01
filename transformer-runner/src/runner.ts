@@ -1,7 +1,7 @@
 import Jellyfish from './jellyfish';
 import Registry from './registry';
 import type { ActorCredentials, TaskContract, InputManifest, OutputManifest } from './types';
-import { validateOutputManifest } from './validation';
+import { validateTask, validateOutputManifest } from './validation';
 
 import * as fs from 'fs';
 import * as streams from 'memory-streams';
@@ -59,6 +59,9 @@ async function runTask(task: TaskContract) {
 }
 
 async function initTask(task: TaskContract) {
+    // Validate task (sanity check)
+    await validateTask(task);
+    
     // Create task input/output dirs
     await fs.promises.mkdir(getDir.input(task), { recursive: true });
     await fs.promises.mkdir(getDir.output(task), { recursive: true });

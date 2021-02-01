@@ -1,6 +1,29 @@
-import type { OutputManifest } from'./types';
+import type {OutputManifest, TaskContract} from './types';
 import * as fs from 'fs';
 import * as path from "path";
+
+export async function validateTask(task: TaskContract) {
+    const message = 'Task validation error: ';
+    if(!task?.id || task?.id === '') {
+        throw new Error(`${message} missing id`);
+    }
+    
+    if(!task?.data) {
+        throw new Error(`${message} missing data property`);
+    }
+
+    if(!task?.data?.actor || task?.id === '') {
+        throw new Error(`${message} missing actor property`);
+    }
+
+    if(!task?.data?.input) {
+        throw new Error(`${message} missing input contract`);
+    }
+
+    if(!task?.data?.transformer) {
+        throw new Error(`${message} missing transformer`);
+    }
+}
 
 export async function validateOutputManifest(m: OutputManifest, outputDir: string) {
     const message = 'Output manifest validation error: ';

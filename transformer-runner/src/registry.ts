@@ -1,100 +1,101 @@
-import * as Docker from "dockerode";
-import type { ActorCredentials, ArtifactContract } from "./types";
-import * as spawn from "@ahmadnassri/spawn-promise";
+import * as Docker from 'dockerode';
+import type { ActorCredentials, ArtifactContract } from './types';
+import * as spawn from '@ahmadnassri/spawn-promise';
 
-const isLocalRegistry = (registryUri: string) => !registryUri.includes(".");
+const isLocalRegistry = (registryUri: string) => !registryUri.includes('.');
 
 export default class Registry {
-  public readonly registryUrl: string;
-  public readonly docker: Docker;
+	public readonly registryUrl: string;
+	public readonly docker: Docker;
 
-  constructor(registryHost: string, registryPort?: string) {
-    this.registryUrl = registryPort
-      ? `${registryHost}:${registryPort}`
-      : registryHost;
-    this.docker = new Docker();
-  }
+	constructor(registryHost: string, registryPort?: string) {
+		this.registryUrl = registryPort
+			? `${registryHost}:${registryPort}`
+			: registryHost;
+		this.docker = new Docker();
+	}
 
-  public async pullTransformerImage(
-    transformerId: string,
-    actorCredentials: ActorCredentials
-  ) {
-    const transformerImageRef = `${this.registryUrl}/${transformerId}`;
-    console.log(`[WORKER] Pulling transformer ${transformerImageRef}`);
+	public async pullTransformerImage(
+		transformerId: string,
+		actorCredentials: ActorCredentials,
+	) {
+		const transformerImageRef = `${this.registryUrl}/${transformerId}`;
+		console.log(`[WORKER] Pulling transformer ${transformerImageRef}`);
 
-    const auth = {
-      username: actorCredentials.slug,
-      password: actorCredentials.sessionToken,
-      serveraddress: this.registryUrl,
-    };
+		const auth = {
+			username: actorCredentials.slug,
+			password: actorCredentials.sessionToken,
+			serveraddress: this.registryUrl,
+		};
 
-    await new Promise((resolve, reject) => {
-      this.docker.pull(
-        transformerImageRef,
-        { authconfig: auth },
-        (err: Error, stream: any) => {
-          if (err) {
-            console.error(err);
-            return reject(false);
-          }
-          this.docker.modem.followProgress(stream, onFinished, onProgress);
+		await new Promise((resolve, reject) => {
+			this.docker.pull(
+				transformerImageRef,
+				{ authconfig: auth },
+				(err: Error, stream: any) => {
+					if (err) {
+						console.error(err);
+						return reject(false);
+					}
+					this.docker.modem.followProgress(stream, onFinished, onProgress);
 
-          function onFinished(_err: Error, _output: any) {
-            return resolve(true);
-          }
+					function onFinished(_err: Error, _output: any) {
+						return resolve(true);
+					}
 
-          function onProgress(event: any) {
-            console.log(event.status);
-            if (event.hasOwnProperty("progress")) {
-              console.log(event.progress);
-            }
-          }
-        }
-      );
-    });
+					function onProgress(event: any) {
+						console.log(event.status);
+						if (event.hasOwnProperty('progress')) {
+							console.log(event.progress);
+						}
+					}
+				},
+			);
+		});
 
-    return transformerImageRef;
-  }
+		return transformerImageRef;
+	}
 
-  public async pullArtifact(contract: ArtifactContract, _destiDir: string) {
-    const artifact = contract.data.artifact;
-    console.log(`[WORKER] Pulling artifact ${artifact.name}`);
-    try {
-      let orasArgs = [`pull`, `${this.registryUrl}/${artifact.name}:latest`];
-      if (isLocalRegistry(this.registryUrl)) {
-        // this is a local name. therefore we allow http
-        orasArgs.push("--plain-http");
-      }
-      const streams = await spawn(`oras`, orasArgs);
-      const output = streams.stdout.toString("utf8");
-      console.log(streams.stderr.toString("utf8"));
-      console.log(`* Oras output: ${output}`);
-      const m = output.match(/Downloaded .* (.*)/);
-      if (m[1]) {
-        return m[1];
-      } else {
-        throw new Error(
-          "[ERROR] Could not determine what was pulled from the registry"
-        );
-      }
-    } catch (e) {
-      this.logErrorAndThrow(e);
-    }
-  }
+	public async pullArtifact(contract: ArtifactContract, _destiDir: string) {
+		console.log(`[WORKER] Pulling artifact ${contract.slug}`);
+		try {
+			let orasArgs = [
+				`pull`,
+				`${this.registryUrl}/${contract.slug}:${contract.version}`,
+			];
+			if (isLocalRegistry(this.registryUrl)) {
+				// this is a local name. therefore we allow http
+				orasArgs.push('--plain-http');
+			}
+			const streams = await spawn(`oras`, orasArgs);
+			const output = streams.stdout.toString('utf8');
+			console.log(streams.stderr.toString('utf8'));
+			console.log(`* Oras output: ${output}`);
+			const m = output.match(/Downloaded .* (.*)/);
+			if (m[1]) {
+				return m[1];
+			} else {
+				throw new Error(
+					'[ERROR] Could not determine what was pulled from the registry',
+				);
+			}
+		} catch (e) {
+			this.logErrorAndThrow(e);
+		}
+	}
 
-  public async pushArtifact(contract: ArtifactContract, _artifactPath: string) {
-    const artifact = contract.data.artifact;
-    console.log(`[WORKER] Pushing artifact ${artifact.name}`);
-    // TODO
-  }
+	public async pushArtifact(contract: ArtifactContract, _artifactPath: string) {
+		console.log(`[WORKER] Pushing artifact ${contract.slug}`);
+		// TODO
+	}
 
-  private logErrorAndThrow = (e: any) => {
-    if (e.spawnargs) {
-      console.error(e.spawnargs);
-      console.error(e.stderr.toString("utf8"));
-    } else {
-      console.error(e);
-    }
-    throw e;
-  };
+	private logErrorAndThrow = (e: any) => {
+		if (e.spawnargs) {
+			console.error(e.spawnargs);
+			console.error(e.stderr.toString('utf8'));
+		} else {
+			console.error(e);
+		}
+		throw e;
+	};
 }

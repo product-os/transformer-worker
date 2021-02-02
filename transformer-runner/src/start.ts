@@ -1,4 +1,4 @@
-import * as runner from "./runner";
+import * as runner from './runner';
 
 /*
  * Entry point for transformer runner node app.

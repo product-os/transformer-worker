@@ -8,7 +8,8 @@
     "build": "npm run clean && tsc --project tsconfig.json",
     "watch": "tsc --watch --project tsconfig.json",
     "livepush": "nodemon --watch src -e js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts",
-    "test": "jest --coverage --verbose"
+    "test": "jest --coverage --verbose",
+    "lint-fix": "balena-lint --typescript --fix src tests"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -21,6 +22,7 @@
     "tar": "^6.0.5"
   },
   "devDependencies": {
+    "@balena/lint": "^5.4.0",
     "@types/dockerode": "^3.2.1",
     "@types/node": "^14.0.27",
     "@types/rewire": "^2.5.28",

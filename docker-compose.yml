@@ -16,16 +16,8 @@ services:
   # The registry is needed for dev only
   registry:
     image: "registry:2.7.1"
-    cap_add:
-      - SYS_RESOURCE
-      - SYS_ADMIN
-    security_opt:
-      - "apparmor:unconfined"
     volumes:
       - "registry-data:/data"
-    tmpfs:
-      - /run
-      - /sys/fs/cgroup
 
 volumes:
   registry-data: {}

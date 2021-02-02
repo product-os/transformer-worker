@@ -81,7 +81,10 @@ async function prepareInput(
 	const inputManifest: InputManifest = {
 		input: {
 			contract: inputContract,
-			artifactPath: env.artifactFilename,
+			// this should actually be a directory, probably named like the input.slug, as ORAS provides filesystem trees
+			// also we cannot actually know the filename(s), so there should probably a contract-type
+			// dependent convention on directory/file structure...
+			artifactPath: env.artifactFilename, 
 		},
 	};
 	const manifestJson = JSON.stringify(inputManifest, null, 4);
@@ -96,6 +99,7 @@ async function pullTransformer(
 	task: TaskContract,
 	actorCredentials: ActorCredentials,
 ) {
+	// why ID and not slug+version?
 	const transformerId = task.data.transformer.id;
 	console.log(`[WORKER] Pulling transformer ${transformerId}`);
 	const transformerImageRef = await registry.pullTransformerImage(
@@ -205,11 +209,13 @@ async function pushOutput(
 		const outputContract = result.contract;
 		const outputContractId = await jf.storeArtifactContract(outputContract);
 
-		// Store output artifact
-		await registry.pushArtifact(
-			outputContract,
-			path.join(outputDir, env.contractFilename),
-		);
+		if (result.artifactPath) {
+			// Store output artifact
+			await registry.pushArtifact(
+				outputContract,
+				path.join(outputDir, env.contractFilename),
+			);
+		}
 
 		// Update output contract
 		await jf.updateArtifactContract(outputContractId!);
@@ -221,6 +227,7 @@ async function finalizeTask(task: TaskContract) {
 	await fs.promises.rmdir(getDir.input(task), { recursive: true });
 	await fs.promises.rmdir(getDir.output(task), { recursive: true });
 
+	// TODO: tell JF that the task is done
 	console.log(`[WORKER] Task ${task.slug} completed successfully`);
 }
 

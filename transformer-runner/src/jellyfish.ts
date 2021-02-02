@@ -20,6 +20,7 @@ export default class Jellyfish {
 
 		// Get task stream, and await tasks
 		const taskStream = await this.getTaskStream(user.id);
+		// how does this actually work? Could two tasks run in parallel?
 		taskStream.on('update', async (t: TaskContract) => {
 			try {
 				await taskHandler(t);
@@ -53,7 +54,7 @@ export default class Jellyfish {
 	private async getTaskStream(workerId: string) {
 		const schema = {
 			$$links: {
-				'is owned by': {
+				'is owned by': { // 'is assigned to' might be better
 					type: 'object',
 					properties: {
 						id: {
@@ -67,6 +68,7 @@ export default class Jellyfish {
 				type: {
 					const: 'task@1.0.0',
 				},
+				// TODO add something like state==TODO, so we filter out DONE tasks
 			},
 		};
 
@@ -110,7 +112,8 @@ export default class Jellyfish {
 
 	public async getActorCredentials(actorId: string) {
 		return {
-			slug: await this.getActorSlugFromActorId(actorId),
+			// why would we get the actor ID and not the slug?
+			slug: await this.getActorSlugFromActorId(actorId), 
 			sessionToken: await this.getSessionTokenFromActorId(actorId),
 		} as ActorCredentials;
 	}
@@ -121,6 +124,7 @@ export default class Jellyfish {
 	}
 
 	private async getSessionTokenFromActorId(actorId: string) {
+		// why will this actually work? Is the actor somehow linked to the worker as part of some TBD JF process?
 		const actorSessionCard = await this.sdk.card.create({
 			type: 'session@1.0.0',
 			data: {

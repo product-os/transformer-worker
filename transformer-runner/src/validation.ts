@@ -34,6 +34,7 @@ export async function validateOutputManifest(
 		throw new Error(`${message} missing results array`);
 	}
 
+	// shouldn't this be valid? no results == stop endless loop?
 	if (m.results.length < 1) {
 		throw new Error(`${message} empty results array`);
 	}

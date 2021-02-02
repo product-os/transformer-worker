@@ -15,12 +15,18 @@ export default class Jellyfish {
 			: getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
 	}
 
-	public async listenForTasks(taskHandler: (task: TaskContract) => void) {
+	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {
 		const user = await this.sdk.auth.whoami();
 
 		// Get task stream, and await tasks
 		const taskStream = await this.getTaskStream(user.id);
-		taskStream.on('update', taskHandler);
+		taskStream.on('update', async (t: TaskContract) => {
+			try {
+				await taskHandler(t);
+			} catch(e) {
+				console.log(`[WORKER] ERROR occured during task processing: ${e}`);
+			}
+		});
 
 		taskStream.on('streamError', (error: Error) => {
 			console.error(error);

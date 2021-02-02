@@ -1,15 +1,17 @@
-FROM golang as go
-
-RUN git clone https://github.com/deislabs/oras.git \
- && export PATH=$PATH:/usr/src/go/bin && cd ./oras/cmd/oras \
- && go build -v -o /usr/bin/oras
-
-FROM node:lts
-
+FROM golang:1.15.7-alpine as oras-base
 WORKDIR /usr/src/app
-CMD ["./entrypoint.sh"]
+RUN apk add --no-cache git
+RUN git clone https://github.com/deislabs/oras.git \
+  && cd ./oras/cmd/oras && git checkout 96cd90423303f1bb42bd043cb4c36085e6e91e8e  \
+  && go build -v -o /usr/bin/oras
 
-COPY --from=go /usr/bin/oras /usr/bin/oras
+# this can be replaced with the oficial image after https://github.com/docker-library/docker/pull/290 lands
+FROM hades32/docker:dind-alpine-3.13
+ARG NPM_TOKEN
+WORKDIR /usr/src/app
+COPY --from=oras-base /usr/bin/oras /usr/bin/oras
+
+RUN apk add --no-cache tini curl nodejs npm docker-cli nano jq
 
 COPY ./package*.json ./
 ARG NPM_TOKEN
@@ -21,4 +23,7 @@ COPY tsconfig.json ./tsconfig.json
 COPY entrypoint.sh ./entrypoint.sh
 COPY typings.d.ts ./typings.d.ts
 
+RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000"]}' >> /etc/docker/daemon.json
+
 RUN npm run build
+ENTRYPOINT ["/sbin/tini", "--", "./entrypoint.sh"]

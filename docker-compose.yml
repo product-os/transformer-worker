@@ -19,6 +19,16 @@ services:
     volumes:
       - "registry-data:/data"
 
+  dev-artifact-provider:
+    build: ./dev-artifact-provider
+    restart: 'no'
+    privileged: true
+    environment:
+      REGISTRY_HOST: "registry"
+      REGISTRY_PORT: "5000"
+    depends_on:
+      - registry
+
 volumes:
   registry-data: {}
   garbage-collector: {}

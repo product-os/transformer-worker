@@ -81,7 +81,7 @@ async function prepareInput(
 	const inputManifest: InputManifest = {
 		input: {
 			contract: inputContract,
-			artifactPath: env.artifactFilename,
+			artifactPath: env.artifactFilename, // TODO: Change to dir, not folder
 		},
 	};
 	const manifestJson = JSON.stringify(inputManifest, null, 4);
@@ -96,6 +96,7 @@ async function pullTransformer(
 	task: TaskContract,
 	actorCredentials: ActorCredentials,
 ) {
+	// TODO: Check why using id, and not slug+version
 	const transformerId = task.data.transformer.id;
 	console.log(`[WORKER] Pulling transformer ${transformerId}`);
 	const transformerImageRef = await registry.pullTransformerImage(
@@ -197,22 +198,24 @@ async function pushOutput(
 		// Because storing an artifact requires an existing contract,
 		// but a contact may trigger another transformer,
 		// this must be done in following order:
-		// - store output contract (should_trigger: false)
+		// - store output contract (artifactReady: false)
 		// - push artifact
-		// - update output contract (should_trigger_true)
+		// - update output contract (artifactReady: true)
 
 		// Store output contract
 		const outputContract = result.contract;
 		const outputContractId = await jf.storeArtifactContract(outputContract);
 
-		// Store output artifact
-		await registry.pushArtifact(
-			outputContract,
-			path.join(outputDir, env.contractFilename),
-		);
+		if (result.artifactPath) {
+			// Store output artifact
+			await registry.pushArtifact(
+				outputContract,
+				path.join(outputDir, env.contractFilename),
+			);
+		}
 
-		// Update output contract
-		await jf.updateArtifactContract(outputContractId!);
+		// Mark contract as ready
+		await jf.markArtifactContractReady(outputContractId!);
 	}
 }
 
@@ -220,11 +223,13 @@ async function finalizeTask(task: TaskContract) {
 	// Delete input/output dir
 	await fs.promises.rmdir(getDir.input(task), { recursive: true });
 	await fs.promises.rmdir(getDir.output(task), { recursive: true });
+	
+	// TODO: Signal JF task complete
 
 	console.log(`[WORKER] Task ${task.slug} completed successfully`);
 }
 
-export const getDir = {
+const getDir = {
 	input: (task: TaskContract) => path.join(env.inputDir, `task-${task.id}`),
 	output: (task: TaskContract) => path.join(env.outputDir, `task-${task.id}`),
 };

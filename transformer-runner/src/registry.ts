@@ -56,7 +56,7 @@ export default class Registry {
 		return transformerImageRef;
 	}
 
-	public async pullArtifact(contract: ArtifactContract, _destiDir: string) {
+	public async pullArtifact(contract: ArtifactContract, destDir: string) {
 		console.log(`[WORKER] Pulling artifact ${contract.slug}`);
 		try {
 			let orasArgs = [
@@ -67,7 +67,7 @@ export default class Registry {
 				// this is a local name. therefore we allow http
 				orasArgs.push('--plain-http');
 			}
-			const streams = await spawn(`oras`, orasArgs);
+			const streams = await spawn(`oras`, orasArgs, { cwd: destDir });
 			const output = streams.stdout.toString('utf8');
 			console.log(streams.stderr.toString('utf8'));
 			console.log(`* Oras output: ${output}`);

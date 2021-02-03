@@ -31,6 +31,13 @@ export default class Jellyfish {
 		taskStream.on('streamError', (error: Error) => {
 			console.error(error);
 		});
+		
+		// TODO: Need to define high level jf-worker protocol. I.e. support:
+		//  - Working signaling: 
+		// 		- ready for task
+		// 		- acceptance of task
+		// 		- rejection of task
+		// 		- completion of task
 	}
 
 	public async login(workerSlug: string, authToken: string) {
@@ -51,6 +58,7 @@ export default class Jellyfish {
 	}
 
 	private async getTaskStream(workerId: string) {
+		// TODO: Check this schema with Lucian
 		const schema = {
 			$$links: {
 				'is owned by': {
@@ -82,32 +90,19 @@ export default class Jellyfish {
 		)) as ArtifactContract;
 		return newContract.id;
 	}
-
-	// TODO:
-	//  Why do we need to set artifact type and name here?
-	public async updateArtifactContract(contractId: string) {
-		//}, artifactType: string, artifactName: string) {
-		await this.sdk.card.update(contractId, env.standardArtifactType, [
-			/*
-            {
-                op: 'replace',
-                path: '/data/artifact/type',
-                value: artifactType
-            },
-            {
-                op: 'replace',
-                path: '/data/artifact/name',
-                value: artifactName
-            },
-             */
+	
+	public async markArtifactContractReady(contractId: string) {
+		const cardType = 'xxx'; //TODO: What should this be?
+		await this.sdk.card.update(contractId, cardType, [
 			{
 				op: 'replace',
-				path: '/data/artifact_ready',
+				path: '/data/artifactReady',
 				value: true,
 			},
 		]);
 	}
 
+	// TODO: Check why we are using id and not slug
 	public async getActorCredentials(actorId: string) {
 		return {
 			slug: await this.getActorSlugFromActorId(actorId),

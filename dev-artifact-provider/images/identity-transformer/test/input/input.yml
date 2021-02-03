@@ -1,0 +1,9 @@
+input:
+  contract:
+    slug: a-nodejs-service-source
+    type: product-os.fake-input
+    version: 1.0.0
+    data:
+      test:
+        name: a-nodejs-service
+  artifactPath: sub

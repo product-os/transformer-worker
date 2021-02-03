@@ -1,0 +1,30 @@
+{
+	"compilerOptions": {
+		"lib": [
+			"ES2020"
+		],
+		"module": "commonjs",
+		"target": "es2020",
+		"noImplicitAny": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"preserveConstEnums": true,
+		"removeComments": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strictNullChecks": true,
+		"strictBindCallApply": true,
+		"skipLibCheck": true,
+		"outDir": "dist"
+	},
+	"include": [
+		"bin/**/*.ts",
+		"src/**/*.ts",
+		"test/**/*.ts",
+		"typings/**/*.d.ts",
+		"*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}

@@ -59,18 +59,11 @@ export default class Registry {
 	public async pullArtifact(contract: ArtifactContract, destDir: string) {
 		console.log(`[WORKER] Pulling artifact ${contract.slug}`);
 		try {
-			let orasArgs = [
+			const output = await this.runOrasCommand( [
 				`pull`,
 				`${this.registryUrl}/${contract.slug}:${contract.version}`,
-			];
-			if (isLocalRegistry(this.registryUrl)) {
-				// this is a local name. therefore we allow http
-				orasArgs.push('--plain-http');
-			}
-			const streams = await spawn(`oras`, orasArgs, { cwd: destDir });
-			const output = streams.stdout.toString('utf8');
-			console.log(streams.stderr.toString('utf8'));
-			console.log(`* Oras output: ${output}`);
+			], { cwd: destDir });
+
 			const m = output.match(/Downloaded .* (.*)/);
 			if (m[1]) {
 				return m[1];
@@ -84,9 +77,29 @@ export default class Registry {
 		}
 	}
 
-	public async pushArtifact(contract: ArtifactContract, _artifactPath: string) {
+	public async pushArtifact(contract: ArtifactContract, artifactPath: string) {
 		console.log(`[WORKER] Pushing artifact ${contract.slug}`);
-		// TODO
+		try {
+			await this.runOrasCommand( [
+				`push`,
+				`${this.registryUrl}/${contract.slug}:${contract.version}`,
+				artifactPath,
+			]);
+		} catch (e) {
+			this.logErrorAndThrow(e);
+		}
+	}
+	
+	private async runOrasCommand(args: string[], options: any = {}) {
+		if (isLocalRegistry(this.registryUrl)) {
+			// this is a local name. therefore we allow http
+			args.push('--plain-http');
+		}
+		console.log(`Oras command: \n${args.concat(' ')}`);
+		const streams = await spawn(`oras`, args, options);
+		const output = streams.stdout.toString('utf8');
+		console.log(`Oras output: ${output}`);
+		return output;
 	}
 
 	private logErrorAndThrow = (e: any) => {

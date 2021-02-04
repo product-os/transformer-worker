@@ -9,7 +9,9 @@ services:
     environment:
       REGISTRY_HOST: "registry"
       REGISTRY_PORT: "5000"
-      MOCK_JF_SDK: "true"
+      WORKER_JF_TOKEN: "foobar"
+      JF_API_URL: "http://jellyfish-mock:3000"
+      JF_API_PREFIX: "api/v2"
 
   # The registry is needed for dev only
   registry:
@@ -25,6 +27,10 @@ services:
       REGISTRY_PORT: "5000"
     depends_on:
       - registry
+
+  # The jellyfish mock is needed for dev only
+  jellyfish-mock:
+    build: ./jellyfish-mock
 
 volumes:
   registry-data: {}

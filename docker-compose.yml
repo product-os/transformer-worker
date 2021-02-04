@@ -21,7 +21,6 @@ services:
 
   dev-artifact-provider:
     build: ./dev-artifact-provider
-    restart: 'no'
     privileged: true
     environment:
       REGISTRY_HOST: "registry"

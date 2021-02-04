@@ -6,7 +6,7 @@ RUN git clone https://github.com/deislabs/oras.git \
   && go build -v -o /usr/bin/oras
 
 # this can be replaced with the oficial image after https://github.com/docker-library/docker/pull/290 lands
-FROM hades32/docker:dind-alpine-3.13
+FROM docker:dind
 
 WORKDIR /usr/src/app
 

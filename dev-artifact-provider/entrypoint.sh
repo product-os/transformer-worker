@@ -1,12 +1,18 @@
 #!/bin/bash -e
 
-if [ -f done.marker ]; then
+
+if [ -f done.marker  ]; then
 	echo "already done importing artifacts"
-	sleep 1000
+	tail -f /dev/null
 fi
 
-echo "starting docker-in-docker"
-dockerd & sleep 5
+ps -a | grep 'docker'
+has_daemon_running=$?
+
+if [ -z "$has_daemon_running" ]; then
+	echo "starting docker-in-docker";
+	dockerd & sleep 5;
+fi
 
 echo "start importing artifacts"
 
@@ -38,3 +44,5 @@ popd
 echo "finished importing artifacts"
 
 touch done.marker
+
+tail -f /dev/null

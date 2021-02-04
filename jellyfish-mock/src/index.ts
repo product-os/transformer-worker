@@ -107,7 +107,31 @@ app.post('/api/v2/action', async (request, response) => {
         timestamp: new Date().toISOString()
       })
     }
+    else if (payload.card === 'product-os.fake-output') {
+      return response.status(200).json({
+        error: false,
+        data: {
+          id: 'c576c994-56be-4a9a-af43-67541ff37843',
+          slug: 'product-os.fake-output-12345',
+          type: 'product-os.fake-output',
+          version: '1.0.0'
+        },
+        timestamp: new Date().toISOString()
+      })
+    }
   }
+  else if (payload.action === 'action-update-card@1.0.0') {
+    if (payload.type === 'product-os.fake-output') {
+      return response.status(200).json({
+        error: false,
+        data: {
+          //???
+        },
+        timestamp: new Date().toISOString()
+      })
+    }
+  }
+  console.log("unexpected action:", payload);
   return response.sendStatus(501)
 })
 
@@ -140,7 +164,7 @@ app.post('/api/v2/signup', async (_request, response) => {
 
 const socketServer = socketIo(server, {
   pingTimeout: 60000,
-  transports: [ 'websocket', 'polling' ]
+  transports: ['websocket', 'polling']
 })
 
 socketServer.on('connection', (socket: any) => {

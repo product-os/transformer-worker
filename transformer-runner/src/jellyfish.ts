@@ -90,8 +90,7 @@ export default class Jellyfish {
 		return newContract.id;
 	}
 
-	public async markArtifactContractReady(contractId: string) {
-		const cardType = 'xxx'; //TODO: What should this be?
+	public async markArtifactContractReady(contractId: string, cardType: string) {
 		await this.sdk.card.update(contractId, cardType, [
 			{
 				op: 'replace',

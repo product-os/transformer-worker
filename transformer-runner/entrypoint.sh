@@ -9,4 +9,14 @@ export WORKER_JF_TOKEN="${WORKER_JF_TOKEN:-$TOKEN}"
 
 export WORKER_SLUG="transformer-worker-${BALENA_DEVICE_UUID}"
 
-dockerd &> dockerd-output.log & sleep 1 && npm start
+(
+    while true; do
+        rm -f /var/run/docker.pid
+        dockerd
+        echo "ERROR dockerd exited! Will retry"
+        sleep 1
+    done
+)& 
+
+sleep 2
+npm start

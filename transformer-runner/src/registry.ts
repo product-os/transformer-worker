@@ -1,6 +1,7 @@
 import * as Docker from 'dockerode';
 import type { ActorCredentials, ArtifactContract } from './types';
 import * as spawn from '@ahmadnassri/spawn-promise';
+import * as fs from 'fs';
 
 const isLocalRegistry = (registryUri: string) => !registryUri.includes('.');
 
@@ -16,10 +17,10 @@ export default class Registry {
 	}
 
 	public async pullTransformerImage(
-		transformerId: string,
+		transformerImageReference: string,
 		actorCredentials: ActorCredentials,
 	) {
-		const transformerImageRef = `${this.registryUrl}/${transformerId}`;
+		const transformerImageRef = `${this.registryUrl}/${transformerImageReference}`;
 		console.log(`[WORKER] Pulling transformer ${transformerImageRef}`);
 
 		const auth = {
@@ -58,6 +59,7 @@ export default class Registry {
 
 	public async pullArtifact(contract: ArtifactContract, destDir: string) {
 		console.log(`[WORKER] Pulling artifact ${contract.slug}`);
+		await fs.promises.mkdir(destDir, { recursive: true });
 		try {
 			const output = await this.runOrasCommand( [
 				`pull`,
@@ -80,11 +82,13 @@ export default class Registry {
 	public async pushArtifact(contract: ArtifactContract, artifactPath: string) {
 		console.log(`[WORKER] Pushing artifact ${contract.slug}`);
 		try {
-			await this.runOrasCommand( [
+			const artifacts = await  fs.promises.readdir(artifactPath);
+			const orasCmd = [
 				`push`,
 				`${this.registryUrl}/${contract.slug}:${contract.version}`,
-				artifactPath,
-			]);
+				...artifacts
+			];
+			await this.runOrasCommand(orasCmd, { cwd: artifactPath });
 		} catch (e) {
 			this.logErrorAndThrow(e);
 		}

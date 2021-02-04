@@ -4,6 +4,8 @@ import path = require('path');
 import * as util from 'util';
 import * as YAML from 'yaml';
 
+console.log("identity transformer CREATE starting");
+
 const getEnvOrFail = (envVar: string) => {
   const env = process.env[envVar];
   if (!env) {
@@ -19,6 +21,15 @@ const inputPath = getEnvOrFail('INPUT');
 
 const inDir = path.dirname(inputPath);
 const outDir = path.dirname(outputPath);
+
+if (!fs.existsSync(inDir)) {
+  console.log("in-dir does not exist");
+  process.exit(1);
+}
+if (!fs.existsSync(inputPath)) {
+  console.log("in-path does not exist");
+  process.exit(1);
+}
 
 type InContract = {
   slug: string

@@ -1,4 +1,4 @@
-export default {
+export default { 
   "id": "5ea68e0d-61c6-4cb6-be89-52db6045b586",
   "data": {
     "actor": "9ad5349e-4fd8-413f-84de-ae9287feca5c",
@@ -8,9 +8,9 @@ export default {
         "artifactReady": true
       },
       "name": null,
-      "slug": "image-source-e127084d-b9fb-486a-8c18-d28c02eaa1cf",
+      "slug": "product-os.fake-input-020c1a70-6b26-4a8f-b50b-0888e72ef6c5",
       "tags": [],
-      "type": "image-source@1.0.0",
+      "type": "product-os.fake-input",  
       "links": {},
       "active": true,
       "markers": [],
@@ -20,7 +20,7 @@ export default {
         "has attached element": "2021-01-04T15:24:23.963Z"
       },
       "created_at": "2020-12-22T15:49:58.263Z",
-      "updated_at": "2021-01-04T15:24:23.780Z",
+      "updated_at": "2021-01-04T15:24:33.780Z",
       "capabilities": []
     },
     "transformer": {
@@ -73,8 +73,8 @@ export default {
         },
         "workerFilter": {}
       },
-      "name": "source-to-image create lambda",
-      "slug": "source-to-image-create",
+      "name": "fake-in to fake-out",
+      "slug": "identity-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
       "tags": [],
       "type": "transformer@1.0.0",
       "links": {},

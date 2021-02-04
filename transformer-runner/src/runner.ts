@@ -12,6 +12,7 @@ import * as fs from 'fs';
 import * as streams from 'memory-streams';
 import * as path from 'path';
 import env from './env';
+import { ContainerCreateOptions } from 'dockerode';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -72,16 +73,18 @@ async function prepareInput(
 	console.log(`[WORKER] Preparing transformer input`);
 
 	const inputDir = getDir.input(task);
+	const inputArtifactDir = path.join(getDir.input(task), env.artifactFilename);
+
 	const inputContract = task.data.input;
 
 	// Add input artifact
-	await registry.pullArtifact(inputContract, inputDir);
+	await registry.pullArtifact(inputContract, inputArtifactDir);
 
 	// Add input manifest
 	const inputManifest: InputManifest = {
 		input: {
 			contract: inputContract,
-			artifactPath: env.artifactFilename, // TODO: Change to dir, not folder
+			artifactPath: env.artifactFilename
 		},
 	};
 	const manifestJson = JSON.stringify(inputManifest, null, 4);
@@ -97,10 +100,11 @@ async function pullTransformer(
 	actorCredentials: ActorCredentials,
 ) {
 	// TODO: Check why using id, and not slug+version
-	const transformerId = task.data.transformer.id;
-	console.log(`[WORKER] Pulling transformer ${transformerId}`);
+	const { slug, version } = task.data.transformer
+	const transformerImageReference = `${slug}:${version}`;
+	console.log(`[WORKER] Pulling transformer ${transformerImageReference}`);
 	const transformerImageRef = await registry.pullTransformerImage(
-		transformerId!,
+		transformerImageReference,
 		actorCredentials,
 	);
 
@@ -121,28 +125,22 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 		[stdout, stderr],
 		{
 			Tty: false,
-			Env: {
-				INPUT: `/input/${env.inputManifestFilename}`,
-				OUTPUT: `/output/${env.outputManifestFilename}`,
+			Env: [
+				`INPUT=/input/${env.inputManifestFilename}`,
+				`OUTPUT=/output/${env.outputManifestFilename}`,
+			],
+			Volumes: {
+				'/input/': {},
+				'/output/': {},
 			},
 			HostConfig: {
 				Privileged: true,
+				Binds: [
+					`${path.resolve(getDir.input(task))}:/input/:ro`,
+					`${path.resolve(getDir.output(task))}:/output/`,
+				]
 			},
-			Mounts: [
-				{
-					Type: 'bind',
-					Source: path.resolve(getDir.input(task)),
-					Destination: '/input',
-					RW: false,
-				},
-				{
-					Type: 'bind',
-					Source: path.resolve(getDir.output(task)),
-					Destination: '/output',
-					RW: true,
-				},
-			],
-		},
+		} as ContainerCreateOptions,
 	);
 
 	// What to do with stdout/stderr?  For now, leaving as it was
@@ -210,12 +208,12 @@ async function pushOutput(
 			// Store output artifact
 			await registry.pushArtifact(
 				outputContract,
-				path.join(outputDir, env.contractFilename),
+				path.join(outputDir, env.artifactFilename),
 			);
 		}
 
 		// Mark contract as ready
-		await jf.markArtifactContractReady(outputContractId!);
+		await jf.markArtifactContractReady(outputContractId!, outputContract.type);
 	}
 }
 
@@ -223,7 +221,7 @@ async function finalizeTask(task: TaskContract) {
 	// Delete input/output dir
 	await fs.promises.rmdir(getDir.input(task), { recursive: true });
 	await fs.promises.rmdir(getDir.output(task), { recursive: true });
-	
+
 	// TODO: Signal JF task complete
 
 	console.log(`[WORKER] Task ${task.slug} completed successfully`);

@@ -1,10 +1,5 @@
 #!/bin/bash -e
 
-if [ -f done.marker  ]; then
-	echo "already done importing artifacts"
-	tail -f /dev/null
-fi
-
 set +e
 ps -a | grep '[d]ockerd'
 has_daemon_running=$?
@@ -12,6 +7,7 @@ set -e
 
 if [ -n $has_daemon_running ]; then
 	echo "starting docker-in-docker";
+	rm -f /var/run/docker.pid # might happen during live-push
 	dockerd & 
 	sleep 5
 fi
@@ -44,7 +40,5 @@ popd
 
 
 echo "finished importing artifacts"
-
-touch done.marker
 
 tail -f /dev/null

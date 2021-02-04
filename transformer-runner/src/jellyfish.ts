@@ -2,6 +2,7 @@ import { getSdk } from '@balena/jellyfish-client-sdk';
 import env from './env';
 import * as mockSdk from './mock-jellyfish-client-sdk';
 import { ActorCredentials, ArtifactContract, TaskContract } from './types';
+import * as _ from 'lodash';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -84,7 +85,7 @@ export default class Jellyfish {
 	public async storeArtifactContract(contract: ArtifactContract) {
 		// Set as draft,
 		// so as not to trigger other transformers before artifact ready
-		contract.data.artifactReady = true;
+		_.set(contract, "data.artifactReady", false);
 		const newContract = (await this.sdk.card.create(
 			contract,
 		)) as ArtifactContract;

@@ -6,8 +6,6 @@ services:
     privileged: true
     volumes:
       - shared:/shared
-    labels:
-      io.balena.features.supervisor-api: '1'
     environment:
       REGISTRY_HOST: "registry"
       REGISTRY_PORT: "5000"

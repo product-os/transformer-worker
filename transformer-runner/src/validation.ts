@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export async function validateTask(task: TaskContract) {
+	// this could be simplified with e.g. https://github.com/PicnicSupermarket/aegis
 	const message = 'Task validation error: ';
 	if (!task?.id || task?.id === '') {
 		throw new Error(`${message} missing id`);

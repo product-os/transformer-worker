@@ -5,6 +5,7 @@ import type {
 	TaskContract,
 	InputManifest,
 	OutputManifest,
+	Contract,
 } from './types';
 import { validateTask, validateOutputManifest } from './validation';
 
@@ -21,6 +22,8 @@ const directory = {
 	input: (task: TaskContract) => path.join(env.inputDir, `task-${task.id}`),
 	output: (task: TaskContract) => path.join(env.outputDir, `task-${task.id}`),
 };
+
+const createArtifactReference = ({ slug, version }: Contract) => `${slug}:${version}`;
 
 export async function initializeRunner() {
 	console.log(`[WORKER] ${env.workerSlug} starting...`);
@@ -41,19 +44,19 @@ async function finalizeTask(task: TaskContract) {
 	return task;
 }
 
-async function prepareWorkspace(task: TaskContract) {
+async function prepareWorkspace(task: TaskContract, credentials: ActorCredentials) {
 	console.log(`[WORKER] Preparing transformer workspace`);
-
-	await fs.promises.mkdir(directory.input(task), { recursive: true });
-	await fs.promises.mkdir(directory.output(task), { recursive: true });
 
 	const inputArtifactDir = path.join(
 		directory.input(task),
 		env.artifactDirectoryName,
 	);
-	const inputContract = task.data.input;
 
-	await registry.pullArtifact(inputContract, inputArtifactDir);
+	await fs.promises.mkdir(inputArtifactDir, { recursive: true });
+	await fs.promises.mkdir(directory.output(task), { recursive: true });
+
+	const inputContract = task.data.input;
+	await registry.pullArtifact(createArtifactReference(inputContract), inputArtifactDir, { user: credentials.slug, password: credentials.sessionToken });
 
 	// Add input manifest
 	const inputManifest: InputManifest = {
@@ -74,13 +77,11 @@ async function pullTransformer(
 	task: TaskContract,
 	actorCredentials: ActorCredentials,
 ) {
-	// TODO: Check why using id, and not slug+version
-	const { slug, version } = task.data.transformer;
-	const transformerImageReference = `${slug}:${version}`;
+	const transformerImageReference = createArtifactReference(task.data.transformer);
 	console.log(`[WORKER] Pulling transformer ${transformerImageReference}`);
-	const transformerImageRef = await registry.pullTransformerImage(
+	const transformerImageRef = await registry.pullImage(
 		transformerImageReference,
-		actorCredentials,
+		{ user: actorCredentials.slug, password: actorCredentials.sessionToken },
 	);
 
 	return transformerImageRef;
@@ -161,7 +162,7 @@ async function validateOutput(task: TaskContract, transformerExitCode: number) {
 async function pushOutput(
 	task: TaskContract,
 	outputManifest: OutputManifest,
-	_actorCredentials: ActorCredentials,
+	actorCredentials: ActorCredentials,
 ) {
 	console.log(`[WORKER] Storing transformer output`);
 
@@ -183,8 +184,9 @@ async function pushOutput(
 		if (result.artifactPath) {
 			// Store output artifact
 			await registry.pushArtifact(
-				outputContract,
+				createArtifactReference(outputContract),
 				path.join(outputDir, env.artifactDirectoryName),
+				{ user: actorCredentials.slug, password: actorCredentials.sessionToken }
 			);
 		}
 
@@ -195,8 +197,6 @@ async function pushOutput(
 async function cleanupWorkspace(task: TaskContract) {
 	await fs.promises.rmdir(directory.input(task), { recursive: true });
 	await fs.promises.rmdir(directory.output(task), { recursive: true });
-
-	console.log(`[WORKER] Task ${task.slug} completed successfully`);
 }
 
 async function runTask(task: TaskContract) {
@@ -209,7 +209,7 @@ async function runTask(task: TaskContract) {
 	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
-	await prepareWorkspace(task);
+	await prepareWorkspace(task, actorCredentials);
 
 	const transformerImageRef = await pullTransformer(task, actorCredentials);
 
@@ -222,4 +222,6 @@ async function runTask(task: TaskContract) {
 	await finalizeTask(task);
 
 	await cleanupWorkspace(task);
+
+	console.log(`[WORKER] Task ${task.slug} completed successfully`);
 }

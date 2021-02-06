@@ -44,16 +44,42 @@ async function finalizeTask(task: TaskContract) {
 	return task;
 }
 
+async function reportTaskFailed(task: TaskContract) {
+	// TODO: Mark task as FAILED with JF
+	return task;
+}
+
+const pathExists = async (path: string) => {
+	try {
+		await fs.promises.access(path, F_OK);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 async function prepareWorkspace(task: TaskContract, credentials: ActorCredentials) {
 	console.log(`[WORKER] Preparing transformer workspace`);
 
+	const outputDir = directory.output(task);
+	const inputDir = directory.input(task);
+
+	if (await pathExists(outputDir)) {
+		console.log(`[WORKER] WARN output directory already existed (from previous run?) - deleting it`);
+		await fs.promises.rm(outputDir, { recursive: true, force: true });
+	}
+	if (await pathExists(inputDir)) {
+		console.log(`[WORKER] WARN input directory already existed (from previous run?) - deleting it`);
+		await fs.promises.rm(inputDir, { recursive: true, force: true });
+	}
+
 	const inputArtifactDir = path.join(
-		directory.input(task),
+		inputDir,
 		env.artifactDirectoryName,
 	);
 
 	await fs.promises.mkdir(inputArtifactDir, { recursive: true });
-	await fs.promises.mkdir(directory.output(task), { recursive: true });
+	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
 	await registry.pullArtifact(createArtifactReference(inputContract), inputArtifactDir, { user: credentials.slug, password: credentials.sessionToken });

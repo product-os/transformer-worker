@@ -6,10 +6,8 @@ export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
 	private sdk: any;
 
-	constructor(private apiUrl: string, private apiPrefix: string) {}
-
-	public async init() {
-		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
+	constructor(private apiUrl: string, private apiPrefix: string) {
+		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix })
 	}
 
 	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {

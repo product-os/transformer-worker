@@ -177,6 +177,7 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
+		// TODO: Do upsert instead of insert.
 		const outputContractId = await jf.storeArtifactContract(outputContract);
 
 		if (result.artifactPath) {
@@ -205,7 +206,7 @@ async function runTask(task: TaskContract) {
 
 	await validateTask(task);
 
-	// TODO: Who's the actor, and should we use it for pulling the input (artifact + transformer)
+	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
 	await prepareWorkspace(task);

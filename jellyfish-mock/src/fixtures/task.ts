@@ -1,16 +1,19 @@
 export default { 
   "id": "5ea68e0d-61c6-4cb6-be89-52db6045b586",
+  "name": "Transform 64ab4e89-90ac-4de5-bdc2-462ba80290e7 using transformer fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
+  "slug": "task-transform-64ab4e89-90ac-4de5-bdc2-462ba80290e7-using-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443-2e3ca07e-ad71-413c-97bd-04e433eaa632",
+  "type": "task@1.0.0",
   "data": {
     "actor": "9ad5349e-4fd8-413f-84de-ae9287feca5c",
     "input": {
       "id": "64ab4e89-90ac-4de5-bdc2-462ba80290e7",
+      "name": null,
+      "slug": "product-os.fake-input-020c1a70-6b26-4a8f-b50b-0888e72ef6c5",
+      "type": "product-os.fake-input",  
       "data": {
         "artifactReady": true
       },
-      "name": null,
-      "slug": "product-os.fake-input-020c1a70-6b26-4a8f-b50b-0888e72ef6c5",
       "tags": [],
-      "type": "product-os.fake-input",  
       "links": {},
       "active": true,
       "markers": [],
@@ -25,6 +28,9 @@ export default {
     },
     "transformer": {
       "id": "fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
+      "name": "fake-in to fake-out",
+      "slug": "identity-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
+      "type": "transformer@1.0.0",
       "data": {
         "image": {
           "name": "image"
@@ -73,10 +79,7 @@ export default {
         },
         "workerFilter": {}
       },
-      "name": "fake-in to fake-out",
-      "slug": "identity-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
       "tags": [],
-      "type": "transformer@1.0.0",
       "links": {},
       "active": true,
       "markers": [],
@@ -94,10 +97,7 @@ export default {
       "schema": {}
     }
   },
-  "name": "Transform 64ab4e89-90ac-4de5-bdc2-462ba80290e7 using transformer fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
-  "slug": "task-transform-64ab4e89-90ac-4de5-bdc2-462ba80290e7-using-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443-2e3ca07e-ad71-413c-97bd-04e433eaa632",
   "tags": [],
-  "type": "task@1.0.0",
   "links": {},
   "active": true,
   "markers": [],

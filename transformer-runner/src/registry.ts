@@ -1,9 +1,13 @@
 import * as Docker from 'dockerode';
-import type { ActorCredentials, ArtifactContract } from './types';
 import * as spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
 
 const isLocalRegistry = (registryUri: string) => !registryUri.includes('.');
+
+export interface RegistryOptions {
+	user: string;
+	password: string;
+}
 
 export default class Registry {
 	public readonly registryUrl: string;
@@ -16,16 +20,16 @@ export default class Registry {
 		this.docker = new Docker();
 	}
 
-	public async pullTransformerImage(
-		transformerImageReference: string,
-		actorCredentials: ActorCredentials,
+	public async pullImage(
+		imageReference: string,
+		opts: RegistryOptions,
 	) {
-		const transformerImageRef = `${this.registryUrl}/${transformerImageReference}`;
+		const transformerImageRef = `${this.registryUrl}/${imageReference}`;
 		console.log(`[WORKER] Pulling transformer ${transformerImageRef}`);
 
 		const auth = {
-			username: actorCredentials.slug,
-			password: actorCredentials.sessionToken,
+			username: opts.user,
+			password: opts.password,
 			serveraddress: this.registryUrl,
 		};
 
@@ -57,14 +61,13 @@ export default class Registry {
 		return transformerImageRef;
 	}
 
-	public async pullArtifact(contract: ArtifactContract, destDir: string) {
-		console.log(`[WORKER] Pulling artifact ${contract.slug}`);
-		await fs.promises.mkdir(destDir, { recursive: true });
+	public async pullArtifact(artifactReference: string, destDir: string, opts: RegistryOptions) {
+		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
-			const output = await this.runOrasCommand( [
+			const output = await this.runOrasCommand([
 				`pull`,
-				`${this.registryUrl}/${contract.slug}:${contract.version}`,
-			], { cwd: destDir });
+				`${this.registryUrl}/${artifactReference}`,
+			], opts, { cwd: destDir });
 
 			const m = output.match(/Downloaded .* (.*)/);
 			if (m[1]) {
@@ -79,28 +82,33 @@ export default class Registry {
 		}
 	}
 
-	public async pushArtifact(contract: ArtifactContract, artifactPath: string) {
-		console.log(`[WORKER] Pushing artifact ${contract.slug}`);
+	public async pushArtifact(artifactReference: string, artifactPath: string, opts: RegistryOptions) {
+		console.log(`[WORKER] Pushing artifact ${artifactReference}`);
 		try {
-			const artifacts = await  fs.promises.readdir(artifactPath);
+			const artifacts = await fs.promises.readdir(artifactPath);
 			const orasCmd = [
 				`push`,
-				`${this.registryUrl}/${contract.slug}:${contract.version}`,
+				`${this.registryUrl}/${artifactReference}`,
 				...artifacts
 			];
-			await this.runOrasCommand(orasCmd, { cwd: artifactPath });
+			await this.runOrasCommand(orasCmd, opts, { cwd: artifactPath });
 		} catch (e) {
 			this.logErrorAndThrow(e);
 		}
 	}
-	
-	private async runOrasCommand(args: string[], options: any = {}) {
+
+	private async runOrasCommand(args: string[], opts: RegistryOptions, spawnOptions: any = {}) {
 		if (isLocalRegistry(this.registryUrl)) {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
+		} else {
+			args.push('--username');
+			args.push(opts.user);
+			args.push('--password');
+			args.push(opts.password);
 		}
 		console.log(`Oras command: \n${args.concat(' ')}`);
-		const streams = await spawn(`oras`, args, options);
+		const streams = await spawn(`oras`, args, spawnOptions);
 		const output = streams.stdout.toString('utf8');
 		console.log(`Oras output: ${output}`);
 		return output;

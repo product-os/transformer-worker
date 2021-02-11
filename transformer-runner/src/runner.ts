@@ -14,6 +14,7 @@ import * as streams from 'memory-streams';
 import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
+import { F_OK } from 'constants';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -25,35 +26,69 @@ const directory = {
 
 const createArtifactReference = ({ slug, version }: Contract) => `${slug}:${version}`;
 
+const runningTasks = new Set<string>();
+
 export async function initializeRunner() {
 	console.log(`[WORKER] ${env.workerSlug} starting...`);
 
 	await jf.login(env.workerSlug, env.workerJfToken);
-	await jf.listenForTasks(runTask);
+	await jf.listenForTasks(acceptTask);
 
 	console.log('[WORKER] Waiting for tasks');
 }
 
-async function acknowledgeTask(task: TaskContract) {
-	// TODO: Acknowledge task with JF
-	return task;
+const acceptTask = async (update: any) => {
+	const task: TaskContract = update?.data?.after;
+	if (task) {
+		if (runningTasks.has(task.id!)) {
+			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`)
+			return;
+		}
+		await jf.acknowledgeTask(task);
+		runningTasks.add(task.id!);
+		try {
+			await runTask(task)
+			await jf.confirmTaskCompletion(task);
+		} catch (e) {
+			console.log(`[WORKER] ERROR occured during task processing: ${e}`);
+			await jf.reportTaskFailed(task);
+		} finally {
+			runningTasks.delete(task.id!);
+		}
+	}
 }
 
-async function finalizeTask(task: TaskContract) {
-	// TODO: Mark task as completed with JF
-	return task;
+const pathExists = async (path: string) => {
+	try {
+		await fs.promises.access(path, F_OK);
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 async function prepareWorkspace(task: TaskContract, credentials: ActorCredentials) {
 	console.log(`[WORKER] Preparing transformer workspace`);
 
+	const outputDir = directory.output(task);
+	const inputDir = directory.input(task);
+
+	if (await pathExists(outputDir)) {
+		console.log(`[WORKER] WARN output directory already existed (from previous run?) - deleting it`);
+		await fs.promises.rm(outputDir, { recursive: true, force: true });
+	}
+	if (await pathExists(inputDir)) {
+		console.log(`[WORKER] WARN input directory already existed (from previous run?) - deleting it`);
+		await fs.promises.rm(inputDir, { recursive: true, force: true });
+	}
+
 	const inputArtifactDir = path.join(
-		directory.input(task),
+		inputDir,
 		env.artifactDirectoryName,
 	);
 
 	await fs.promises.mkdir(inputArtifactDir, { recursive: true });
-	await fs.promises.mkdir(directory.output(task), { recursive: true });
+	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
 	await registry.pullArtifact(createArtifactReference(inputContract), inputArtifactDir, { user: credentials.slug, password: credentials.sessionToken });
@@ -202,8 +237,6 @@ async function cleanupWorkspace(task: TaskContract) {
 async function runTask(task: TaskContract) {
 	console.log(`[WORKER] Running task ${task.slug}`);
 
-	await acknowledgeTask(task);
-
 	await validateTask(task);
 
 	// The actor is the loop, and to start with that will always be product-os
@@ -218,8 +251,6 @@ async function runTask(task: TaskContract) {
 	const outputManifest = await validateOutput(task, transformerExitCode);
 
 	await pushOutput(task, outputManifest, actorCredentials);
-
-	await finalizeTask(task);
 
 	await cleanupWorkspace(task);
 

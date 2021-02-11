@@ -15,15 +15,7 @@ export default class Jellyfish {
 
 		// Get task stream, and await tasks
 		const taskStream = await this.getTaskStream(user.id);
-    taskStream.on('update', async (update: any) => {
-      if (update.data.after) {
-        try {
-          await taskHandler(update.data.after)
-        } catch(e) {
-          console.log(`[WORKER] ERROR occured during task processing: ${e}`);
-        }
-      }
-    });
+		taskStream.on('update', taskHandler);
 
 		taskStream.on('streamError', (error: Error) => {
 			console.error(error);
@@ -82,9 +74,9 @@ export default class Jellyfish {
 		// Set as draft,
 		// so as not to trigger other transformers before artifact ready
 		_.set(contract, "data.artifactReady", false);
-		const newContract = (await this.sdk.card.create(
+		const newContract = await this.sdk.card.create(
 			contract,
-		)) as ArtifactContract;
+		) as ArtifactContract;
 		return newContract.id;
 	}
 
@@ -104,6 +96,21 @@ export default class Jellyfish {
 			slug: await this.getActorSlugFromActorId(actorId),
 			sessionToken: await this.getSessionTokenFromActorId(actorId),
 		} as ActorCredentials;
+	}
+
+	public async acknowledgeTask(task: TaskContract) {
+		// TODO: Acknowledge task with JF
+		return task;
+	}
+
+	public async confirmTaskCompletion(task: TaskContract) {
+		// TODO: Mark task as completed with JF
+		return task;
+	}
+
+	public async reportTaskFailed(task: TaskContract) {
+		// TODO: Mark task as FAILED with JF
+		return task;
 	}
 
 	private async getActorSlugFromActorId(actorId: string) {

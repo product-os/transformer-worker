@@ -14,7 +14,7 @@ import * as streams from 'memory-streams';
 import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
-import { F_OK } from 'constants';
+import { pathExists } from "./util";
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -41,29 +41,20 @@ const acceptTask = async (update: any) => {
 	const task: TaskContract = update?.data?.after;
 	if (task) {
 		if (runningTasks.has(task.id!)) {
-			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`)
+			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
 			return;
 		}
 		await jf.acknowledgeTask(task);
 		runningTasks.add(task.id!);
 		try {
-			await runTask(task)
+			await runTask(task);
 			await jf.confirmTaskCompletion(task);
 		} catch (e) {
-			console.log(`[WORKER] ERROR occured during task processing: ${e}`);
+			console.log(`[WORKER] ERROR occurred during task processing: ${e}`);
 			await jf.reportTaskFailed(task);
 		} finally {
 			runningTasks.delete(task.id!);
 		}
-	}
-}
-
-const pathExists = async (path: string) => {
-	try {
-		await fs.promises.access(path, F_OK);
-		return true;
-	} catch {
-		return false;
 	}
 }
 

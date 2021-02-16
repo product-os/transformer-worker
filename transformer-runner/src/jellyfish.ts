@@ -7,7 +7,7 @@ export default class Jellyfish {
 	private sdk: any;
 
 	constructor(private apiUrl: string, private apiPrefix: string) {
-		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix })
+		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
 	}
 
 	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {

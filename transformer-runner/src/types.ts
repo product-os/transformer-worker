@@ -31,7 +31,9 @@ export interface TaskContract extends Contract {
 
 export interface ArtifactContract extends Contract {
 	data: {
-		artifactReady: boolean;
+		$transformer: {
+			artifactReady: boolean;
+		}
 	};
 }
 

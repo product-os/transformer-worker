@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
+	static readonly HEARTBEAT_PERIOD = 10000;
 	private sdk: any;
 
 	constructor(private apiUrl: string, private apiPrefix: string) {
@@ -20,6 +21,8 @@ export default class Jellyfish {
 		taskStream.on('streamError', (error: Error) => {
 			console.error(error);
 		});
+
+		this.initializeHeartbeat();
 
 		// TODO: Need to define high level jf-worker protocol. I.e. support:
 		//  - Working signaling:
@@ -127,4 +130,14 @@ export default class Jellyfish {
 		});
 		return actorSessionCard.id;
 	}
+	
+	private initializeHeartbeat() {
+		setInterval(() => {
+			try {
+				// report to JF
+			} catch (err) {
+				// handle error, probably just log/report to sentry
+			}
+		}, Jellyfish.HEARTBEAT_PERIOD);
+	};
 }

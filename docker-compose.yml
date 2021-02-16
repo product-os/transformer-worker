@@ -13,12 +13,13 @@ services:
       JF_API_URL: "http://jellyfish-mock:3000"
       JF_API_PREFIX: "api/v2"
 
-  # The registry is needed for dev only
+  # DEV, REMOVE AFTER TEAM UPGRADES CLI (now in docker-compose.dev.yml)
   registry:
     image: "registry:2.7.1"
     volumes:
       - "registry-data:/data"
 
+  # DEV, REMOVE AFTER TEAM UPGRADES CLI (now in docker-compose.dev.yml)
   dev-artifact-provider:
     build: ./dev-artifact-provider
     privileged: true
@@ -28,7 +29,7 @@ services:
     depends_on:
       - registry
 
-  # The jellyfish mock is needed for dev only
+  # DEV, REMOVE AFTER TEAM UPGRADES CLI (now in docker-compose.dev.yml)
   jellyfish-mock:
     build: ./jellyfish-mock
 

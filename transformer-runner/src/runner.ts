@@ -31,9 +31,18 @@ const runningTasks = new Set<string>();
 export async function initializeRunner() {
 	console.log(`[WORKER] ${env.workerSlug} starting...`);
 
-	await jf.login(env.workerSlug, env.workerJfToken);
+	// Old registration process
+	await jf.loginWithToken(env.workerSlug, env.workerJfToken);
+	// New registration process
+	/*
+	if(!env.workerJfUsername || !env.workerJfPassword) {
+		console.log(`[WORKER] WARN no jf username/password set for worker ${env.workerSlug}. Halting.`);
+		return;
+	}
+	await jf.login(env.workerJfUsername, env.workerJfPassword);
+	*/
+	
 	await jf.listenForTasks(acceptTask);
-
 	console.log('[WORKER] Waiting for tasks');
 }
 

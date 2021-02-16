@@ -32,7 +32,8 @@ export default class Jellyfish {
 		// 		- completion of task
 	}
 
-	public async login(workerSlug: string, authToken: string) {
+	// This is the old registration flow, to be removed later.
+	public async loginWithToken(workerSlug: string, authToken: string) {
 		// TODO:
 		//  - retry
 		//  - reconnection
@@ -47,6 +48,16 @@ export default class Jellyfish {
 				`Unexpected user slug '${user?.slug}' received. Expected: '${workerSlug}'`,
 			);
 		}
+	}
+
+	// This is the user/pass based auth that will be used later.
+	public async login(username: string, password: string) {
+		// TODO:
+		//  - retry
+		//  - reconnection
+		
+		const session = this.sdk.auth.login(username, password);
+		console.log(`[WORKER] Logged in to JF, session: ${session}`);
 	}
 
 	private async getTaskStream(workerId: string) {

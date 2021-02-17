@@ -1,0 +1,16 @@
+{
+	"card": "faq@1.0.0",
+	"type": "type",
+	"action": "action-create-card@1.0.0",
+	"arguments": {
+		"reason": null,
+		"properties": {
+			"markers": [
+				"org-balena"
+			],
+			"data": {},
+			"name": "some-random-card-to-attach-artifacts-to",
+			"linked_at": {}
+		}
+	}
+}

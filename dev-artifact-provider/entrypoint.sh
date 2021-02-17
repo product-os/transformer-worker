@@ -36,7 +36,7 @@ for artifact in $(ls) ; do
  		-H 'Accept: application/json, text/plain, */*' \
 		-H 'Content-Type: application/json;charset=UTF-8' \
 		--data-binary @card.json \
-		--insecure --fail -v
+		--insecure || echo "card for $artifact already exists (I hope)"
 	TAG="${REGISTRY_HOST}${REGISTRY_PORT}/${artifact}:1.0.0"
 	oras push --plain-http \
 		--username user-jellyfish --password $jf_auth_token \
@@ -55,8 +55,8 @@ for img in $(ls) ; do
 	curl 'http://api.ly.fish.local/api/v2/action' \
 		-H "Authorization: Bearer $jf_auth_token" \
 		-H 'Content-Type: application/json;charset=UTF-8' \
-		--data-raw @card.json \
-		--insecure --fail
+		--data-binary @card.json \
+		--insecure ||  echo "card for $artifact already exists (I hope)"
 
 	TAG="${REGISTRY_HOST}${REGISTRY_PORT}/${img}:1.0.0"
 	docker build -t $TAG .

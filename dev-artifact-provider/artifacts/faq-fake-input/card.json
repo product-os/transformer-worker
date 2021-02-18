@@ -8,8 +8,12 @@
 			"markers": [
 				"org-balena"
 			],
-			"data": {},
-			"name": "some-random-card-to-attach-artifacts-to",
+			"data": {
+				"$transformer": {
+					"artifactReady": false
+				}
+			},
+			"name": "run-me",
 			"slug": "faq-fake-input",
 			"linked_at": {}
 		}

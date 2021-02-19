@@ -30,7 +30,16 @@
 					]
 				},
 				"requirements": {},
-				"workerFilter": {}
+				"workerFilter": {
+					"type": "object",
+					"properties": {
+						"required": ["type"],
+						"type": {
+							"const": "transformer-worker@1.0.0",
+							"type": "string"
+						}
+					}
+				}
 			},
 			"linked_at": {},
 			"slug": "identity-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443",

@@ -23,6 +23,9 @@ if [ "x" == "x$jf_auth_token" ]; then
   exit 1
 fi
 
+# used by fleet, transformer-runner
+echo $jf_auth_token > /shared/.token
+
 docker login registry.ly.fish.local --username user-jellyfish --password $jf_auth_token
 
 echo "start importing artifacts"

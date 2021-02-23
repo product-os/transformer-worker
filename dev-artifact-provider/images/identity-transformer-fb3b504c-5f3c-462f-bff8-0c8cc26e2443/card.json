@@ -5,9 +5,6 @@
 	"arguments": {
 		"reason": null,
 		"properties": {
-			"markers": [
-				"org-balena"
-			],
 			"data": {
 				"$transformer": {
 					"artifactReady": false

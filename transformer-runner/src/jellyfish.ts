@@ -33,19 +33,19 @@ export default class Jellyfish {
 	}
 
 	// This is the old registration flow, to be removed later.
-	public async loginWithToken(workerSlug: string, authToken: string) {
+	public async loginWithToken(authToken: string) {
 		// TODO:
 		//  - retry
 		//  - reconnection
 
 		await this.sdk.setAuthToken(authToken);
 		const user = await this.sdk.auth.whoami();
-		if (user?.slug === workerSlug) {
+		if (user?.slug) {
 			console.log(`[WORKER] Logged in to JF, id ${user.id}`);
 			return user.id;
 		} else {
 			throw new Error(
-				`Unexpected user slug '${user?.slug}' received. Expected: '${workerSlug}'`,
+				`Login failed. User: '${user}'`,
 			);
 		}
 	}
@@ -56,7 +56,7 @@ export default class Jellyfish {
 		//  - retry
 		//  - reconnection
 		
-		const session = this.sdk.auth.login(username, password);
+		const session = await this.sdk.auth.login({username, password});
 		console.log(`[WORKER] Logged in to JF, session: ${session}`);
 	}
 

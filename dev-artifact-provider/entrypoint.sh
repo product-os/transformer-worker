@@ -23,10 +23,27 @@ if [ "x" == "x$jf_auth_token" ]; then
   exit 1
 fi
 
-# used by fleet, transformer-runner
-echo $jf_auth_token > /shared/.token
+loop_user=loop-product-os
 
-docker login registry.ly.fish.local --username user-jellyfish --password $jf_auth_token
+loop_id=$(curl "http://api.ly.fish.local/api/v2/slug/$loop_user" \
+  -H "Authorization: Bearer $jf_auth_token" | jq -j .id)
+
+# we create things as the loop and not as admin so permissions are not a problem later on
+jf_auth_token=$(curl 'http://api.ly.fish.local/api/v2/action' \
+  -H "Authorization: Bearer $jf_auth_token" \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json;charset=UTF-8' \
+  --data-raw '{"card":"session@1.0.0","type":"type","action":"action-create-card@1.0.0","arguments":{"reason":null,"properties":{"data":{"actor":"'$loop_id'"},"linked_at":{}}}}' \
+  --insecure --fail | jq -j .data.id)
+
+if [ "x" == "x$jf_auth_token" ]; then
+  echo "JF session creation for loop failed"
+  exit 1
+fi
+
+echo $jf_auth_token > /shared/.fleet-jf-token
+
+docker login ${REGISTRY_HOST}${REGISTRY_PORT} --username $loop_user --password $jf_auth_token
 
 echo "start importing artifacts"
 
@@ -42,7 +59,7 @@ for artifact in $(ls) ; do
 		--insecure || echo "card for $artifact already exists (I hope)"
 	TAG="${REGISTRY_HOST}${REGISTRY_PORT}/${artifact}:1.0.0"
 	oras push --plain-http \
-		--username user-jellyfish --password $jf_auth_token \
+		--username $loop_user --password $jf_auth_token \
 		$TAG *
 
 	popd
@@ -73,9 +90,6 @@ echo "finished importing artifacts"
 
 echo "linking cards"
 
-loop_id=$(curl 'http://api.ly.fish.local/api/v2/slug/loop-product-os' \
-  -H "Authorization: Bearer $jf_auth_token" | jq -j .id)
-
 curl 'http://api.ly.fish.local/api/v2/action' \
   -H "Authorization: Bearer $jf_auth_token" \
   -H 'Content-Type: application/json;charset=UTF-8' \
@@ -84,7 +98,7 @@ curl 'http://api.ly.fish.local/api/v2/action' \
 
 echo "marking artifacts as ready"
 
-for c in ls ./*/*/card.json ; do
+for c in ./*/*/card.json ; do
 
 	id=$(cat $c | jq -j .arguments.properties.id)
 

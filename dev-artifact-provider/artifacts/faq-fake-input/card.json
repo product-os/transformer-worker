@@ -1,0 +1,18 @@
+{
+	"card": "faq@1.0.0",
+	"type": "type",
+	"action": "action-create-card@1.0.0",
+	"arguments": {
+		"reason": null,
+		"properties": {
+			"data": {
+				"$transformer": {
+					"artifactReady": false
+				}
+			},
+			"name": "run-me",
+			"slug": "faq-fake-input",
+			"linked_at": {}
+		}
+	}
+}

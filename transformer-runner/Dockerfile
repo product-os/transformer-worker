@@ -10,7 +10,7 @@ ARG NPM_TOKEN
 WORKDIR /usr/src/app
 COPY --from=oras-base /usr/bin/oras /usr/bin/oras
 
-RUN apk add --no-cache tini curl nodejs npm docker-cli nano jq
+RUN apk add --no-cache tini curl nodejs npm docker-cli nano jq util-linux
 
 COPY ./package*.json ./
 ARG NPM_TOKEN
@@ -22,7 +22,12 @@ COPY tsconfig.json ./tsconfig.json
 COPY entrypoint.sh ./entrypoint.sh
 COPY typings.d.ts ./typings.d.ts
 
-RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000"]}' >> /etc/docker/daemon.json
+ENV REGISTRY_HOST "registry.ly.fish.local"
+ENV REGISTRY_PORT 80
+ENV JF_API_URL http://api.ly.fish.local
+ENV JF_API_PREFIX api/v2
+
+RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000", "registry.ly.fish.local:80", "registry.ly.fish.local"]}' >> /etc/docker/daemon.json
 
 RUN npm run build
 ENTRYPOINT ["/sbin/tini", "--", "./entrypoint.sh"]

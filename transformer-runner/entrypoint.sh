@@ -6,15 +6,15 @@
 #  directly during provisioning:
 #    - WORKER_JF_USERNAME
 #    - WORKER_JF_PASSWORD
-if [ ! -e /shared/.token ]; then
+
+TOKEN=$(cat /shared/.token)
+if [ "x${TOKEN}" == "x" ]; then
     uuidgen > /shared/.token
 fi
 
 TOKEN=$(cat /shared/.token)
 export WORKER_JF_TOKEN="${WORKER_JF_TOKEN:-$TOKEN}"
 ###################################################
-
-export WORKER_SLUG="transformer-worker-${BALENA_DEVICE_UUID}"
 
 (
     while true; do

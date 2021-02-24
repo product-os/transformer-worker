@@ -9,11 +9,11 @@ FROM docker:dind
 
 WORKDIR /usr/src/app
 
-RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000"]}' >> /etc/docker/daemon.json
+RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000","registry.ly.fish.local:5000","registry.ly.fish.local:80","registry.ly.fish.local","registry:80","registry"]}' >> /etc/docker/daemon.json
 
 COPY --from=oras-base /usr/bin/oras /usr/bin/oras
 
-RUN apk add --no-cache bash docker-cli jq tini
+RUN apk add --no-cache bash docker-cli jq tini curl
 
 CMD ["./entrypoint.sh"]
 ENTRYPOINT ["/sbin/tini", "--"]

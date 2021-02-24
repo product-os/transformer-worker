@@ -1,6 +1,5 @@
 export default {
 	// Old registration process
-	workerSlug: process.env.WORKER_SLUG || '',
 	workerJfToken: process.env.WORKER_JF_TOKEN || '',
 	
 	// New registration process

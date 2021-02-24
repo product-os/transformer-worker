@@ -29,10 +29,10 @@ const createArtifactReference = ({ slug, version }: Contract) => `${slug}:${vers
 const runningTasks = new Set<string>();
 
 export async function initializeRunner() {
-	console.log(`[WORKER] ${env.workerSlug} starting...`);
+	console.log(`[WORKER] starting...`);
 
 	// Old registration process
-	await jf.loginWithToken(env.workerSlug, env.workerJfToken);
+	await jf.loginWithToken(env.workerJfToken);
 	// New registration process
 	/*
 	if(!env.workerJfUsername || !env.workerJfPassword) {

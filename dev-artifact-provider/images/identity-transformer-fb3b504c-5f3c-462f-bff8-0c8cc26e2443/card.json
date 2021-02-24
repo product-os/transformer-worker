@@ -1,0 +1,46 @@
+{
+	"card": "transformer@1.0.0",
+	"type": "type",
+	"action": "action-create-card@1.0.0",
+	"arguments": {
+		"reason": null,
+		"properties": {
+			"data": {
+				"$transformer": {
+					"artifactReady": false
+				},
+				"inputFilter": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"const": "faq@1.0.0"
+						},
+						"name": {
+							"type": "string",
+							"const": "run-me"
+						}
+					},
+					"required": [
+						"type",
+						"name"
+					]
+				},
+				"requirements": {},
+				"workerFilter": {
+					"type": "object",
+					"properties": {
+						"required": ["type"],
+						"type": {
+							"const": "transformer-worker@1.0.0",
+							"type": "string"
+						}
+					}
+				}
+			},
+			"linked_at": {},
+			"slug": "identity-transformer-fb3b504c-5f3c-462f-bff8-0c8cc26e2443",
+			"id": "fb3b504c-5f3c-462f-bff8-0c8cc26e2443"
+		}
+	}
+}

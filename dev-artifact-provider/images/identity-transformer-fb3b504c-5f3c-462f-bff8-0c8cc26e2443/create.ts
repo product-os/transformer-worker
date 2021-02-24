@@ -40,7 +40,8 @@ type InContract = {
 
 type OutContract = {
   slug: string
-  type: "product-os.fake-output"
+  type: "faq"
+  name: string
   version: string
   data: any
 }
@@ -88,8 +89,9 @@ const readInput = async (path: string) => {
 
 const createImageContract = (inContract: InContract) => {
   const outContract: OutContract = {
-    type: 'product-os.fake-output',
-    slug: inContract.slug,
+    type: 'faq',
+    slug: 'faq-result-from-'+inContract.slug+(new Date().getTime()),
+    name: 'fantastic test result from '+new Date(),
     version: inContract.version,
     data: inContract.data,
   }

@@ -2,7 +2,7 @@ import * as Docker from 'dockerode';
 import * as spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
 
-const isLocalRegistry = (registryUri: string) => !registryUri.includes('.');
+const isLocalRegistry = (registryUri: string) => !registryUri.includes('.') || registryUri.includes(".local");
 
 export interface RegistryOptions {
 	user: string;
@@ -101,7 +101,8 @@ export default class Registry {
 		if (isLocalRegistry(this.registryUrl)) {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
-		} else {
+		} 
+		if (opts.user) {
 			args.push('--username');
 			args.push(opts.user);
 			args.push('--password');

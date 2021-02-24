@@ -90,8 +90,8 @@ const readInput = async (path: string) => {
 const createImageContract = (inContract: InContract) => {
   const outContract: OutContract = {
     type: 'faq',
-    slug: 'faq-result-from-'+inContract.slug,
-    name: 'fantastic test result',
+    slug: 'faq-result-from-'+inContract.slug+(new Date().getTime()),
+    name: 'fantastic test result from '+new Date(),
     version: inContract.version,
     data: inContract.data,
   }

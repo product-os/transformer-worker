@@ -27,7 +27,7 @@ ENV REGISTRY_PORT 80
 ENV JF_API_URL http://api.ly.fish.local
 ENV JF_API_PREFIX api/v2
 
-RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000", "registry.ly.fish.local:80"]}' >> /etc/docker/daemon.json
+RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000", "registry.ly.fish.local:80", "registry.ly.fish.local"]}' >> /etc/docker/daemon.json
 
 RUN npm run build
 ENTRYPOINT ["/sbin/tini", "--", "./entrypoint.sh"]

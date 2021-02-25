@@ -91,7 +91,7 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
-	await registry.pullArtifact(createArtifactReference(inputContract), inputArtifactDir, { user: credentials.slug, password: credentials.sessionToken });
+	await registry.pullArtifact(createArtifactReference(inputContract), inputArtifactDir, { username: credentials.slug, password: credentials.sessionToken });
 
 	// Add input manifest
 	const inputManifest: InputManifest = {

@@ -52,7 +52,7 @@ export default class Registry {
 
 	private async followDockerProgress (progressStream: NodeJS.ReadableStream){
 		return new Promise((resolve, reject) =>
-			this.docker.modem.followProgress(progressStream, (err:Error) => err ? reject(err) : resolve())
+			this.docker.modem.followProgress(progressStream, (err:Error) => err ? reject(err) : resolve(null))
 		);
 	}
 	
@@ -98,7 +98,7 @@ export default class Registry {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
 		} 
-		if (opts.user) {
+		if (opts.username) {
 			args.push('--username');
 			args.push(opts.username);
 			args.push('--password');

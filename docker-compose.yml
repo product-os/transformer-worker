@@ -6,11 +6,27 @@ services:
     privileged: true
     volumes:
       - shared:/shared
+
+  fleet-launcher:
+    build: ./fleet-launcher
+    restart: always
+    labels:
+      io.balena.features.supervisor-api: '1'
+      io.balena.features.balena-socket: '1'
+    depends_on:
+      - transformer-runner
+    volumes:
+      - shared:/shared
+
+  garbage-collector:
+    build: ./garbage-collector
+    restart: always
     environment:
-      REGISTRY_HOST: "registry.ly.fish"
-      WORKER_JF_TOKEN: "foobar"
-      JF_API_URL: "https://jel.ly.fish"
-      JF_API_PREFIX: "api/v2"
+      - DOCKER_HOST=unix:///var/run/balena-engine.sock
+    labels:
+      io.balena.features.balena-socket: '1'
+    volumes:
+      - garbage-collector:/root
 
 volumes:
   registry-data: {}

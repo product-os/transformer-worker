@@ -50,12 +50,6 @@ export interface TransformerContract extends Contract {
 	};
 }
 
-export type Artifact = {
-	name: string;
-	type: string;
-	// NOTE: Artifacts are transported in a single format (e.g. targz)
-};
-
 export type InputManifest = {
 	input: {
 		contract: ArtifactContract;
@@ -67,7 +61,8 @@ export type OutputManifest = {
 	results: [
 		{
 			contract: ArtifactContract;
-			artifactPath: string;
+			artifactPath: string;		// Expected to be a directory
+			imagePath: string;
 		},
 	];
 };

@@ -41,7 +41,7 @@ export async function initializeRunner() {
 	}
 	await jf.login(env.workerJfUsername, env.workerJfPassword);
 	*/
-	
+
 	await jf.listenForTasks(acceptTask);
 	console.log('[WORKER] Waiting for tasks');
 }
@@ -116,7 +116,7 @@ async function pullTransformer(
 	console.log(`[WORKER] Pulling transformer ${transformerImageReference}`);
 	const transformerImageRef = await registry.pullImage(
 		transformerImageReference,
-		{ user: actorCredentials.slug, password: actorCredentials.sessionToken },
+		{ username: actorCredentials.slug, password: actorCredentials.sessionToken },
 	);
 
 	return transformerImageRef;
@@ -216,13 +216,26 @@ async function pushOutput(
 		// TODO: Do upsert instead of insert.
 		const outputContractId = await jf.storeArtifactContract(outputContract);
 
-		if (result.artifactPath) {
-			// Store output artifact
+		// Store output artifact
+		const artifactReference = createArtifactReference(outputContract);
+		const authOptions = { username: actorCredentials.slug, password: actorCredentials.sessionToken };
+		if (result.imagePath && result.artifactPath) {
+			throw new Error(`result ${result.contract.slug} contained an artifact and an image`);
+		}
+		if (result.imagePath) {
+			await registry.pushImage(
+				artifactReference,
+				path.join(outputDir, result.imagePath),
+				authOptions,
+			)
+		} else if (result.artifactPath) {
 			await registry.pushArtifact(
-				createArtifactReference(outputContract),
-				path.join(outputDir, env.artifactDirectoryName),
-				{ user: actorCredentials.slug, password: actorCredentials.sessionToken }
+				artifactReference,
+				path.join(outputDir, result.artifactPath),
+				authOptions,
 			);
+		} else {
+			console.log(`[WORKER] no artifact for result ${result.contract.slug}`);
 		}
 
 		await jf.markArtifactContractReady(outputContractId!, outputContract.type);

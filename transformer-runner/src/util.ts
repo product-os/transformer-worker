@@ -9,3 +9,12 @@ export const pathExists = async (path: string) => {
         return false;
     }
 }
+
+export function streamToPromise(stream: NodeJS.ReadableStream): Promise<string> {
+    return new Promise((resolve, reject) => {
+        let buf = '';
+        stream.on('data', (d) => (buf += d.toString()));
+        stream.on('end', () => resolve(buf));
+        stream.on('error', reject);
+    });
+}

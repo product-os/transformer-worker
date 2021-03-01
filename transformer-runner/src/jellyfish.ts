@@ -1,6 +1,13 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import { ActorCredentials, ArtifactContract, TaskContract } from './types';
+import {ActorCredentials, ArtifactContract, TaskContract, TaskStatusMetadata} from './types';
 import * as _ from 'lodash';
+
+enum TaskStatus {
+	Pending = 'pending',
+	Accepted = 'accepted',
+	Completed = 'completed',
+	Failed = 'failed',
+}
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -23,13 +30,6 @@ export default class Jellyfish {
 		});
 
 		this.initializeHeartbeat();
-
-		// TODO: Need to define high level jf-worker protocol. I.e. support:
-		//  - Working signaling:
-		// 		- ready for task
-		// 		- acceptance of task
-		// 		- rejection of task
-		// 		- completion of task
 	}
 
 	// This is the old registration flow, to be removed later.
@@ -78,6 +78,10 @@ export default class Jellyfish {
 				type: {
 					const: 'task@1.0.0',
 				},
+				// TODO: Check if this is correct:
+				data: {
+					status: TaskStatus.Pending,
+				}
 			},
 		};
 
@@ -85,6 +89,7 @@ export default class Jellyfish {
 	}
 
 	public async storeArtifactContract(contract: ArtifactContract) {
+		// TODO: Do upsert instead of insert.
 		// Set as draft,
 		// so as not to trigger other transformers before artifact ready
 		_.set(contract, "data.$transformer.artifactReady", false);
@@ -112,18 +117,38 @@ export default class Jellyfish {
 		} as ActorCredentials;
 	}
 
-	public async acknowledgeTask(task: TaskContract) {
-		// TODO: Acknowledge task with JF
-		return task;
+	public async setTaskStatusAccepted(task: TaskContract) {
+		return this.setTaskStatus(task, TaskStatus.Accepted);
 	}
 
-	public async confirmTaskCompletion(task: TaskContract) {
-		// TODO: Mark task as completed with JF
-		return task;
+	public async setTaskStatusCompleted(task: TaskContract, duration: number) {
+		return this.setTaskStatus(task, TaskStatus.Completed, {
+			duration
+		});
 	}
 
-	public async reportTaskFailed(task: TaskContract) {
-		// TODO: Mark task as FAILED with JF
+	public async setTaskStatusFailed(task: TaskContract, message: string, duration: number) {
+		return this.setTaskStatus(task, TaskStatus.Failed, {
+			message,
+			duration
+		});
+	}
+	
+	private async setTaskStatus(task: TaskContract, status: TaskStatus, metaData: TaskStatusMetadata = {}) {
+		metaData.timestamp = Date.now();
+		
+		await this.sdk.card.update(task.id, task.type, [
+			{
+				op: 'replace',
+				path: '/data/status',
+				value: status,
+			},
+			{
+				op: 'replace',
+				path: '/data/statusMetadata',
+				value: metaData
+			},
+		]);
 		return task;
 	}
 

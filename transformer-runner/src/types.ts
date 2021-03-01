@@ -66,3 +66,9 @@ export type OutputManifest = {
 		},
 	];
 };
+
+export type TaskStatusMetadata = {
+	timestamp?: number;
+	duration?: number;
+	message?: string;
+}

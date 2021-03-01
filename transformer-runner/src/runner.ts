@@ -48,19 +48,20 @@ export async function initializeRunner() {
 
 const acceptTask = async (update: any) => {
 	const task: TaskContract = update?.data?.after;
+	const taskStartTimestamp = Date.now();
 	if (task) {
 		if (runningTasks.has(task.id!)) {
 			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
 			return;
 		}
-		await jf.acknowledgeTask(task);
+		await jf.setTaskStatusAccepted(task);
 		runningTasks.add(task.id!);
 		try {
 			await runTask(task);
-			await jf.confirmTaskCompletion(task);
+			await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
 		} catch (e) {
 			console.log(`[WORKER] ERROR occurred during task processing: ${e}`);
-			await jf.reportTaskFailed(task);
+			await jf.setTaskStatusFailed(task, e.message, Date.now() - taskStartTimestamp);
 		} finally {
 			runningTasks.delete(task.id!);
 		}
@@ -213,7 +214,6 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
-		// TODO: Do upsert instead of insert.
 		const outputContractId = await jf.storeArtifactContract(outputContract);
 
 		// Store output artifact

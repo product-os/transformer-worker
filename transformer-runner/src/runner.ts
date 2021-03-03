@@ -202,7 +202,13 @@ async function pushOutput(
 ) {
 	console.log(`[WORKER] Storing transformer output`);
 
-	const outputDir = directory.output(task);
+	const outputDir = directory.output(task)
+
+	// Get contracts for linking later
+	// TODO: Perhaps we can use data we already have in the task contract?
+	const transformerContract = await jf.getContract(task.data.transformer.id!)
+	const workerContract = await jf.getContract(jf.userId);
+	const inputContract = task.data.input;
 
 	for (const result of outputManifest.results) {
 		// Because storing an artifact requires an existing contract,
@@ -238,6 +244,15 @@ async function pushOutput(
 			console.log(`[WORKER] no artifact for result ${result.contract.slug}`);
 		}
 
+		// Create links to output contract
+		// TODO: 
+		//  - See if there are better link names we could use.
+		//  - Check why we wanted transformer to be able to define link name
+		await jf.createLink(inputContract, outputContract, 'was transformed into');
+		await jf.createLink(transformerContract, outputContract, 'transformed');
+		await jf.createLink(workerContract, outputContract, 'ran transformation for');
+
+		// Mark artifact ready, allowing it to be processed by downstream transformers
 		await jf.markArtifactContractReady(outputContractId!, outputContract.type);
 	}
 }

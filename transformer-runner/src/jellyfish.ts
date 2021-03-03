@@ -61,7 +61,6 @@ export default class Jellyfish {
 	}
 
 	private async getTaskStream(workerId: string) {
-		// TODO: Check this schema with Lucian
 		const schema = {
 			$$links: {
 				'is owned by': {
@@ -74,13 +73,19 @@ export default class Jellyfish {
 				},
 			},
 			type: 'object',
+			required: ['type', 'data'],
 			properties: {
 				type: {
 					const: 'task@1.0.0',
 				},
-				// TODO: Check if this is correct:
 				data: {
-					status: TaskStatus.Pending,
+					type: 'object',
+					required: ['status'],
+					properties: {
+						status: {
+							const: TaskStatus.Pending
+						}
+					}
 				}
 			},
 		};

@@ -22,8 +22,8 @@ COPY tsconfig.json ./tsconfig.json
 COPY entrypoint.sh ./entrypoint.sh
 COPY typings.d.ts ./typings.d.ts
 
-ENV REGISTRY_HOST "registry.ly.fish.local"
-ENV REGISTRY_PORT 80
+ENV REGISTRY_HOST "registry.ly.fish"
+ENV REGISTRY_PORT ""
 ENV JF_API_URL http://api.ly.fish.local
 ENV JF_API_PREFIX api/v2
 

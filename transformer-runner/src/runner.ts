@@ -257,6 +257,15 @@ async function pushOutput(
 	}
 }
 
+async function processBackflow(_task: TaskContract) {
+	// We now plan to process backflow in the task runner,
+	// after artifactReady marked true, but before task marked completed.
+	//
+	// Runner should recursively traverse upstream links.
+	//
+	// TODO
+}
+
 async function cleanupWorkspace(task: TaskContract) {
 	await fs.promises.rmdir(directory.input(task), { recursive: true });
 	await fs.promises.rmdir(directory.output(task), { recursive: true });
@@ -279,6 +288,8 @@ async function runTask(task: TaskContract) {
 	const outputManifest = await validateOutput(task, transformerExitCode);
 
 	await pushOutput(task, outputManifest, actorCredentials);
+	
+	await processBackflow(task);
 
 	await cleanupWorkspace(task);
 

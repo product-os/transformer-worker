@@ -29,6 +29,14 @@ services:
       - garbage-collector:/root
       - shared-docker-socket:/var/run
 
+  # this auto-registers QEMU to run non-native binaries
+  # can be leveraged for `docker build --platform=linux/arm64` etc
+  binfmt-hook:
+    image: multiarch/qemu-user-static
+    command: [ '--reset', '-p', 'yes' ]
+    privileged: true
+    restart: 'no'
+
 volumes:
   registry-data: {}
   garbage-collector: {}

@@ -1,5 +1,5 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import {ActorCredentials, ArtifactContract, TaskContract, TaskStatusMetadata} from './types';
+import {ActorCredentials, ArtifactContract, Contract, TaskContract, TaskStatusMetadata} from './types';
 import * as _ from 'lodash';
 
 enum TaskStatus {
@@ -13,6 +13,11 @@ export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
 	static readonly HEARTBEAT_PERIOD = 10000;
 	private sdk: any;
+	private _userId: string = '';
+	
+	get userId(): string {
+		return this._userId;
+	}
 
 	constructor(private apiUrl: string, private apiPrefix: string) {
 		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
@@ -42,7 +47,9 @@ export default class Jellyfish {
 		const user = await this.sdk.auth.whoami();
 		if (user?.slug) {
 			console.log(`[WORKER] Logged in to JF, id ${user.id}`);
+			this._userId = user.id;
 			return user.id;
+			
 		} else {
 			throw new Error(
 				`Login failed. User: '${user}'`,
@@ -104,8 +111,8 @@ export default class Jellyfish {
 		return newContract.id;
 	}
 
-	public async markArtifactContractReady(contractId: string, cardType: string) {
-		await this.sdk.card.update(contractId, cardType, [
+	public async markArtifactContractReady(contractId: string, contractType: string) {
+		await this.sdk.card.update(contractId, contractType, [
 			{
 				op: 'replace',
 				path: '/data/$transformer/artifactReady',
@@ -157,19 +164,27 @@ export default class Jellyfish {
 		return task;
 	}
 
+	public async createLink(from: Contract, to: Contract, linkName: string) {
+		await this.sdk.card.link(from, to, linkName);
+	}
+
+	public async getContract(idOrSlug: string) {
+		return await this.sdk.card.get(idOrSlug);
+	}
+
 	private async getActorSlugFromActorId(actorId: string) {
-		const actorCard = await this.sdk.card.get(actorId);
-		return actorCard.slug;
+		const actorContract = await this.sdk.card.get(actorId);
+		return actorContract.slug;
 	}
 
 	private async getSessionTokenFromActorId(actorId: string) {
-		const actorSessionCard = await this.sdk.card.create({
+		const actorSessionContract = await this.sdk.card.create({
 			type: 'session@1.0.0',
 			data: {
 				actor: actorId,
 			},
 		});
-		return actorSessionCard.id;
+		return actorSessionContract.id;
 	}
 	
 	private initializeHeartbeat() {

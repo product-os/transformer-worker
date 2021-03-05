@@ -2,7 +2,7 @@ FROM golang:1.15.7-alpine as oras-base
 WORKDIR /usr/src/app
 RUN apk add --no-cache git
 RUN git clone https://github.com/deislabs/oras.git \
-  && cd ./oras/cmd/oras && git checkout 96cd90423303f1bb42bd043cb4c36085e6e91e8e  \
+  && cd ./oras/cmd/oras && git checkout "v0.10.0"  \
   && go build -v -o /usr/bin/oras
 
 FROM docker:dind

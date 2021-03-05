@@ -151,12 +151,12 @@ export default class Jellyfish {
 		
 		await this.sdk.card.update(task.id, task.type, [
 			{
-				op: 'replace',
+				op: 'add',
 				path: '/data/status',
 				value: status,
 			},
 			{
-				op: 'replace',
+				op: 'add',
 				path: '/data/statusMetadata',
 				value: metaData
 			},

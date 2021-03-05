@@ -24,8 +24,13 @@ const directory = {
 	output: (task: TaskContract) => path.join(env.outputDir, `task-${task.id}`),
 };
 
-const createArtifactReference = ({ slug, version }: Contract) => `${slug}:${version}`;
-
+const createArtifactReference = ({ slug, version }: Contract) => {
+	let registryPort = "";
+	if (env.registryPort) {
+		registryPort=`:${env.registryPort}`;
+	}
+	return `${env.registryHost}${registryPort}/${slug}:${version}`;
+}
 const runningTasks = new Set<string>();
 
 export async function initializeRunner() {

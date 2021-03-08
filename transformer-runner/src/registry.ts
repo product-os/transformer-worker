@@ -37,7 +37,7 @@ export default class Registry {
 		console.log(`[WORKER] Pushing image ${imageReference}`);
 		let image = await this.loadImage(imagePath);
 		const { registry, repo, tag } = /^(?<registry>[^/]+)\/(?<repo>.*):(?<tag>[^:]+)$/.exec(imageReference)?.groups!
-		await image.tag({ repo: repo, tag: tag, force: true });
+		await image.tag({ repo: `${registry}/${repo}`, tag: tag, force: true });
 		const taggedImage = await this.docker.getImage(imageReference);
 		const authconfig = this.getDockerAuthConfig(authOpts);
 		const pushOpts = { registry: registry, authconfig };

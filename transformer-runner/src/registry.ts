@@ -20,12 +20,12 @@ export default class Registry {
 			: registryHost;
 		this.docker = new Docker();
 	}
-	
+
 	public async pullImage(
 		imageReference: string,
 		authOpts: RegistryAuthOptions,
 	) {
-		const imageRef = `${this.registryUrl}/${imageReference}`;
+		const imageRef = imageReference;
 		console.log(`[WORKER] Pulling image ${imageRef}`);
 		const authconfig = this.getDockerAuthConfig(authOpts);
 		const progressStream = await this.docker.pull(imageRef, { authconfig });
@@ -35,10 +35,14 @@ export default class Registry {
 
 	public async pushImage(imageReference: string, imagePath: string, authOpts: RegistryAuthOptions) {
 		console.log(`[WORKER] Pushing image ${imageReference}`);
-		const image = await this.loadImage(imagePath);
-		await image.tag({ repo: imageReference, force: true });
+		let image = await this.loadImage(imagePath);
+		const { registry, repo, tag } = /^(?<registry>[^/]+)\/(?<repo>.*):(?<tag>[^:]+)$/.exec(imageReference)?.groups!
+		await image.tag({ repo: `${registry}/${repo}`, tag: tag, force: true });
+		const taggedImage = await this.docker.getImage(imageReference);
 		const authconfig = this.getDockerAuthConfig(authOpts);
-		const progressStream = await image.push({ registry: this.registryUrl, authconfig });
+		const pushOpts = { registry: registry, authconfig };
+		console.log("pushing image", taggedImage, pushOpts);
+		const progressStream = await taggedImage.push(pushOpts);
 		await this.followDockerProgress(progressStream);
 	}
 
@@ -50,19 +54,22 @@ export default class Registry {
 		}
 	}
 
-	private async followDockerProgress (progressStream: NodeJS.ReadableStream){
+	private async followDockerProgress(progressStream: NodeJS.ReadableStream) {
 		return new Promise((resolve, reject) =>
-			this.docker.modem.followProgress(progressStream, (err:Error) => err ? reject(err) : resolve(null))
+			this.docker.modem.followProgress(
+				progressStream,
+				(err: Error) => err ? reject(err) : resolve(null),
+				(line: any) => console.log("DOCKER", line))
 		);
 	}
-	
+
 
 	public async pullArtifact(artifactReference: string, destDir: string, opts: RegistryAuthOptions) {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
 			const output = await this.runOrasCommand([
 				`pull`,
-				`${this.registryUrl}/${artifactReference}`,
+				artifactReference,
 			], opts, { cwd: destDir });
 
 			const m = output.match(/Downloaded .* (.*)/);
@@ -84,7 +91,7 @@ export default class Registry {
 			const artifacts = await fs.promises.readdir(artifactPath);
 			const orasCmd = [
 				`push`,
-				`${this.registryUrl}/${artifactReference}`,
+				artifactReference,
 				...artifacts
 			];
 			await this.runOrasCommand(orasCmd, opts, { cwd: artifactPath });
@@ -97,7 +104,7 @@ export default class Registry {
 		if (isLocalRegistry(this.registryUrl)) {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
-		} 
+		}
 		if (opts.username) {
 			args.push('--username');
 			args.push(opts.username);
@@ -120,8 +127,8 @@ export default class Registry {
 		}
 		throw e;
 	};
-	
-	private async loadImage(imageFilePath: string)  {
+
+	private async loadImage(imageFilePath: string) {
 		const loadImageStream = await this.docker.loadImage(fs.createReadStream(imageFilePath));
 		const loadResult = await streamToPromise(loadImageStream);
 

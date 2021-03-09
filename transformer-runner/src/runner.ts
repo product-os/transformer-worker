@@ -10,7 +10,6 @@ import type {
 import { validateTask, validateOutputManifest } from './validation';
 
 import * as fs from 'fs';
-import * as streams from 'memory-streams';
 import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
@@ -131,15 +130,12 @@ async function pullTransformer(
 async function runTransformer(task: TaskContract, transformerImageRef: string) {
 	console.log(`[WORKER] Running transformer image ${transformerImageRef}`);
 
-	const stdout = new streams.WritableStream();
-	const stderr = new streams.WritableStream();
-
 	const docker = registry.docker;
 
 	const runResult = await docker.run(
 		transformerImageRef,
 		[],
-		[stdout, stderr],
+		[process.stdout, process.stderr],
 		{
 			Tty: false,
 			Env: [
@@ -160,10 +156,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 		} as ContainerCreateOptions,
 	);
 
-	// What to do with stdout/stderr?  For now, leaving as it was
-	console.log(JSON.stringify(runResult));
-	console.log(`stdout: ${stdout.toString()}`);
-	console.log(`stderr: ${stderr.toString()}`);
+	console.log("[WORKER] run result", JSON.stringify(runResult));
 
 	const output = runResult[0];
 	// const container = runResult[1];

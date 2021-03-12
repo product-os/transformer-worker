@@ -186,6 +186,47 @@ export default class Jellyfish {
 		});
 		return actorSessionContract.id;
 	}
+
+	async getContractRepository(contract: ArtifactContract) {
+		const [ repo ] = await this.sdk.query({
+			type: 'object',
+			required: ['type', 'data'],
+			properties: {
+				type: {
+					const: 'contract-repository@1.0.0',
+					type: 'string',
+				},
+				data: {
+					type: 'object',
+					required: ['base_slug'],
+					properties: {
+						base_slug: {
+							const: contract.slug,
+							type: 'string'
+						}
+					}
+				}
+			},
+		},{
+			limit:1
+		}) 
+		if (repo) {
+			return repo;
+		}
+		// In the future contract repositories might become natively supported by JF.
+		// For now, the worker takes the responsibility to create them as needed.
+		const newRepo = {
+			type: 'contract-repository@1.0.0',
+			name: `Contract Repository for contracts from ${contract.name}`,
+			slug: `contract-repository-${contract.slug}`,
+			data: {
+				base_slug: contract.slug,
+				base_type: contract.type,
+			}
+		}
+		await this.sdk.card.create(newRepo)
+		return newRepo
+	}
 	
 	private initializeHeartbeat() {
 		setInterval(() => {

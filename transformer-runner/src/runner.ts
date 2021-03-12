@@ -250,6 +250,9 @@ async function pushOutput(
 		// await jf.createLink(inputContract, outputContract, 'was transformed into');
 		// await jf.createLink(transformerContract, outputContract, 'transformed');
 		// await jf.createLink(workerContract, outputContract, 'ran transformation for');
+		
+		const contractRepo = await jf.getContractRepository(outputContract)
+		await jf.createLink(contractRepo, outputContract, 'contains')
 
 		// Mark artifact ready, allowing it to be processed by downstream transformers
 		await jf.markArtifactContractReady(outputContractId!, outputContract.type);

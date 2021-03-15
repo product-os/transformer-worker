@@ -35,7 +35,6 @@ export async function validateOutputManifest(
 		throw new Error(`${message} missing results array`);
 	}
 
-	// TODO: Do we want to support tasks with no output contract?
 	if (m.results.length < 1) {
 		throw new Error(`${message} empty results array`);
 	}

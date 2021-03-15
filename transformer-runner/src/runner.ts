@@ -5,7 +5,7 @@ import type {
 	TaskContract,
 	InputManifest,
 	OutputManifest,
-	Contract,
+	Contract, ArtifactContract,
 } from './types';
 import { validateTask, validateOutputManifest } from './validation';
 
@@ -14,6 +14,7 @@ import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
 import { pathExists } from "./util";
+import {LinkNames} from "./enums";
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -200,13 +201,8 @@ async function pushOutput(
 ) {
 	console.log(`[WORKER] Storing transformer output`);
 
-	const outputDir = directory.output(task)
-
-	// Get contracts for linking later
-	// TODO: Perhaps we can use data we already have in the task contract?
-	// const transformerContract = await jf.getContract(task.data.transformer.id!)
-	// const workerContract = await jf.getContract(jf.userId);
-	// const inputContract = task.data.input;
+	const outputDir = directory.output(task);
+	const inputContract = task.data.input;
 
 	for (const result of outputManifest.results) {
 		// Because storing an artifact requires an existing contract,
@@ -243,20 +239,44 @@ async function pushOutput(
 		}
 
 		// Create links to output contract
-		// TODO: 
-		//  - See if there are better link names we could use.
-		//  - Check why we wanted transformer to be able to define link name
-		//  - these must be defined in the SDK to be usable
-		// await jf.createLink(inputContract, outputContract, 'was transformed into');
-		// await jf.createLink(transformerContract, outputContract, 'transformed');
-		// await jf.createLink(workerContract, outputContract, 'ran transformation for');
-		
 		const contractRepo = await jf.getContractRepository(outputContract)
 		await jf.createLink(contractRepo, outputContract, 'contains')
-
+		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
+		await jf.createLink(task, outputContract, LinkNames.Generated);
+		
 		// Mark artifact ready, allowing it to be processed by downstream transformers
 		await jf.markArtifactContractReady(outputContractId!, outputContract.type);
 	}
+}
+
+async function processBackflow(task: TaskContract, outputManifest: OutputManifest) {
+	console.log(`[WORKER] Processing backflow`);
+
+	const inputContract = task.data.input;
+	
+	// Process backflow from each output contract, to input contract
+	for (const result of outputManifest.results) {
+		const outputContract = result.contract;
+		await jf.updateBackflow(outputContract, inputContract, task);
+	}
+	
+	// Propagate backflow recursively from input contract upstream
+	const backflowLimit = 20;
+	
+	const propagate = async (contract: ArtifactContract, step: number = 1) => {
+		if(step>backflowLimit) {
+			console.log(`[WORKER] Backflow propagation limit reached, not following further`);
+			return;
+		}
+		
+		const parent = await jf.getUpstreamContract(contract);
+		if(parent) {
+			await jf.updateBackflow(contract, parent);
+			await propagate(parent, step+1);
+		}
+	}
+
+	await propagate(inputContract);
 }
 
 async function cleanupWorkspace(task: TaskContract) {
@@ -281,6 +301,8 @@ async function runTask(task: TaskContract) {
 	const outputManifest = await validateOutput(task, transformerExitCode);
 
 	await pushOutput(task, outputManifest, actorCredentials);
+	
+	await processBackflow(task, outputManifest);
 
 	await cleanupWorkspace(task);
 

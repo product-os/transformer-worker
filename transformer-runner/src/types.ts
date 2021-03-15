@@ -47,7 +47,27 @@ export interface TransformerContract extends Contract {
 			os: string;
 			architecture: string;
 		};
+		backflowMapping: [BackflowMapping];
 	};
+}
+
+export interface BackflowMapping {
+	downstreamPath: string;
+	upstreamPath: string;
+}
+
+export interface LinkContract extends Contract {
+	data: {
+		from: {
+			id: string;
+			type: string;
+		}
+		inverseName: string;
+		to: {
+			id: string;
+			type: string;
+		}
+	}
 }
 
 export type InputManifest = {

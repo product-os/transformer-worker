@@ -1,26 +1,29 @@
 import { getSdk } from '@balena/jellyfish-client-sdk';
-import {ActorCredentials, ArtifactContract, Contract, TaskContract, TaskStatusMetadata} from './types';
+import * as jsonpatch from 'fast-json-patch';
+import {
+	ActorCredentials,
+	ArtifactContract, 
+	BackflowMapping,
+	Contract, 
+	LinkContract,
+	TaskContract,
+	TaskStatusMetadata,
+} from './types';
 import * as _ from 'lodash';
-
-enum TaskStatus {
-	Pending = 'pending',
-	Accepted = 'accepted',
-	Completed = 'completed',
-	Failed = 'failed',
-}
+import {LinkNames, TaskStatus} from './enums';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
 	static readonly HEARTBEAT_PERIOD = 10000;
 	private sdk: any;
 	private _userId: string = '';
-	
+
 	get userId(): string {
 		return this._userId;
 	}
 
 	constructor(private apiUrl: string, private apiPrefix: string) {
-		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
+		this.sdk = getSdk({apiUrl: this.apiUrl, apiPrefix: this.apiPrefix});
 	}
 
 	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {
@@ -49,7 +52,7 @@ export default class Jellyfish {
 			console.log(`[WORKER] Logged in to JF, id ${user.id}`);
 			this._userId = user.id;
 			return user.id;
-			
+
 		} else {
 			throw new Error(
 				`Login failed. User: '${user}'`,
@@ -62,7 +65,7 @@ export default class Jellyfish {
 		// TODO:
 		//  - retry
 		//  - reconnection
-		
+
 		const session = await this.sdk.auth.login({username, password});
 		console.log(`[WORKER] Logged in to JF, session: ${session}`);
 	}
@@ -105,6 +108,7 @@ export default class Jellyfish {
 		// Set as draft,
 		// so as not to trigger other transformers before artifact ready
 		_.set(contract, "data.$transformer.artifactReady", false);
+		// TODO: Set deterministic slug (format to be decided).
 		const newContract = await this.sdk.card.create(
 			contract,
 		) as ArtifactContract;
@@ -120,8 +124,7 @@ export default class Jellyfish {
 			},
 		]);
 	}
-
-	// TODO: Check why we are using id and not slug
+	
 	public async getActorCredentials(actorId: string) {
 		return {
 			slug: await this.getActorSlugFromActorId(actorId),
@@ -145,10 +148,10 @@ export default class Jellyfish {
 			duration
 		});
 	}
-	
+
 	private async setTaskStatus(task: TaskContract, status: TaskStatus, metaData: TaskStatusMetadata = {}) {
 		metaData.timestamp = Date.now();
-		
+
 		await this.sdk.card.update(task.id, task.type, [
 			{
 				op: 'add',
@@ -166,6 +169,101 @@ export default class Jellyfish {
 
 	public async createLink(from: Contract, to: Contract, linkName: string) {
 		await this.sdk.card.link(from, to, linkName);
+	}
+
+	private async getLinkTo(linkName: string, contractType: string | undefined, contractId: string | undefined): Promise<LinkContract | undefined> {
+		if (!contractId) {
+			throw new Error("queryLink - contract id not defined");
+		}
+		const linkResult = await this.sdk.query({
+			"type": "object",
+			"required": ["type", "data", "name"],
+			"properties": {
+				"type": {
+					"const": "link@1.0.0",
+					"type": "string"
+				},
+				"name": {
+					"const": linkName,
+					"type": "string"
+				},
+				"data": {
+					"type": "object",
+					"required": ["to"],
+					"properties": {
+						"to": {
+							"type": "object",
+							"required": ["id"],
+							"properties": {
+								"type": {
+									"const": contractType,
+									"type": "string"
+								},
+								"id": {
+									"const": contractId,
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {limit: 1});
+		
+		return linkResult[0];
+	}
+
+	public async getUpstreamContract(contract: ArtifactContract) {
+		const type = undefined;
+		const link = await this.getLinkTo(LinkNames.WasBuiltInto, type, contract.id);
+		if (link) {
+			return await this.getContract(link.data.to.id);
+		}
+	}
+
+	// Get the task that generated the artifact contract
+	public async getArtifactContractTask(contract: ArtifactContract): Promise<TaskContract | undefined> {
+		const type = 'task@1.0.0';
+		const link = await this.getLinkTo(LinkNames.Generated, type, contract.id);
+		if (link) {
+			return await this.getContract(link.data.to.id);
+		} else {
+			throw new Error(`Could not get task contract for artifact ${contract.slug} (no link)`);
+		}
+	}
+
+	private getBackflowPatch(backflowMapping: BackflowMapping[], upstream: ArtifactContract, downstream: ArtifactContract) {
+		const upstreamClone = _.cloneDeep(upstream);
+		
+		// Apply each mapping to clone
+		for (const mapping of backflowMapping) {
+			// Get source value
+			const sourcePath = mapping.downstreamPath;
+			const sourceValue = _.get(downstream, sourcePath);
+			if (typeof sourceValue !== 'undefined') {
+				throw new Error(`Could not read path "${sourcePath}" from contract ${downstream.slug}`);
+			}
+
+			// Apply upstream
+			_.set(upstreamClone, mapping.upstreamPath, sourceValue);
+		}
+		
+		// Generate json patch representing all changes to upstream contract
+		return jsonpatch.compare(upstream, upstreamClone);
+	}
+
+	public async updateBackflow(child: ArtifactContract, parent: ArtifactContract, _task?: TaskContract) {
+		// Get backflow mapping, 
+		// defined in transformer contract of the task that generated artifact contract,
+		const task = _task ?? await this.getArtifactContractTask(child);
+		if(!task) {
+			throw new Error(`Could not find task that generated contract: ${child.slug}`);
+		}
+		const backflowMapping = task.data.transformer.data.backflowMapping;
+		
+		// Get json update patch, and apply
+		const backflowPatch = this.getBackflowPatch(backflowMapping, parent, child);
+		await this.sdk.card.update(parent.id, task.type, backflowPatch);
 	}
 
 	public async getContract(idOrSlug: string) {

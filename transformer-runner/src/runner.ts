@@ -14,7 +14,7 @@ import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
 import { pathExists } from "./util";
-import {LinkNames} from "./enums";
+import { LinkNames } from "./enums";
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -27,7 +27,7 @@ const directory = {
 const createArtifactReference = ({ slug, version }: Contract) => {
 	let registryPort = "";
 	if (env.registryPort) {
-		registryPort=`:${env.registryPort}`;
+		registryPort = `:${env.registryPort}`;
 	}
 	return `${env.registryHost}${registryPort}/${slug}:${version}`;
 }
@@ -133,6 +133,10 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 
 	const docker = registry.docker;
 
+	//HACK - dockerode closes the stream unconditionally
+	process.stdout.end = () => { }
+	process.stderr.end = () => { }
+
 	const runResult = await docker.run(
 		transformerImageRef,
 		[],
@@ -214,7 +218,7 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
-		const outputContractId = await jf.storeArtifactContract(outputContract);
+		await jf.storeArtifactContract(outputContract);
 
 		// Store output artifact
 		const artifactReference = createArtifactReference(outputContract);
@@ -243,9 +247,9 @@ async function pushOutput(
 		await jf.createLink(contractRepo, outputContract, 'contains')
 		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
 		await jf.createLink(task, outputContract, LinkNames.Generated);
-		
+
 		// Mark artifact ready, allowing it to be processed by downstream transformers
-		await jf.markArtifactContractReady(outputContractId!, outputContract.type);
+		await jf.markArtifactContractReady(outputContract);
 	}
 }
 
@@ -253,26 +257,26 @@ async function processBackflow(task: TaskContract, outputManifest: OutputManifes
 	console.log(`[WORKER] Processing backflow`);
 
 	const inputContract = task.data.input;
-	
+
 	// Process backflow from each output contract, to input contract
 	for (const result of outputManifest.results) {
 		const outputContract = result.contract;
 		await jf.updateBackflow(outputContract, inputContract, task);
 	}
-	
+
 	// Propagate backflow recursively from input contract upstream
 	const backflowLimit = 20;
-	
+
 	const propagate = async (contract: ArtifactContract, step: number = 1) => {
-		if(step>backflowLimit) {
+		if (step > backflowLimit) {
 			console.log(`[WORKER] Backflow propagation limit reached, not following further`);
 			return;
 		}
-		
+
 		const parent = await jf.getUpstreamContract(contract);
-		if(parent) {
+		if (parent) {
 			await jf.updateBackflow(contract, parent);
-			await propagate(parent, step+1);
+			await propagate(parent, step + 1);
 		}
 	}
 
@@ -301,7 +305,7 @@ async function runTask(task: TaskContract) {
 	const outputManifest = await validateOutput(task, transformerExitCode);
 
 	await pushOutput(task, outputManifest, actorCredentials);
-	
+
 	await processBackflow(task, outputManifest);
 
 	await cleanupWorkspace(task);

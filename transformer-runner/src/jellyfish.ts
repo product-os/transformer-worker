@@ -2,15 +2,15 @@ import { getSdk } from '@balena/jellyfish-client-sdk';
 import * as jsonpatch from 'fast-json-patch';
 import {
 	ActorCredentials,
-	ArtifactContract, 
+	ArtifactContract,
 	BackflowMapping,
-	Contract, 
+	Contract,
 	LinkContract,
 	TaskContract,
 	TaskStatusMetadata,
 } from './types';
 import * as _ from 'lodash';
-import {LinkNames, TaskStatus} from './enums';
+import { LinkNames, TaskStatus } from './enums';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -23,7 +23,7 @@ export default class Jellyfish {
 	}
 
 	constructor(private apiUrl: string, private apiPrefix: string) {
-		this.sdk = getSdk({apiUrl: this.apiUrl, apiPrefix: this.apiPrefix});
+		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
 	}
 
 	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {
@@ -66,7 +66,7 @@ export default class Jellyfish {
 		//  - retry
 		//  - reconnection
 
-		const session = await this.sdk.auth.login({username, password});
+		const session = await this.sdk.auth.login({ username, password });
 		console.log(`[WORKER] Logged in to JF, session: ${session}`);
 	}
 
@@ -112,11 +112,12 @@ export default class Jellyfish {
 		const newContract = await this.sdk.card.create(
 			contract,
 		) as ArtifactContract;
-		return newContract.id;
+		contract.id = newContract.id;
+		return contract;
 	}
 
-	public async markArtifactContractReady(contractId: string, contractType: string) {
-		await this.sdk.card.update(contractId, contractType, [
+	public async markArtifactContractReady(contract: ArtifactContract) {
+		await this.sdk.card.update(contract.id, contract.type, [
 			{
 				op: 'replace',
 				path: '/data/$transformer/artifactReady',
@@ -124,7 +125,7 @@ export default class Jellyfish {
 			},
 		]);
 	}
-	
+
 	public async getActorCredentials(actorId: string) {
 		return {
 			slug: await this.getActorSlugFromActorId(actorId),
@@ -208,8 +209,8 @@ export default class Jellyfish {
 					}
 				}
 			}
-		}, {limit: 1});
-		
+		}, { limit: 1 });
+
 		return linkResult[0];
 	}
 
@@ -234,7 +235,7 @@ export default class Jellyfish {
 
 	private getBackflowPatch(backflowMapping: BackflowMapping[], upstream: ArtifactContract, downstream: ArtifactContract) {
 		const upstreamClone = _.cloneDeep(upstream);
-		
+
 		// Apply each mapping to clone
 		for (const mapping of backflowMapping) {
 			// Get source value
@@ -247,7 +248,7 @@ export default class Jellyfish {
 			// Apply upstream
 			_.set(upstreamClone, mapping.upstreamPath, sourceValue);
 		}
-		
+
 		// Generate json patch representing all changes to upstream contract
 		return jsonpatch.compare(upstream, upstreamClone);
 	}
@@ -256,11 +257,18 @@ export default class Jellyfish {
 		// Get backflow mapping, 
 		// defined in transformer contract of the task that generated artifact contract,
 		const task = _task ?? await this.getArtifactContractTask(child);
-		if(!task) {
+		if (!task) {
 			throw new Error(`Could not find task that generated contract: ${child.slug}`);
 		}
 		const backflowMapping = task.data.transformer.data.backflowMapping;
-		
+		if (!backflowMapping) {
+			console.log("no backflow mapping defined - skipping");
+			return;
+		}
+		if (!Array.isArray(backflowMapping)) {
+			throw Error(`backflowMapping has wrong type: ${backflowMapping}`);
+		}
+
 		// Get json update patch, and apply
 		const backflowPatch = this.getBackflowPatch(backflowMapping, parent, child);
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
@@ -286,7 +294,7 @@ export default class Jellyfish {
 	}
 
 	async getContractRepository(contract: ArtifactContract) {
-		const [ repo ] = await this.sdk.query({
+		const [repo] = await this.sdk.query({
 			type: 'object',
 			required: ['type', 'data'],
 			properties: {
@@ -305,9 +313,9 @@ export default class Jellyfish {
 					}
 				}
 			},
-		},{
-			limit:1
-		}) 
+		}, {
+			limit: 1
+		})
 		if (repo) {
 			return repo;
 		}
@@ -325,7 +333,7 @@ export default class Jellyfish {
 		await this.sdk.card.create(newRepo)
 		return newRepo
 	}
-	
+
 	private initializeHeartbeat() {
 		setInterval(() => {
 			try {

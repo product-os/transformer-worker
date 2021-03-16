@@ -8,13 +8,13 @@ import type {
 	Contract, ArtifactContract,
 } from './types';
 import { validateTask, validateOutputManifest } from './validation';
-
 import * as fs from 'fs';
 import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
 import { pathExists } from "./util";
 import { LinkNames } from "./enums";
+import * as _ from "lodash";
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -218,6 +218,15 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
+		outputContract.version = inputContract.version;
+		_.set(outputContract, "data.$transformer.artifactReady", false);
+		const baseSlug = inputContract.data.$transformer.baseSlug;
+		// If baseSlug exists, then set deterministic slug, 
+		// otherwise keep transformer-defined slug
+		if(baseSlug) {
+			outputContract.data.$transformer.baseSlug = baseSlug;
+			outputContract.slug = `${outputContract.type}-${baseSlug}`;
+		}
 		await jf.storeArtifactContract(outputContract);
 
 		// Store output artifact

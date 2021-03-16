@@ -104,15 +104,25 @@ export default class Jellyfish {
 	}
 
 	public async storeArtifactContract(contract: ArtifactContract) {
-		// TODO: Do upsert instead of insert.
-		// Set as draft,
-		// so as not to trigger other transformers before artifact ready
-		_.set(contract, "data.$transformer.artifactReady", false);
-		// TODO: Set deterministic slug (format to be decided).
-		const newContract = await this.sdk.card.create(
-			contract,
-		) as ArtifactContract;
-		contract.id = newContract.id;
+		// See if contract already exists
+		const versionedSlug = `${contract.slug}@${contract.version}`;
+		let storedContract = await this.sdk.card.get(versionedSlug);
+		
+		if(storedContract) {
+			// Update existing 
+			const patch = jsonpatch.compare(storedContract, contract);
+			storedContract = await this.sdk.card.update(
+				storedContract.id, storedContract.type, patch
+			) as ArtifactContract;
+		}
+		else {
+			// Create new contract
+			storedContract = await this.sdk.card.create(
+				contract,
+			) as ArtifactContract;
+		}
+		
+		contract.id = storedContract.id;
 		return contract;
 	}
 
@@ -271,6 +281,7 @@ export default class Jellyfish {
 
 		// Get json update patch, and apply
 		const backflowPatch = this.getBackflowPatch(backflowMapping, parent, child);
+		
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
 	}
 

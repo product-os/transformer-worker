@@ -33,6 +33,7 @@ export interface ArtifactContract extends Contract {
 	data: {
 		$transformer: {
 			artifactReady: boolean;
+			baseSlug: string;
 		}
 	};
 }

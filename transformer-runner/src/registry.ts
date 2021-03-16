@@ -59,7 +59,19 @@ export default class Registry {
 			this.docker.modem.followProgress(
 				progressStream,
 				(err: Error) => err ? reject(err) : resolve(null),
-				(line: any) => console.log("DOCKER", line))
+				(line: any) => {
+					if (line.progress) {
+
+						// Progress bar's just spam the logs
+						return;
+					}
+					console.log("DOCKER", line);
+					if (line.error) {
+
+						// For some reason not all errors appear in the error callback above
+						reject(line);
+					}
+				})
 		);
 	}
 

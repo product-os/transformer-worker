@@ -224,8 +224,9 @@ async function pushOutput(
 		// If baseSlug exists, then set deterministic slug, 
 		// otherwise keep transformer-defined slug
 		if(baseSlug) {
+			const outputType = outputContract.type.split('@')[0];
 			outputContract.data.$transformer.baseSlug = baseSlug;
-			outputContract.slug = `${outputContract.type}-${baseSlug}`;
+			outputContract.slug = `${outputType}-${baseSlug}`;
 		}
 		await jf.storeArtifactContract(outputContract);
 

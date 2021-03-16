@@ -251,7 +251,7 @@ export default class Jellyfish {
 			// Get source value
 			const sourcePath = mapping.downstreamPath;
 			const sourceValue = _.get(downstream, sourcePath);
-			if (typeof sourceValue !== 'undefined') {
+			if (typeof sourceValue === 'undefined') {
 				throw new Error(`Could not read path "${sourcePath}" from contract ${downstream.slug}`);
 			}
 

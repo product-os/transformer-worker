@@ -1,0 +1,5 @@
+{
+  "extends": [
+    "github>product-os/jellyfish-renovate-config"
+  ]
+}

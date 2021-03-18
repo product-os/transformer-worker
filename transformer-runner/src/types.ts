@@ -1,4 +1,4 @@
-export type ActorCredentials = {
+export interface ActorCredentials {
 	slug: string;
 	sessionToken: string;
 };
@@ -53,9 +53,15 @@ export interface TransformerContract extends Contract {
 }
 
 export interface BackflowMapping {
-	downstreamPath: string;
-	upstreamPath: string;
+	downstreamPath?: string;
+	downstreamValue?:  Formula | any;
+	upstreamPath: Formula | string;
 }
+
+export interface Formula {
+	$$formula: string;
+}
+
 
 export interface LinkContract extends Contract {
 	data: {

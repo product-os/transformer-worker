@@ -1,8 +1,5 @@
-
 import * as fs from 'fs';
-import rewire = require('rewire');
-const runner = rewire('../src/runner.ts');
-//import runner = require('../src/runner')
+import runner = require('../src/runner')
 
 const task = JSON.parse(fs.readFileSync('./fixtures/task.json', 'utf-8'));
 
@@ -20,8 +17,5 @@ describe("getDir", () => {
         const dir = getDir.output(task)
         expect(dir).toEqual(`${OUTPUT_DIR}task-5ea68e0d-61c6-4cb6-be89-52db6045b586`);
     });
-});
-
-describe("processBackflow", () => {
 });
 

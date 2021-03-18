@@ -11,6 +11,7 @@ import {
 } from './types';
 import * as _ from 'lodash';
 import { LinkNames, TaskStatus } from './enums';
+import {evaluateFormulaOrValue} from "./util";
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -248,15 +249,31 @@ export default class Jellyfish {
 
 		// Apply each mapping to clone
 		for (const mapping of backflowMapping) {
-			// Get source value
-			const sourcePath = mapping.downstreamPath;
-			const sourceValue = _.get(downstream, sourcePath);
-			if (typeof sourceValue === 'undefined') {
-				throw new Error(`Could not read path "${sourcePath}" from contract ${downstream.slug}`);
+			
+			// Get source (downstream) value
+			// Either specified by ref as static path in downstreamPath, or formula in downstreamValue.$$formula
+			let sourceValue;
+			if(mapping.downstreamPath) {
+				const sourcePath = mapping.downstreamPath;
+				sourceValue = _.get(downstream, sourcePath);
+				if (typeof sourceValue === 'undefined') {
+					throw new Error(`Could not read path '${sourcePath}' from contract '${downstream.slug}'`);
+				}
+			} 
+			else if(mapping.downstreamValue) {
+				// Evaluate source (downstream) value or formula
+				sourceValue = evaluateFormulaOrValue(mapping.downstreamValue, { upstream, downstream });
 			}
-
+			else {
+				throw new Error(`No backflow mapping source specified for contract '${downstream.slug}'`);
+			}
+			
+			// Get target (upstream) path
+			// Either specified as static path in upstreamPath, or formula in upstreamPath.$$formula
+			const sourcePath = evaluateFormulaOrValue(mapping.upstreamPath, { upstream, downstream });
+			
 			// Apply upstream
-			_.set(upstreamClone, mapping.upstreamPath, sourceValue);
+			_.set(upstreamClone, sourcePath, sourceValue);
 		}
 
 		// Generate json patch representing all changes to upstream contract
@@ -272,7 +289,7 @@ export default class Jellyfish {
 		}
 		const backflowMapping = task.data.transformer.data.backflowMapping;
 		if (!backflowMapping) {
-			console.log("no backflow mapping defined - skipping");
+			console.log('No backflow mapping defined - skipping');
 			return;
 		}
 		if (!Array.isArray(backflowMapping)) {

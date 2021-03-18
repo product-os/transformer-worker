@@ -1,5 +1,8 @@
 import * as fs from 'fs';
 import { F_OK } from 'constants';
+import { Formula } from "./types";
+const jellyscript = require('@balena/jellyfish-jellyscript');
+
 
 export const pathExists = async (path: string) => {
     try {
@@ -17,4 +20,23 @@ export function streamToPromise(stream: NodeJS.ReadableStream): Promise<string> 
         stream.on('end', () => resolve(buf));
         stream.on('error', reject);
     });
+}
+
+export function evaluateFormulaOrValue(formulaOrValue: Formula | any, context: any) {
+    if(formulaOrValue.$$formula) {
+        try {
+            const result = jellyscript.evaluate(formulaOrValue.$$formula, {
+                context
+            });
+            return result?.value;
+        } 
+        catch(e) {
+            if(e.message) {
+                e.message = `Formula eval error: ${e.message}`;
+            }
+            throw e;
+        }
+    } else {
+        return formulaOrValue;
+    }
 }

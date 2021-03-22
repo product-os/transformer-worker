@@ -251,26 +251,23 @@ export default class Jellyfish {
 		for (const mapping of backflowMapping) {
 			
 			// Get source (downstream) value
-			// Either specified by ref as static path in downstreamPath, or formula in downstreamValue.$$formula
+			// Specified as either a literal value or formula referencing a downstream property
 			let sourceValue;
-			if(mapping.downstreamPath) {
-				const sourcePath = mapping.downstreamPath;
-				sourceValue = _.get(downstream, sourcePath);
-				if (typeof sourceValue === 'undefined') {
-					throw new Error(`Could not read path '${sourcePath}' from contract '${downstream.slug}'`);
-				}
-			} 
-			else if(mapping.downstreamValue) {
-				// Evaluate source (downstream) value or formula
+			if(mapping.downstreamValue) {
 				sourceValue = evaluateFormulaOrValue(mapping.downstreamValue, { upstream, downstream });
 			}
 			else {
-				throw new Error(`No backflow mapping source specified for contract '${downstream.slug}'`);
+				throw new Error(`Missing backflow mapping source for contract '${downstream.slug}'`);
 			}
 			
 			// Get target (upstream) path
-			// Either specified as static path in upstreamPath, or formula in upstreamPath.$$formula
-			const sourcePath = evaluateFormulaOrValue(mapping.upstreamPath, { upstream, downstream });
+			// Specified as either static path or a formula 
+			let sourcePath;
+			if(mapping.upstreamPath) {
+				sourcePath = evaluateFormulaOrValue(mapping.upstreamPath, {upstream, downstream});
+			} else {
+				throw new Error(`Missing backflow mapping target for contract '${downstream.slug}'`);
+			}
 			
 			// Apply upstream
 			_.set(upstreamClone, sourcePath, sourceValue);

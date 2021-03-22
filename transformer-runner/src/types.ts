@@ -53,7 +53,6 @@ export interface TransformerContract extends Contract {
 }
 
 export interface BackflowMapping {
-	downstreamPath?: string;
 	downstreamValue?:  Formula | any;
 	upstreamPath: Formula | string;
 }

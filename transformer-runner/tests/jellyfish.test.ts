@@ -26,18 +26,6 @@ describe("getBackflowPatch", () => {
 
     describe("should produce correct patch when passed", () => {
         
-        test("static source path, static target path", () => {
-            const backFlowMapping = [{
-                downstreamPath: 'a',
-                upstreamPath: 'x.a',
-            }];
-            
-            const patch = getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
-            jsonpatch.applyPatch(upstreamContract, patch);
-            
-            expect(upstreamContract.x.a).toStrictEqual(downstreamContract.a);
-        });
-
         test("literal source value, static target path", () => {
             const backFlowMapping = [{
                 downstreamValue: 101,
@@ -64,9 +52,9 @@ describe("getBackflowPatch", () => {
             expect(upstreamContract.x.a).toStrictEqual(downstreamContract.b + downstreamContract.c);
         });
 
-        test("static source path, static target path", () => {
+        test("literal source value, formula derived target path", () => {
             const backFlowMapping = [{
-                downstreamPath: 'a',
+                downstreamValue: 'a slug',
                 upstreamPath:  {
                     $$formula: 'this.downstream.d',
                 },
@@ -75,17 +63,17 @@ describe("getBackflowPatch", () => {
             const patch = getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
             jsonpatch.applyPatch(upstreamContract, patch);
 
-            expect(upstreamContract.slug).toStrictEqual(downstreamContract.a);
+            expect(upstreamContract.slug).toStrictEqual('a slug');
         });
 
         test("multiple mappings", () => {
             const backFlowMapping = [
                 {
-                downstreamPath: 'a',
-                upstreamPath: 'x.a',
+                    downstreamValue: 1,
+                    upstreamPath: 'x.a',
                 },
                 {
-                    downstreamPath: 'b',
+                    downstreamValue: 2,
                     upstreamPath: 'x.b',
                 }
             ];
@@ -93,8 +81,8 @@ describe("getBackflowPatch", () => {
             const patch = getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
             jsonpatch.applyPatch(upstreamContract, patch);
 
-            expect(upstreamContract.x.a).toStrictEqual(downstreamContract.a);
-            expect(upstreamContract.x.b).toStrictEqual(downstreamContract.b);
+            expect(upstreamContract.x.a).toStrictEqual(1);
+            expect(upstreamContract.x.b).toStrictEqual(2);
         });
 
         test("empty backflowMapping array", () => {
@@ -107,20 +95,8 @@ describe("getBackflowPatch", () => {
     });
 
     describe("should throw error when", () => {
-
-        test("downstreamPath points to undefined value", () => {
-            const backFlowMapping = [{
-                downstreamPath: 'f',
-                upstreamPath: 'x',
-            }];
-            const call = () => {
-                getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
-            }
-            
-            expect(call).toThrowError(/Could not read path/);
-        });
-
-        test("both downstreamPath and downstreamValue are undefined ", () => {
+        
+        test("downstreamValue is undefined ", () => {
             const backFlowMapping = [{
                 upstreamPath: 'x',
             }];
@@ -128,7 +104,7 @@ describe("getBackflowPatch", () => {
                 getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
             }
 
-            expect(call).toThrowError(/No backflow mapping source specified for contract/);
+            expect(call).toThrowError(/Missing backflow mapping source/);
         });
 
         test("downstreamValue contains invalid formula", () => {
@@ -145,9 +121,20 @@ describe("getBackflowPatch", () => {
             expect(call).toThrowError(/Formula eval error/);
         });
 
+        test("upstreamPath is undefined ", () => {
+            const backFlowMapping = [{
+                downstreamValue: 101,
+            }];
+            const call = () => {
+                getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
+            }
+
+            expect(call).toThrowError(/Missing backflow mapping target/);
+        });
+
         test("upstreamPath contains invalid formula", () => {
             const backFlowMapping = [{
-                downstreamPath: 'a',
+                downstreamValue: 101,
                 upstreamPath: {
                     $$formula: 'not a formula'
                 },

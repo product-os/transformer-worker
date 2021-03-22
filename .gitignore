@@ -1,3 +1,6 @@
 *\.balena/balena.yml
 node_modules
 .idea
+.gitsecret/keys/random_seed
+!*.secret
+pki/private.key

@@ -124,6 +124,7 @@ export default class Jellyfish {
 		}
 		
 		contract.id = storedContract.id;
+		contract.slug = storedContract.slug;
 		return contract;
 	}
 
@@ -348,7 +349,7 @@ export default class Jellyfish {
 		// For now, the worker takes the responsibility to create them as needed.
 		const newRepo = {
 			type: 'contract-repository@1.0.0',
-			name: `Contract Repository for contracts from ${contract.name}`,
+			name: `Contract Repository ${contract.name || contract.slug} contracts`,
 			slug: `contract-repository-${contract.slug}`,
 			data: {
 				base_slug: contract.slug,

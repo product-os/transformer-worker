@@ -1,5 +1,0 @@
-build-variables:
-  services:
-    transformer-runner:
-      - NPM_TOKEN=
-

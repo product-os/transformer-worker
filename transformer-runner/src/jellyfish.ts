@@ -356,8 +356,8 @@ export default class Jellyfish {
 				base_type: contract.type,
 			}
 		}
-		await this.sdk.card.create(newRepo)
-		return newRepo
+		const createResult = await this.sdk.card.create(newRepo)
+		return { ...newRepo, ...createResult }
 	}
 
 	private initializeHeartbeat() {

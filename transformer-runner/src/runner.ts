@@ -15,9 +15,13 @@ import { ContainerCreateOptions } from 'dockerode';
 import { pathExists } from "./util";
 import { LinkNames } from "./enums";
 import * as _ from "lodash";
+import * as NodeRSA from 'node-rsa';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
+const secretsKey = env.secretKey ?
+	new NodeRSA(Buffer.from(env.secretKey, 'base64').toString('utf-8'), 'pkcs1', { encryptionScheme: 'pkcs1' })
+	: undefined
 
 const directory = {
 	input: (task: TaskContract) => path.join(env.inputDir, `task-${task.id}`),
@@ -104,6 +108,7 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 		input: {
 			contract: inputContract,
 			artifactPath: env.artifactDirectoryName,
+			decryptedSecrets: decryptSecrets(inputContract.data.$transformer.encryptedSecrets),
 		},
 	};
 
@@ -223,7 +228,7 @@ async function pushOutput(
 		const baseSlug = inputContract.data.$transformer.baseSlug;
 		// If baseSlug exists, then set deterministic slug, 
 		// otherwise keep transformer-defined slug
-		if(baseSlug) {
+		if (baseSlug) {
 			const outputType = outputContract.type.split('@')[0];
 			outputContract.data.$transformer.baseSlug = baseSlug;
 			outputContract.slug = `${outputType}-${baseSlug}`;
@@ -321,4 +326,34 @@ async function runTask(task: TaskContract) {
 	await cleanupWorkspace(task);
 
 	console.log(`[WORKER] Task ${task.slug} completed successfully`);
+}
+
+/**
+ * This function takes an object tree with all string values expected to be
+ * base64 encoded secrets and returns the same tree with the values decrypted
+ * but again base64 encoded. 
+ * (The latter allows passing binary secrets as well)
+ * 
+ * @param encryptedSecrets object that only contains string values or other encryptedSecrets objects
+ */
+function decryptSecrets(sec: any): any {
+	if (!sec) {
+		return undefined;
+	}
+	if (!secretsKey) {
+		console.log(`WARN: no secrets key provided! Will pass along secrets without decryption. Should not happen in production`)
+		return sec;
+	}
+	let result: any = {};
+	for (const key of Object.keys(sec)) {
+		const val = sec[key];
+		if (typeof val === "string") {
+			result[key] = secretsKey.decrypt(val, "base64");
+		} else if (typeof val === "object") {
+			result[key] = decryptSecrets(val);
+		} else {
+			console.log(`WARN: unknown type in secrets for key ${key}`)
+		}
+	}
+	return result
 }

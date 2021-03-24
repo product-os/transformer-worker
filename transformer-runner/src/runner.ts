@@ -15,7 +15,7 @@ import { ContainerCreateOptions } from 'dockerode';
 import { pathExists } from "./util";
 import { LinkNames } from "./enums";
 import * as _ from "lodash";
-import * as NodeRSA from 'node-rsa';
+import NodeRSA = require('node-rsa');
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -108,7 +108,7 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 		input: {
 			contract: inputContract,
 			artifactPath: env.artifactDirectoryName,
-			decryptedSecrets: decryptSecrets(inputContract.data.$transformer.encryptedSecrets),
+			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer.encryptedSecrets),
 		},
 	};
 
@@ -336,7 +336,7 @@ async function runTask(task: TaskContract) {
  * 
  * @param encryptedSecrets object that only contains string values or other encryptedSecrets objects
  */
-function decryptSecrets(sec: any): any {
+export function decryptSecrets(secretsKey: NodeRSA | undefined, sec: any): any {
 	if (!sec) {
 		return undefined;
 	}
@@ -350,7 +350,7 @@ function decryptSecrets(sec: any): any {
 		if (typeof val === "string") {
 			result[key] = secretsKey.decrypt(val, "base64");
 		} else if (typeof val === "object") {
-			result[key] = decryptSecrets(val);
+			result[key] = exports.decryptSecrets(secretsKey, val);
 		} else {
 			console.log(`WARN: unknown type in secrets for key ${key}`)
 		}

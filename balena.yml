@@ -8,10 +8,8 @@ data:
       balenaApiKey: >-
         ZVHQiIKm8eusONh7YhFxxm8PNP0CWykc44yhGLfuCRkLVwSShLLykenUfGICB1DzlA7BIlZm2kHa2v0G6ek19RmQP9r9fHOt+lxaPR8rb2/GSpMUdfcyGaIMl/dUVhPW3mX26Ir6Hla1jOOtBp+98kycCVR6ZAE4SwGe8j1A7CJoBa+iuI4XXcPHtLS6ugapT+0FWMYyi110enTM9gqkShgxRfyfZMDLJGLOZKho9awTrjaWz/3B2IdgYts8MAqqNHMDEekpIxgnAi1soadXrYk0IWSPbe8fRqRN62fnzFWNzrxG05bs2v1yikchb4wP2YJyrgq/YvFJTldw+fCCjA==
       buildVariables:
-        services:
-          transformer-runner:
-            NPM_TOKEN: >-
-              WjdzolKFfsMp0xMxPOEpZizVEFPjKj6nwHzecYlVupHN13JT033Iz6FR4NgUUAkT7W6DHVM+pWPGCQi0hfd/KM5D5bdJLvLYNsTRAC7LUQancYIXy8Zt3BDR6JNeoRVCU8dGjnOX1wflcXgeP/4a9SMuuh5MD3lFzWuW8DYMKDcAchv9hNg5ZXp6ofwsA/QQ589fyrG7FtjozWRL/iBR9nsdh4lvWq3jZvJv1gl215HCMI+oeW6sP9VSBElq/QzH63Nscup+JbsEkTjIzh75s41Jhf0JwKT+1IL/Qcs7jTLwMZ4XEsHArSHD1imZtcj+FvPTebGpH2Tp8zEwVar0jQ==
+        NPM_TOKEN: >-
+          WjdzolKFfsMp0xMxPOEpZizVEFPjKj6nwHzecYlVupHN13JT033Iz6FR4NgUUAkT7W6DHVM+pWPGCQi0hfd/KM5D5bdJLvLYNsTRAC7LUQancYIXy8Zt3BDR6JNeoRVCU8dGjnOX1wflcXgeP/4a9SMuuh5MD3lFzWuW8DYMKDcAchv9hNg5ZXp6ofwsA/QQ589fyrG7FtjozWRL/iBR9nsdh4lvWq3jZvJv1gl215HCMI+oeW6sP9VSBElq/QzH63Nscup+JbsEkTjIzh75s41Jhf0JwKT+1IL/Qcs7jTLwMZ4XEsHArSHD1imZtcj+FvPTebGpH2Tp8zEwVar0jQ==
   balenaAppName: product-os-transformers-workers
   defaultDeviceType: genericx86-64-ext
   defaultArch: amd64

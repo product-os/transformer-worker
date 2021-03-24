@@ -34,6 +34,7 @@ export interface ArtifactContract extends Contract {
 		$transformer: {
 			artifactReady: boolean;
 			baseSlug: string;
+			encryptedSecrets?: any;
 		}
 	};
 }
@@ -80,6 +81,7 @@ export type InputManifest = {
 	input: {
 		contract: ArtifactContract;
 		artifactPath: string;
+		decryptedSecrets?: any;
 	};
 };
 

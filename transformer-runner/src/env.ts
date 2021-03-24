@@ -1,4 +1,4 @@
-export default {
+  export default {
 	// Old registration process
 	workerJfToken: process.env.WORKER_JF_TOKEN || '',
 	
@@ -10,6 +10,7 @@ export default {
 	jfApiPrefix: process.env.JF_API_PREFIX || '',
 	registryHost: process.env.REGISTRY_HOST || '',
 	registryPort: process.env.REGISTRY_PORT,
+	secretKey: process.env.RSA_PRIVATE_KEY,
 	standardArtifactType: 'tgz',
 	inputDir: 'input',
 	outputDir: 'output',

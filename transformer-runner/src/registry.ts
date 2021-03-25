@@ -60,7 +60,7 @@ export default class Registry {
 				progressStream,
 				(err: Error) => err ? reject(err) : resolve(null),
 				(line: any) => {
-					if (line.progress) {
+					if (line.progress || line.progressDetail) {
 
 						// Progress bar's just spam the logs
 						return;

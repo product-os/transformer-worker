@@ -19,7 +19,7 @@ export WORKER_JF_TOKEN="${WORKER_JF_TOKEN:-$TOKEN}"
 (
     while true; do
         rm -f /var/run/docker.pid
-        dockerd
+        dockerd >/dev/null 2>&1 # too much spam
         echo "ERROR dockerd exited! Will retry"
         sleep 1
     done

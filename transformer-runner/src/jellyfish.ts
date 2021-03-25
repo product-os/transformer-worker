@@ -184,7 +184,7 @@ export default class Jellyfish {
 		await this.sdk.card.link(from, to, linkName);
 	}
 
-	private async getLinkTo(linkName: string, contractType: string | undefined, contractId: string | undefined): Promise<LinkContract | undefined> {
+	private async getLinkTo(linkName: string, fromType: string | undefined, contractId: string | undefined): Promise<LinkContract | undefined> {
 		if (!contractId) {
 			throw new Error("queryLink - contract id not defined");
 		}
@@ -202,22 +202,28 @@ export default class Jellyfish {
 				},
 				"data": {
 					"type": "object",
-					"required": ["to"],
+					"required": ["to", "from"],
 					"properties": {
 						"to": {
 							"type": "object",
 							"required": ["id"],
 							"properties": {
-								"type": {
-									"const": contractType,
-									"type": "string"
-								},
 								"id": {
 									"const": contractId,
 									"type": "string"
 								}
 							}
-						}
+						},
+						"from": {
+							"type": "object",
+							"required": ["type"],
+							"properties": {
+								"type": {
+									"const": fromType,
+									"type": "string"
+								},
+							}
+						},
 					}
 				}
 			}
@@ -230,7 +236,7 @@ export default class Jellyfish {
 		const type = undefined;
 		const link = await this.getLinkTo(LinkNames.WasBuiltInto, type, contract.id);
 		if (link) {
-			return await this.getContract(link.data.to.id);
+			return await this.getContract(link.data.from.id);
 		}
 	}
 
@@ -239,7 +245,7 @@ export default class Jellyfish {
 		const type = 'task@1.0.0';
 		const link = await this.getLinkTo(LinkNames.Generated, type, contract.id);
 		if (link) {
-			return await this.getContract(link.data.to.id);
+			return await this.getContract(link.data.from.id);
 		} else {
 			throw new Error(`Could not get task contract for artifact ${contract.slug} (no link)`);
 		}

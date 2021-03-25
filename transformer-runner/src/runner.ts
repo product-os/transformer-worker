@@ -63,9 +63,9 @@ const acceptTask = async (update: any) => {
 			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
 			return;
 		}
-		await jf.setTaskStatusAccepted(task);
 		runningTasks.add(task.id!);
 		try {
+			await jf.setTaskStatusAccepted(task);
 			await runTask(task);
 			await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
 		} catch (e) {
@@ -155,6 +155,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 			Volumes: {
 				'/input/': {},
 				'/output/': {},
+				'/var/lib/docker': {} // if the transformers uses docker-in-docker, this is required
 			},
 			HostConfig: {
 				Privileged: true,
@@ -162,6 +163,9 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 					`${path.resolve(directory.input(task))}:/input/:ro`,
 					`${path.resolve(directory.output(task))}:/output/`,
 				],
+				Tmpfs: {
+					'/var/lib/docker': 'rw'
+				}
 			},
 		} as ContainerCreateOptions,
 	);

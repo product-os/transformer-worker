@@ -1,7 +1,7 @@
 type: generic-source@1.0.0
 name: source of transformer-worker
 slug: generic-source-transformer-worker
-version: 0.0.2
+version: 0.0.5
 data:
   $transformer:
     baseSlug: transformer-worker

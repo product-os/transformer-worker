@@ -162,18 +162,19 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 				Binds: [
 					`${path.resolve(directory.input(task))}:/input/:ro`,
 					`${path.resolve(directory.output(task))}:/output/`,
+					'tmp-docker:/var/lib/docker',
 				],
-				Tmpfs: {
-					'/var/lib/docker': 'rw'
-				}
 			},
 		} as ContainerCreateOptions,
 	);
 
-	console.log("[WORKER] run result", JSON.stringify(runResult));
-
 	const output = runResult[0];
-	// const container = runResult[1];
+	const container = runResult[1];
+
+	await docker.getContainer(container.id).remove({force: true})
+	await docker.getVolume('tmp-docker').remove({force: true})
+
+	console.log("[WORKER] run result", JSON.stringify(runResult));
 
 	return output.StatusCode;
 }

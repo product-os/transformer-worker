@@ -25,5 +25,6 @@ export WORKER_JF_TOKEN="${WORKER_JF_TOKEN:-$TOKEN}"
     done
 )& 
 
-sleep 2
-npm start
+while ! docker info >/dev/null 2>&1; do sleep 1s; done
+
+exec node build/index.js

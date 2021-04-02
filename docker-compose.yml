@@ -6,6 +6,7 @@ services:
     privileged: true
     volumes:
       - shared:/shared
+      - shared-docker-socket:/var/run
 
   fleet-launcher:
     build: ./fleet-launcher
@@ -19,16 +20,17 @@ services:
       - shared:/shared
 
   garbage-collector:
-    build: ./garbage-collector
+    image: stephanmisc/docuum:0.16.1
     restart: always
-    environment:
-      - DOCKER_HOST=unix:///var/run/balena-engine.sock
-    labels:
-      io.balena.features.balena-socket: '1'
+    command: --threshold '4 GB'
+    depends_on:
+      - transformer-runner
     volumes:
       - garbage-collector:/root
+      - shared-docker-socket:/var/run
 
 volumes:
   registry-data: {}
   garbage-collector: {}
   shared: {}
+  shared-docker-socket: {}

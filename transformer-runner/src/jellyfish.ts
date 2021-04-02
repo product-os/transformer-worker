@@ -16,15 +16,16 @@ import {evaluateFormulaOrValue} from "./util";
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
 	static readonly HEARTBEAT_PERIOD = 10000;
-	private sdk: any;
 	private _userId: string = '';
 
 	get userId(): string {
 		return this._userId;
 	}
 
-	constructor(private apiUrl: string, private apiPrefix: string) {
-		this.sdk = getSdk({ apiUrl: this.apiUrl, apiPrefix: this.apiPrefix });
+	constructor(
+		apiUrl: string, 
+		apiPrefix: string, 
+		private sdk = getSdk({ apiUrl: apiUrl, apiPrefix: apiPrefix })) {
 	}
 
 	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {

@@ -1,5 +1,5 @@
 # builder
-FROM golang:1.16.2-alpine as builder
+FROM golang:1.16.3-alpine as builder
 
 ARG NPM_TOKEN
 

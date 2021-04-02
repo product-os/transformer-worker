@@ -158,7 +158,8 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 				'/var/lib/docker': {} // if the transformers uses docker-in-docker, this is required
 			},
 			HostConfig: {
-				Privileged: true,
+				Init: true, // should ensure that containers never leave zombie processes
+				Privileged: true, //TODO: this should at least only happen for Transformers that need it
 				Binds: [
 					`${path.resolve(directory.input(task))}:/input/:ro`,
 					`${path.resolve(directory.output(task))}:/output/`,

@@ -23,6 +23,6 @@
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "socket.io": "^2.4.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.4"
   }
 }

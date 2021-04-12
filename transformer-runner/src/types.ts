@@ -1,57 +1,41 @@
+import { ContractData } from "@balena/jellyfish-types/build/core";
+import { Contract } from "@balena/jellyfish-types/build/core";
+
 export interface ActorCredentials {
 	slug: string;
 	sessionToken: string;
 };
 
-export interface Contract {
-	id?: string;
-	data?: any;
-	name?: string;
-	slug: string;
-	tags?: string[];
-	type: string;
-	links?: any;
-	active?: boolean;
-	markers?: any[];
-	version: string;
-	linked_at?: any;
-	created_at?: string;
-	updated_at?: string;
-	requires?: any[];
-	provides?: any[];
+interface TaskData extends ContractData {
+	actor: string;
+	input: ArtifactContract;
+	transformer: TransformerContract;
 }
 
-export interface TaskContract extends Contract {
-	data: {
-		actor: string;
-		input: ArtifactContract;
-		transformer: TransformerContract;
+export interface TaskContract extends Contract<TaskData> {};
+
+interface ArtifactData extends ContractData {
+	$transformer: {
+		artifactReady: boolean;
+		baseSlug: string;
+		encryptedSecrets?: any;
 	};
+}
+export interface ArtifactContract extends Contract<ArtifactData> {}
+
+interface TransformerData extends ContractData {
+	image: {
+		name: string;
+	};
+	trigger: any;
+	requirements: {
+		os: string;
+		architecture: string;
+	};
+	backflowMapping: [BackflowMapping];
 }
 
-export interface ArtifactContract extends Contract {
-	data: {
-		$transformer: {
-			artifactReady: boolean;
-			baseSlug: string;
-			encryptedSecrets?: any;
-		}
-	};
-}
-
-export interface TransformerContract extends Contract {
-	data: {
-		image: {
-			name: string;
-		};
-		trigger: any;
-		requirements: {
-			os: string;
-			architecture: string;
-		};
-		backflowMapping: [BackflowMapping];
-	};
-}
+export interface TransformerContract extends Contract<TransformerData> {}
 
 export interface BackflowMapping {
 	downstreamValue?:  Formula | any;
@@ -62,9 +46,7 @@ export interface Formula {
 	$$formula: string;
 }
 
-
-export interface LinkContract extends Contract {
-	data: {
+interface LinkData extends ContractData {
 		from: {
 			id: string;
 			type: string;
@@ -75,7 +57,7 @@ export interface LinkContract extends Contract {
 			type: string;
 		}
 	}
-}
+export interface LinkContract extends Contract<LinkData> {}
 
 export type InputManifest = {
 	input: {

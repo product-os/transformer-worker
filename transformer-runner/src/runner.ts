@@ -5,7 +5,7 @@ import type {
 	TaskContract,
 	InputManifest,
 	OutputManifest,
-	Contract, ArtifactContract,
+	ArtifactContract,
 } from './types';
 import { validateTask, validateOutputManifest } from './validation';
 import * as fs from 'fs';
@@ -16,6 +16,7 @@ import { pathExists } from "./util";
 import { LinkNames } from "./enums";
 import * as _ from "lodash";
 import NodeRSA = require('node-rsa');
+import { Contract } from '@balena/jellyfish-types/build/core';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);

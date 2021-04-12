@@ -4,7 +4,6 @@ import {
 	ActorCredentials,
 	ArtifactContract,
 	BackflowMapping,
-	Contract,
 	LinkContract,
 	TaskContract,
 	TaskStatusMetadata,
@@ -12,6 +11,7 @@ import {
 import * as _ from 'lodash';
 import { LinkNames, TaskStatus } from './enums';
 import {evaluateFormulaOrValue} from "./util";
+import { Contract } from '@balena/jellyfish-types/build/core';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -73,12 +73,13 @@ export default class Jellyfish {
 	}
 
 	private async getTaskStream(workerId: string) {
-		const schema = {
+		return await this.sdk.stream({
 			$$links: {
 				'is owned by': {
 					type: 'object',
 					properties: {
 						id: {
+							type: 'string',
 							const: workerId,
 						},
 					},
@@ -88,6 +89,7 @@ export default class Jellyfish {
 			required: ['type', 'data'],
 			properties: {
 				type: {
+					type: 'string',
 					const: 'task@1.0.0',
 				},
 				data: {
@@ -95,14 +97,13 @@ export default class Jellyfish {
 					required: ['status'],
 					properties: {
 						status: {
+							type: 'string',
 							const: TaskStatus.Pending
 						}
 					}
 				}
 			},
-		};
-
-		return await this.sdk.stream(schema);
+		});
 	}
 
 	public async storeArtifactContract(contract: ArtifactContract) {
@@ -111,22 +112,24 @@ export default class Jellyfish {
 		let storedContract = await this.sdk.card.get(versionedSlug);
 		
 		if(storedContract) {
+			// ensure local references contain proper IDs
+			contract.id = storedContract.id;
+			contract.slug = storedContract.slug;
 			// Update existing 
 			const patch = jsonpatch.compare(storedContract, contract);
-			storedContract = await this.sdk.card.update(
+			return await this.sdk.card.update(
 				storedContract.id, storedContract.type, patch
-			) as ArtifactContract;
+			);
 		}
-		else {
-			// Create new contract
-			storedContract = await this.sdk.card.create(
-				contract,
-			) as ArtifactContract;
+		// Create new contract
+		const createdCard = await this.sdk.card.create(contract);
+		if (!createdCard) {
+			throw new Error('Couldn´t create contract')
 		}
-		
-		contract.id = storedContract.id;
-		contract.slug = storedContract.slug;
-		return contract;
+		// ensure local references contain proper IDs
+		contract.id = createdCard.id;
+		contract.slug = createdCard.slug;
+		return createdCard;
 	}
 
 	public async markArtifactContractReady(contract: ArtifactContract) {
@@ -189,7 +192,7 @@ export default class Jellyfish {
 		if (!contractId) {
 			throw new Error("queryLink - contract id not defined");
 		}
-		const linkResult = await this.sdk.query({
+		const linkResult = await this.sdk.query<LinkContract>({
 			"type": "object",
 			"required": ["type", "data", "name"],
 			"properties": {
@@ -237,16 +240,16 @@ export default class Jellyfish {
 		const type = undefined;
 		const link = await this.getLinkTo(LinkNames.WasBuiltInto, type, contract.id);
 		if (link) {
-			return await this.getContract(link.data.from.id);
+			return await this.getContract<ArtifactContract>(link.data.from.id);
 		}
 	}
 
 	// Get the task that generated the artifact contract
-	public async getArtifactContractTask(contract: ArtifactContract): Promise<TaskContract | undefined> {
+	public async getArtifactContractTask(contract: ArtifactContract): Promise<TaskContract | null> {
 		const type = 'task@1.0.0';
 		const link = await this.getLinkTo(LinkNames.Generated, type, contract.id);
 		if (link) {
-			return await this.getContract(link.data.from.id);
+			return await this.getContract<TaskContract>(link.data.from.id);
 		} else {
 			throw new Error(`Could not get task contract for artifact ${contract.slug} (no link)`);
 		}
@@ -307,12 +310,14 @@ export default class Jellyfish {
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
 	}
 
-	public async getContract(idOrSlug: string) {
-		return await this.sdk.card.get(idOrSlug);
+	public async getContract<TContract extends Contract>(idOrSlug: string) {
+		return await this.sdk.card.get<TContract>(idOrSlug);
 	}
 
 	private async getActorSlugFromActorId(actorId: string) {
 		const actorContract = await this.sdk.card.get(actorId);
+		if (!actorContract)
+			throw new Error("actor not found");
 		return actorContract.slug;
 	}
 
@@ -323,6 +328,8 @@ export default class Jellyfish {
 				actor: actorId,
 			},
 		});
+		if (!actorSessionContract)
+			throw new Error("session not created");
 		return actorSessionContract.id;
 	}
 
@@ -364,6 +371,8 @@ export default class Jellyfish {
 			}
 		}
 		const createResult = await this.sdk.card.create(newRepo)
+		if (!createResult)
+			throw new Error('Couldn´t create contract repo')
 		return { ...newRepo, ...createResult }
 	}
 

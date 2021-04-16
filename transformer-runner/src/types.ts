@@ -33,6 +33,7 @@ interface TransformerData extends ContractData {
 		architecture: string;
 	};
 	backflowMapping: [BackflowMapping];
+	encryptedSecrets?: any;
 }
 
 export interface TransformerContract extends Contract<TransformerData> {}
@@ -45,7 +46,7 @@ export interface BackflowMapping {
 export interface Formula {
 	$$formula: string;
 }
-
+	
 interface LinkData extends ContractData {
 		from: {
 			id: string;
@@ -62,8 +63,10 @@ export interface LinkContract extends Contract<LinkData> {}
 export type InputManifest = {
 	input: {
 		contract: ArtifactContract;
+		transformerContract: TransformerContract;
 		artifactPath: string;
 		decryptedSecrets?: any;
+		decryptedTransformerSecrets?: any;
 	};
 };
 

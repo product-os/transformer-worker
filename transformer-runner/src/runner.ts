@@ -108,8 +108,10 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 	const inputManifest: InputManifest = {
 		input: {
 			contract: inputContract,
+			transformerContract: task.data.transformer,
 			artifactPath: env.artifactDirectoryName,
 			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer.encryptedSecrets),
+			decryptedTransformerSecrets:  decryptSecrets(secretsKey,  task.data.transformer.data.encryptedSecrets),
 		},
 	};
 

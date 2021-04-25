@@ -15,8 +15,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
-    "@balena/jellyfish-client-sdk": "^3.2.105",
-    "@balena/jellyfish-jellyscript": "^3.0.120",
+    "@balena/jellyfish-client-sdk": "^3.2.106",
+    "@balena/jellyfish-jellyscript": "^3.0.121",
     "@types/rewire": "^2.5.28",
     "dockerode": "^3.2.1",
     "fast-json-patch": "^3.0.0-1",

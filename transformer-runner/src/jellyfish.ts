@@ -137,7 +137,7 @@ export default class Jellyfish {
 			{
 				op: 'replace',
 				path: '/data/$transformer/artifactReady',
-				value: true,
+				value: new Date().toISOString(),
 			},
 		]);
 	}

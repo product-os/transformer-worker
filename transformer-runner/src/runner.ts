@@ -110,7 +110,7 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 			contract: inputContract,
 			transformerContract: task.data.transformer,
 			artifactPath: env.artifactDirectoryName,
-			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer.encryptedSecrets),
+			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer?.encryptedSecrets),
 			decryptedTransformerSecrets:  decryptSecrets(secretsKey,  task.data.transformer.data.encryptedSecrets),
 		},
 	};
@@ -141,6 +141,9 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 
 	const docker = registry.docker;
 
+	// docker-in-docker work by mounting a tmpfs for the inner volumes
+	const tmpDockerVolume = `tmp-docker-${task.id}`;
+
 	//HACK - dockerode closes the stream unconditionally
 	process.stdout.end = () => { }
 	process.stderr.end = () => { }
@@ -166,7 +169,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 				Binds: [
 					`${path.resolve(directory.input(task))}:/input/:ro`,
 					`${path.resolve(directory.output(task))}:/output/`,
-					'tmp-docker:/var/lib/docker',
+					`${tmpDockerVolume}:/var/lib/docker`,
 				],
 			},
 		} as ContainerCreateOptions,
@@ -176,7 +179,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 	const container = runResult[1];
 
 	await docker.getContainer(container.id).remove({force: true})
-	await docker.getVolume('tmp-docker').remove({force: true})
+	await docker.getVolume(tmpDockerVolume).remove({force: true})
 
 	console.log("[WORKER] run result", JSON.stringify(runResult));
 
@@ -233,14 +236,21 @@ async function pushOutput(
 		// Store output contract
 		const outputContract = result.contract;
 		outputContract.version = inputContract.version;
-		_.set(outputContract, "data.$transformer.artifactReady", false);
-		const baseSlug = inputContract.data.$transformer.baseSlug;
+		outputContract.data.$transformer = {
+			...inputContract.data.$transformer,
+			...outputContract.data.$transformer,
+			artifactReady: false,
+		};
+		const baseSlug = inputContract.data.$transformer?.baseSlug;
 		// If baseSlug exists, then set deterministic slug, 
 		// otherwise keep transformer-defined slug
 		if (baseSlug) {
 			const outputType = outputContract.type.split('@')[0];
-			outputContract.data.$transformer.baseSlug = baseSlug;
 			outputContract.slug = `${outputType}-${baseSlug}`;
+			const slugSuffix = outputContract.data.$transformer?.slugSuffix;
+			if (slugSuffix) {
+				outputContract.slug += `-${slugSuffix}`;
+			}
 		}
 		await jf.storeArtifactContract(outputContract);
 
@@ -356,9 +366,9 @@ export function decryptSecrets(secretsKey: NodeRSA | undefined, sec: any): any {
 	let result: any = {};
 	for (const key of Object.keys(sec)) {
 		const val = sec[key];
-		if (typeof val === "string") {
-			result[key] = secretsKey.decrypt(val, "base64");
-		} else if (typeof val === "object") {
+		if (typeof val === 'string') {
+			result[key] = secretsKey.decrypt(val, 'base64');
+		} else if (typeof val === 'object') {
 			result[key] = exports.decryptSecrets(secretsKey, val);
 		} else {
 			console.log(`WARN: unknown type in secrets for key ${key}`)

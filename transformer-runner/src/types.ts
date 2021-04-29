@@ -15,9 +15,10 @@ interface TaskData extends ContractData {
 export interface TaskContract extends Contract<TaskData> {};
 
 interface ArtifactData extends ContractData {
-	$transformer: {
+	$transformer?: {
 		artifactReady: boolean;
-		baseSlug: string;
+		baseSlug?: string;
+		slugSuffix?: string; // used to allow transformers customization of generated slugs. needed when creating multiple instances of same type
 		encryptedSecrets?: any;
 	};
 }

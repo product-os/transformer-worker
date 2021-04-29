@@ -141,6 +141,9 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 
 	const docker = registry.docker;
 
+	// docker-in-docker work by mounting a tmpfs for the inner volumes
+	const tmpDockerVolume = `tmp-docker-${task.id}`;
+
 	//HACK - dockerode closes the stream unconditionally
 	process.stdout.end = () => { }
 	process.stderr.end = () => { }
@@ -166,7 +169,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 				Binds: [
 					`${path.resolve(directory.input(task))}:/input/:ro`,
 					`${path.resolve(directory.output(task))}:/output/`,
-					'tmp-docker:/var/lib/docker',
+					`${tmpDockerVolume}:/var/lib/docker`,
 				],
 			},
 		} as ContainerCreateOptions,
@@ -176,7 +179,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 	const container = runResult[1];
 
 	await docker.getContainer(container.id).remove({force: true})
-	await docker.getVolume('tmp-docker').remove({force: true})
+	await docker.getVolume(tmpDockerVolume).remove({force: true})
 
 	console.log("[WORKER] run result", JSON.stringify(runResult));
 

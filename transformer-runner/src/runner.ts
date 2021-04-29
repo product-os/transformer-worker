@@ -110,7 +110,7 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 			contract: inputContract,
 			transformerContract: task.data.transformer,
 			artifactPath: env.artifactDirectoryName,
-			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer.encryptedSecrets),
+			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer?.encryptedSecrets),
 			decryptedTransformerSecrets:  decryptSecrets(secretsKey,  task.data.transformer.data.encryptedSecrets),
 		},
 	};
@@ -236,14 +236,21 @@ async function pushOutput(
 		// Store output contract
 		const outputContract = result.contract;
 		outputContract.version = inputContract.version;
-		_.set(outputContract, "data.$transformer.artifactReady", false);
-		const baseSlug = inputContract.data.$transformer.baseSlug;
+		outputContract.data.$transformer = {
+			...inputContract.data.$transformer,
+			...outputContract.data.$transformer,
+			artifactReady: false,
+		};
+		const baseSlug = inputContract.data.$transformer?.baseSlug;
 		// If baseSlug exists, then set deterministic slug, 
 		// otherwise keep transformer-defined slug
 		if (baseSlug) {
 			const outputType = outputContract.type.split('@')[0];
-			outputContract.data.$transformer.baseSlug = baseSlug;
 			outputContract.slug = `${outputType}-${baseSlug}`;
+			const slugSuffix = outputContract.data.$transformer?.slugSuffix;
+			if (slugSuffix) {
+				outputContract.slug += `-${slugSuffix}`;
+			}
 		}
 		await jf.storeArtifactContract(outputContract);
 
@@ -359,9 +366,9 @@ export function decryptSecrets(secretsKey: NodeRSA | undefined, sec: any): any {
 	let result: any = {};
 	for (const key of Object.keys(sec)) {
 		const val = sec[key];
-		if (typeof val === "string") {
-			result[key] = secretsKey.decrypt(val, "base64");
-		} else if (typeof val === "object") {
+		if (typeof val === 'string') {
+			result[key] = secretsKey.decrypt(val, 'base64');
+		} else if (typeof val === 'object') {
 			result[key] = exports.decryptSecrets(secretsKey, val);
 		} else {
 			console.log(`WARN: unknown type in secrets for key ${key}`)

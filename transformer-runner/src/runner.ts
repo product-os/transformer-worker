@@ -1,5 +1,8 @@
 import Jellyfish from './jellyfish';
 import Registry from './registry';
+import { pathExists } from './util';
+import { LinkNames } from './enums';
+import { locker } from './updatelock';
 import type {
 	ActorCredentials,
 	TaskContract,
@@ -12,8 +15,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
-import { pathExists } from "./util";
-import { LinkNames } from "./enums";
 import * as _ from "lodash";
 import NodeRSA = require('node-rsa');
 import { Contract } from '@balena/jellyfish-types/build/core';
@@ -64,6 +65,7 @@ const acceptTask = async (update: any) => {
 			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
 			return;
 		}
+		await locker.addActive();
 		runningTasks.add(task.id!);
 		try {
 			await jf.setTaskStatusAccepted(task);
@@ -74,6 +76,7 @@ const acceptTask = async (update: any) => {
 			await jf.setTaskStatusFailed(task, e.message, Date.now() - taskStartTimestamp);
 		} finally {
 			runningTasks.delete(task.id!);
+			await locker.removeActive();
 		}
 	}
 }

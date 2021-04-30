@@ -363,7 +363,7 @@ export default class Jellyfish {
 		// For now, the worker takes the responsibility to create them as needed.
 		const newRepo = {
 			type: 'contract-repository@1.0.0',
-			name: `Contract Repository ${contract.name || contract.slug} contracts`,
+			name: `Repo of ${contract.name || contract.slug}`,
 			slug: `contract-repository-${contract.slug}`,
 			data: {
 				base_slug: contract.slug,
@@ -372,7 +372,7 @@ export default class Jellyfish {
 		}
 		const createResult = await this.sdk.card.create(newRepo)
 		if (!createResult)
-			throw new Error('Couldn´t create contract repo')
+			throw new Error(`Couldn't create contract repo`)
 		return { ...newRepo, ...createResult }
 	}
 

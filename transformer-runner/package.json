@@ -16,7 +16,7 @@
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
     "@balena/jellyfish-client-sdk": "^3.2.123",
-    "@balena/jellyfish-jellyscript": "^3.0.139",
+    "@balena/jellyfish-jellyscript": "^3.0.140",
     "@types/rewire": "^2.5.28",
     "dockerode": "^3.3.0",
     "fast-json-patch": "^3.0.0-1",

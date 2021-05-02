@@ -15,7 +15,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
-    "@balena/jellyfish-client-sdk": "^3.2.134",
+    "@balena/jellyfish-client-sdk": "^3.2.135",
     "@balena/jellyfish-jellyscript": "^3.0.149",
     "@types/rewire": "^2.5.28",
     "dockerode": "^3.3.0",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@balena/lint": "^5.4.1",
-    "@balena/jellyfish-types": "^0.5.80",
+    "@balena/jellyfish-types": "^0.5.81",
     "@types/dockerode": "^3.2.3",
     "@types/lockfile": "^1.0.1",
     "@types/node": "^14.14.43",

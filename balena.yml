@@ -1,6 +1,6 @@
 type: balena-application@1.0.0
 name: transformer-worker
-version: 0.17.56
+version: 0.17.57
 data:
   $transformer:
     baseSlug: transformer-worker

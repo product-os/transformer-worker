@@ -1,11 +1,12 @@
 import * as lockFile from 'lockfile';
+import * as fs from 'fs';
 import * as util from 'util';
 
-const lock = util.promisify(lockFile.lock)
-const unlock = util.promisify(lockFile.unlock)
+const lock = util.promisify(lockFile.lock);
+const unlock = util.promisify(lockFile.unlock);
 const updateLockFile = '/tmp/balena/updates.lock';
 
-let locks = 0
+let locks = 0;
 
 /**
  * locker counts the number of active tasks and ensure that
@@ -13,16 +14,21 @@ let locks = 0
  * and thus would interrupt the current task.
  */
 export const locker = {
-	addActive: async ()=> {
+	// this is necessary to cleanup after a restart of the container
+	// e.g. during live-push
+	init: async () => {
+		await fs.promises.rm(updateLockFile, { force: true, maxRetries: 1 });
+	},
+	addActive: async () => {
 		if (locks == 0) {
-			await lock(updateLockFile)
+			await lock(updateLockFile);
 		}
 		locks++;
 	},
-	removeActive: async ()=> {
+	removeActive: async () => {
 		locks--;
 		if (locks <= 0) {
-			await unlock(updateLockFile)
+			await unlock(updateLockFile);
 		}
-	}
-}
+	},
+};

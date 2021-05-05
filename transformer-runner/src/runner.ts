@@ -42,6 +42,8 @@ const runningTasks = new Set<string>();
 export async function initializeRunner() {
 	console.log(`[WORKER] starting...`);
 
+	await locker.init();
+
 	// Old registration process
 	await jf.loginWithToken(env.workerJfToken);
 	// New registration process
@@ -57,27 +59,29 @@ export async function initializeRunner() {
 	console.log('[WORKER] Waiting for tasks');
 }
 
-const acceptTask = async (update: any) => {
-	const task: TaskContract = update?.data?.after;
+const acceptTask = async (update: {data?:{after?: TaskContract}}) => {
+	const task = update?.data?.after;
 	const taskStartTimestamp = Date.now();
-	if (task) {
-		if (runningTasks.has(task.id!)) {
-			console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
-			return;
-		}
-		await locker.addActive();
-		runningTasks.add(task.id!);
-		try {
-			await jf.setTaskStatusAccepted(task);
-			await runTask(task);
-			await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
-		} catch (e) {
-			console.log(`[WORKER] ERROR occurred during task processing: ${e}`);
-			await jf.setTaskStatusFailed(task, e.message, Date.now() - taskStartTimestamp);
-		} finally {
-			runningTasks.delete(task.id!);
-			await locker.removeActive();
-		}
+	if (!task) {
+		console.log(`[WORKER] WARN got an empty task`);
+		return;
+	}
+	if (runningTasks.has(task.id!)) {
+		console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
+		return;
+	}
+	await locker.addActive();
+	runningTasks.add(task.id!);
+	try {
+		await jf.setTaskStatusAccepted(task);
+		await runTask(task);
+		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
+	} catch (e) {
+		console.log(`[WORKER] ERROR occurred during task processing: ${e}`);
+		await jf.setTaskStatusFailed(task, e.message, Date.now() - taskStartTimestamp);
+	} finally {
+		runningTasks.delete(task.id!);
+		await locker.removeActive();
 	}
 }
 
@@ -261,7 +265,7 @@ async function pushOutput(
 		const artifactReference = createArtifactReference(outputContract);
 		const authOptions = { username: actorCredentials.slug, password: actorCredentials.sessionToken };
 		if (result.imagePath && result.artifactPath) {
-			throw new Error(`result ${result.contract.slug} contained an artifact and an image`);
+			throw new Error(`result ${result.contract.slug} contained an artifact *and* an image`);
 		}
 		if (result.imagePath) {
 			await registry.pushImage(

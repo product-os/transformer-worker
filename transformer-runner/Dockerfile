@@ -12,23 +12,17 @@ WORKDIR /usr/src/app
 
 RUN git clone https://github.com/deislabs/oras.git \
   && cd ./oras/cmd/oras \
-  && git checkout "v0.10.0"  \
+  && git checkout "v0.11.1" \
   && go build -v -o /usr/bin/oras
 
 COPY ./package*.json ./
-COPY src ./src
-COPY mocks ./mocks
-COPY tsconfig.json ./tsconfig.json
-COPY typings.d.ts ./typings.d.ts
 
 RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc \
     && JOBS=MAX npm ci --unsafe-perm \
     && rm -f .npmrc
 
-RUN npm run build
 
-
-# runtime (sans NPM_TOKEN)
+# runtime (without NPM_TOKEN in layers)
 FROM docker:dind
 
 RUN apk add --no-cache \
@@ -49,12 +43,11 @@ ENV JF_API_PREFIX api/v2
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/bin/oras /usr/bin/oras
-COPY --from=builder /usr/src/app/build /usr/src/app/build
-COPY --from=builder /usr/src/app/node_modules /usr/src/app/node_modules
-COPY --from=builder /usr/src/app/package*.json /usr/src/app/
-
-COPY entrypoint.sh ./entrypoint.sh
 
 RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000", "registry.ly.fish.local:80", "registry.ly.fish.local"]}' >> /etc/docker/daemon.json
+
+COPY . .
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+RUN npm run build
 
 ENTRYPOINT ["/sbin/tini", "--", "./entrypoint.sh"]

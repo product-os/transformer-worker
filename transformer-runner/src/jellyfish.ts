@@ -12,6 +12,7 @@ import * as _ from 'lodash';
 import { LinkNames, TaskStatus } from './enums';
 import {evaluateFormulaOrValue} from "./util";
 import { Contract } from '@balena/jellyfish-types/build/core';
+import { JSONSchema } from '@balena/jellyfish-types';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -28,17 +29,35 @@ export default class Jellyfish {
 		private sdk = getSdk({ apiUrl: apiUrl, apiPrefix: apiPrefix })) {
 	}
 
-	public async listenForTasks(taskHandler: (task: TaskContract) => Promise<void>) {
+	public async listenForTasks(taskHandler: (task: {data?:{after?: TaskContract}}) => Promise<void>) {
 		const user = await this.sdk.auth.whoami();
 
-		// Get task stream, and await tasks
-		const taskStream = await this.getTaskStream(user.id);
+		const taskQuery = this.createTaskQuery(user.id);
+		const taskStream = await this.sdk.stream(taskQuery);
 		taskStream.on('update', taskHandler);
 
 		taskStream.on('streamError', (error: Error) => {
 			console.error(error);
 		});
-
+		const queryId = user.id;
+		const handler = async ({data}: {data:any}) => {
+			console.log(`initial query handler`, data);
+			if (data.id === queryId) {
+				taskStream.off('dataset', handler);
+				await Promise.all(
+					data.cards.map((c: any) => 
+						taskHandler({ data: { after:c } })
+						)
+					);
+			}
+		}
+		taskStream.on('dataset', handler);
+		taskStream.emit('queryDataset', {
+			data: {
+				id: queryId,
+				schema: taskQuery,
+			}
+		})
 		this.initializeHeartbeat();
 	}
 
@@ -72,8 +91,8 @@ export default class Jellyfish {
 		console.log(`[WORKER] Logged in to JF, session: ${session}`);
 	}
 
-	private async getTaskStream(workerId: string) {
-		return await this.sdk.stream({
+	private createTaskQuery(workerId: string): JSONSchema {
+		return {
 			$$links: {
 				'is owned by': {
 					type: 'object',
@@ -103,7 +122,7 @@ export default class Jellyfish {
 					}
 				}
 			},
-		});
+		};
 	}
 
 	public async storeArtifactContract(contract: ArtifactContract) {
@@ -114,9 +133,12 @@ export default class Jellyfish {
 		if(storedContract) {
 			// ensure local references contain proper IDs
 			contract.id = storedContract.id;
-			contract.slug = storedContract.slug;
-			// Update existing 
-			const patch = jsonpatch.compare(storedContract, contract);
+
+			// Update existing but only change thing under /data
+			const patch = jsonpatch.compare({data: storedContract.data}, {data: contract.data});
+			if (patch.length == 0) {
+				return storedContract;
+			}
 			return await this.sdk.card.update(
 				storedContract.id, storedContract.type, patch
 			);
@@ -124,7 +146,7 @@ export default class Jellyfish {
 		// Create new contract
 		const createdCard = await this.sdk.card.create(contract);
 		if (!createdCard) {
-			throw new Error('Couldn´t create contract')
+			throw new Error(`Couldn't create contract: ${contract}`)
 		}
 		// ensure local references contain proper IDs
 		contract.id = createdCard.id;

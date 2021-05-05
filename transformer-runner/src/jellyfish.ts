@@ -114,9 +114,12 @@ export default class Jellyfish {
 		if(storedContract) {
 			// ensure local references contain proper IDs
 			contract.id = storedContract.id;
-			contract.slug = storedContract.slug;
-			// Update existing 
-			const patch = jsonpatch.compare(storedContract, contract);
+
+			// Update existing but only change thing under /data
+			const patch = jsonpatch.compare({data: storedContract.data}, {data: contract.data});
+			if (patch.length == 0) {
+				return storedContract;
+			}
 			return await this.sdk.card.update(
 				storedContract.id, storedContract.type, patch
 			);
@@ -124,7 +127,7 @@ export default class Jellyfish {
 		// Create new contract
 		const createdCard = await this.sdk.card.create(contract);
 		if (!createdCard) {
-			throw new Error('Couldn´t create contract')
+			throw new Error(`Couldn't create contract: ${contract}`)
 		}
 		// ensure local references contain proper IDs
 		contract.id = createdCard.id;

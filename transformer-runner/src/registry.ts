@@ -117,13 +117,13 @@ export default class Registry {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
 		}
+		console.log(`Oras command: \n${args.concat(' ')}`);
 		if (opts.username) {
 			args.push('--username');
 			args.push(opts.username);
 			args.push('--password');
 			args.push(opts.password);
 		}
-		console.log(`Oras command: \n${args.concat(' ')}`);
 		const streams = await spawn(`oras`, args, spawnOptions);
 		const output = streams.stdout.toString('utf8');
 		console.log(`Oras output: ${output}`);

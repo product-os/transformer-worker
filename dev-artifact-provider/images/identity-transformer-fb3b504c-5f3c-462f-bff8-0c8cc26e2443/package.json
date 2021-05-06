@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/create.js",
   "dependencies": {
-    "fs-extra": "^9.1.0"
+    "fs-extra": "^10.0.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.11",

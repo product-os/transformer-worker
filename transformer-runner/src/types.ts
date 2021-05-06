@@ -75,8 +75,9 @@ export type OutputManifest = {
 	results: [
 		{
 			contract: ArtifactContract;
-			artifactPath: string;		// Expected to be a directory
-			imagePath: string;
+			artifactPath?: string;
+			imagePath?: string;
+			manifestList?: Array<string>;
 		},
 	];
 };

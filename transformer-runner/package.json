@@ -1,7 +1,7 @@
 {
   "name": "transformer-runner",
   "version": "1.0.0",
-  "description": "",
+  "description": "Main component of the Transformer Worker which gets tasks from Jellyfish and executes them",
   "scripts": {
     "start": "node build/index.js",
     "clean": "rm -rf build",
@@ -11,8 +11,8 @@
     "test": "jest --coverage --verbose",
     "lint-fix": "balena-lint --typescript --fix src tests"
   },
-  "author": "",
-  "license": "Apache-2.0",
+  "author": "Balena Ltd",
+  "license": "UNLICENSED",
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
     "@balena/jellyfish-client-sdk": "^3.2.168",

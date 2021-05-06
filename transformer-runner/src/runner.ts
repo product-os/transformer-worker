@@ -66,7 +66,7 @@ const acceptTask = async (update: {data?:{after?: TaskContract}}) => {
 		console.log(`[WORKER] WARN got an empty task`);
 		return;
 	}
-	if (runningTasks.has(task.id!)) {
+	if (runningTasks.has(task.id)) {
 		console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
 		return;
 	}
@@ -77,7 +77,8 @@ const acceptTask = async (update: {data?:{after?: TaskContract}}) => {
 		await runTask(task);
 		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
 	} catch (e) {
-		console.log(`[WORKER] ERROR occurred during task processing: ${e}`);
+		console.log(`[WORKER] ERROR occurred during task processing: ${e}`, 
+			e.stdout?.toString('utf8'), e.stderr?.toString('utf8'));
 		await jf.setTaskStatusFailed(task, e.message, Date.now() - taskStartTimestamp);
 	} finally {
 		runningTasks.delete(task.id!);
@@ -264,8 +265,8 @@ async function pushOutput(
 		// Store output artifact
 		const artifactReference = createArtifactReference(outputContract);
 		const authOptions = { username: actorCredentials.slug, password: actorCredentials.sessionToken };
-		if (result.imagePath && result.artifactPath) {
-			throw new Error(`result ${result.contract.slug} contained an artifact *and* an image`);
+		if (_.compact([result.imagePath, result.artifactPath, result.manifestList]).length > 1) {
+			throw new Error(`result ${result.contract.slug} contained multiple kinds of artifact`);
 		}
 		if (result.imagePath) {
 			await registry.pushImage(
@@ -277,6 +278,12 @@ async function pushOutput(
 			await registry.pushArtifact(
 				artifactReference,
 				path.join(outputDir, result.artifactPath),
+				authOptions,
+			);
+		}  else if (result.manifestList) {
+			await registry.pushManifestList(
+				artifactReference,
+				result.manifestList,
 				authOptions,
 			);
 		} else {

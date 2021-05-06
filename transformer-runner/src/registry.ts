@@ -41,7 +41,7 @@ export default class Registry {
 		const taggedImage = await this.docker.getImage(imageReference);
 		const authconfig = this.getDockerAuthConfig(authOpts);
 		const pushOpts = { registry: registry, authconfig };
-		console.log("pushing image", taggedImage, pushOpts);
+		console.log("pushing image", taggedImage);
 		const progressStream = await taggedImage.push(pushOpts);
 		await this.followDockerProgress(progressStream);
 	}
@@ -112,18 +112,56 @@ export default class Registry {
 		}
 	}
 
+	public async pushManifestList(artifactReference: string, manifestList: string[], authOptions: RegistryAuthOptions) {
+		const localRegistry = isLocalRegistry(this.registryUrl);
+		const insecureOpts = localRegistry ? ['--insecure'] : [];
+		const fqManifestList = manifestList.map(img => `${this.registryUrl}/${img}`);
+
+		let fqArtifactReference = artifactReference;
+		if (localRegistry) {
+			const [host, path] = artifactReference.split('/', 2);
+			fqArtifactReference = `${host}:80/${path}`;
+		}
+
+		console.log(`[WORKER] creating manifest list for ${fqArtifactReference}`);
+		await this.runDockerCliCommand(['manifest', 'create', ...insecureOpts, fqArtifactReference, ...fqManifestList], authOptions);
+
+		console.log(`[WORKER] pushing manifest list for ${fqArtifactReference}`);
+		await this.runDockerCliCommand(['manifest', 'push', ...insecureOpts, fqArtifactReference], authOptions);
+	}
+
+	// login cache to prevent unnecessary logins for the same user
+	dockerLogins = new Set<string>();
+
+	private async runDockerCliCommand(args: string[], opts: RegistryAuthOptions, spawnOptions: any = {}) {
+		console.log(`Docker-CLI command: \ndocker ${args.join(' ')}`);
+		const run = async(args: string[], spawnOptions: any = {}) => {
+			const streams = await spawn(`docker`, args, spawnOptions);
+			const stdout = streams.stdout.toString('utf8');
+			const stderr = streams.stderr.toString('utf8');
+			return {stdout, stderr};
+		}
+		if (!this.dockerLogins.has(opts.username)) {
+			const loginCmd = ['login', '--username', opts.username, '--password', opts.password, this.registryUrl];
+			this.dockerLogins.add(opts.username);
+			const {stdout, stderr} = await run(loginCmd, spawnOptions);
+			console.log(`Docker login:`, {stdout, stderr});
+		}
+		return await run(args, spawnOptions);
+	}
+
 	private async runOrasCommand(args: string[], opts: RegistryAuthOptions, spawnOptions: any = {}) {
 		if (isLocalRegistry(this.registryUrl)) {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
 		}
+		console.log(`Oras command: \n${args.concat(' ')}`);
 		if (opts.username) {
 			args.push('--username');
 			args.push(opts.username);
 			args.push('--password');
 			args.push(opts.password);
 		}
-		console.log(`Oras command: \n${args.concat(' ')}`);
 		const streams = await spawn(`oras`, args, spawnOptions);
 		const output = streams.stdout.toString('utf8');
 		console.log(`Oras output: ${output}`);

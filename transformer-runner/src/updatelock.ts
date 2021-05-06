@@ -6,6 +6,9 @@ const lock = util.promisify(lockFile.lock);
 const unlock = util.promisify(lockFile.unlock);
 const updateLockFile = '/tmp/balena/updates.lock';
 
+// due to async/await it can happen that both actions run at the same time
+// this prevents modifying the locks counter during the file I/O
+let lockReady = Promise.resolve();
 let locks = 0;
 
 /**
@@ -20,15 +23,19 @@ export const locker = {
 		await fs.promises.rm(updateLockFile, { force: true, maxRetries: 1 });
 	},
 	addActive: async () => {
-		if (locks == 0) {
-			await lock(updateLockFile);
-		}
+		await lockReady;
 		locks++;
+		if (locks == 1) {
+			lockReady = lock(updateLockFile);
+			await lockReady;
+		}
 	},
 	removeActive: async () => {
+		await lockReady;
 		locks--;
-		if (locks <= 0) {
-			await unlock(updateLockFile);
+		if (locks == 0) {
+			lockReady = unlock(updateLockFile);
+			await lockReady;
 		}
 	},
 };

@@ -25,13 +25,11 @@ interface ArtifactData extends ContractData {
 export interface ArtifactContract extends Contract<ArtifactData> {}
 
 interface TransformerData extends ContractData {
-	image: {
-		name: string;
-	};
-	trigger: any;
-	requirements: {
-		os: string;
-		architecture: string;
+	inputFilter: any;
+	inputType?: 'contract-only' | 'full';
+	requirements?: {
+		os?: string;
+		architecture?: string;
 	};
 	backflowMapping: [BackflowMapping];
 	encryptedSecrets?: any;

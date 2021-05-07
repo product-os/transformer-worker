@@ -36,7 +36,7 @@ export async function validateOutputManifest(
 	}
 
 	if (m.results.length < 1) {
-		throw new Error(`${message} empty results array`);
+		console.log(`[WORKER] INFO: empty results array`);
 	}
 
 	for (const result of m.results) {

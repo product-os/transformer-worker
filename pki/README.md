@@ -26,13 +26,11 @@
 
     plaintext='foo-bar'
 
-    encrypted="$(echo ${plaintext} \
-      | openssl rsautl -encrypt -inkey public.pem -pubin -in - | openssl base64 -A)"
-
+    echo -n ${plaintext} | openssl rsautl -encrypt -inkey public.pem -pubin -in - | openssl base64 -A
 
 ## decrypt
 
-    echo "${encrypted}" | base64 -d | openssl rsautl -decrypt -inkey private.key -in -
+    echo -n "${encrypted}" | base64 -d | openssl rsautl -decrypt -inkey private.key -in -
 
 
 ## configure balenaCloud app
@@ -58,7 +56,7 @@
 
     # encrypted='U7V4oauOB+JTryQW...vrrqG0jOy5o38w=='
 
-    # echo "${RSA_PRIVATE_KEY}" | base64 -d > /dev/shm/private.key
+    # echo -n "${RSA_PRIVATE_KEY}" | base64 -d > /dev/shm/private.key
     
-    # echo "${encrypted}" | base64 -d | openssl rsautl -decrypt -inkey /dev/shm/private.key -in -
+    # echo -n "${encrypted}" | base64 -d | openssl rsautl -decrypt -inkey /dev/shm/private.key -in -
     foo-bar

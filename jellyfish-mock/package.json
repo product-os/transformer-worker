@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.11",
-    "@types/lodash": "^4.14.168",
+    "@types/lodash": "^4.14.169",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.44",
     "@types/socket.io": "^2.1.13",

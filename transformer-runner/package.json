@@ -15,7 +15,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
-    "@balena/jellyfish-client-sdk": "^3.4.0",
+    "@balena/jellyfish-client-sdk": "^3.4.1",
     "@balena/jellyfish-jellyscript": "^3.0.190",
     "@types/rewire": "^2.5.28",
     "dockerode": "^3.3.0",

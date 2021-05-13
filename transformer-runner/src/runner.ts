@@ -245,23 +245,27 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
-		outputContract.version = inputContract.version;
+		outputContract.name = outputContract.name || inputContract.name;
+		outputContract.version = outputContract.version || inputContract.version;
 		outputContract.data.$transformer = {
 			...inputContract.data.$transformer,
 			...outputContract.data.$transformer,
 			artifactReady: false,
 		};
 		const baseSlug = inputContract.data.$transformer?.baseSlug;
-		// If baseSlug exists, then set deterministic slug, 
-		// otherwise keep transformer-defined slug
-		if (baseSlug) {
+		if (!outputContract.slug) {
 			const outputType = outputContract.type.split('@')[0];
-			outputContract.slug = `${outputType}-${baseSlug}`;
-			const slugSuffix = outputContract.data.$transformer?.slugSuffix;
-			if (slugSuffix) {
-				outputContract.slug += `-${slugSuffix}`;
+			if (baseSlug) {
+				outputContract.slug = `${outputType}-${baseSlug}`;
+				const slugSuffix = outputContract.data.$transformer?.slugSuffix;
+				if (slugSuffix) {
+					outputContract.slug += `-${slugSuffix}`;
+				}
+			} else {
+				outputContract.slug = `${outputType}-${inputContract.slug}`;
 			}
 		}
+		console.log(`[WORKER] storing ${outputContract.slug}@${outputContract.version}`);
 		await jf.storeArtifactContract(outputContract);
 
 		// Store output artifact

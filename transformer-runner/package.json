@@ -27,7 +27,7 @@
     "tar": "^6.1.0"
   },
   "devDependencies": {
-    "@balena/lint": "^5.4.2",
+    "@balena/lint": "^6.0.0",
     "@balena/jellyfish-types": "^0.5.116",
     "@types/dockerode": "^3.2.3",
     "@types/lockfile": "^1.0.1",

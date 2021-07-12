@@ -1,8 +1,6 @@
 # builder
 FROM golang:1.16.4-alpine as builder
 
-ARG NPM_TOKEN
-
 RUN apk add --no-cache \
     git \
     nodejs \
@@ -17,15 +15,16 @@ RUN git clone https://github.com/deislabs/oras.git \
 
 COPY ./package*.json ./
 
-RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc \
+RUN cat < /run/secrets/npmrc > ~/.npmrc \
     && JOBS=MAX npm ci --unsafe-perm \
-    && rm -f .npmrc
+    && rm -f ~/.npmrc
 
 
-# runtime (without NPM_TOKEN in layers)
+# runtime
 FROM docker:dind
 
 RUN apk add --no-cache \
+    bash \
     tini \
     curl \
     nodejs \
@@ -43,8 +42,6 @@ ENV JF_API_PREFIX api/v2
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/bin/oras /usr/bin/oras
-
-RUN mkdir -p /etc/docker && echo '{"insecure-registries" : ["registry:5000", "registry.ly.fish.local:80", "registry.ly.fish.local"]}' >> /etc/docker/daemon.json
 
 COPY . .
 COPY --from=builder /usr/src/app/node_modules ./node_modules

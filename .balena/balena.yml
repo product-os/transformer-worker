@@ -1,0 +1,7 @@
+build-variables:
+  global:
+    - BUILDKIT_INLINE_CACHE=1
+build-secrets:
+  global:
+    - source: npmrc
+      dest: npmrc

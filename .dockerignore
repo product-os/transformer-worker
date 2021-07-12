@@ -1,3 +1,2 @@
 transformer-runner/tests
 **/node_modules
-.balena/*

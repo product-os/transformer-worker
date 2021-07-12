@@ -14,4 +14,3 @@ In a nutshell, when the `transformer-runner` receives a task it:
 1. Pulls the transformer image from our private registry.
 1. Creates a session for the actor that owns the task.
 1. Runs the transformer.
-

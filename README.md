@@ -4,8 +4,8 @@
 
 ## Building and deploying
 
-1. Set the *NPM_TOKEN* value in `.balena/balena.yml`
-2. Run `balena push -m <Balena app>`
+1. Create symbolic link `ln -s ~/.npmrc .balena/secrets/npmrc`
+2. Run `BALENA_APP=<Balena app> ./push-to-balena.sh`
 
 ### fleet-launcher required env-variables
 * `FLEET_HOSTNAME`: Url to `transformers-fleet` server

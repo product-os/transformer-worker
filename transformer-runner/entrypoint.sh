@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ###################################################
 # Old registration flow - to be removed
@@ -7,8 +7,19 @@
 #    - WORKER_JF_USERNAME
 #    - WORKER_JF_PASSWORD
 
+# https://raw.githubusercontent.com/concourse/docker-image-resource/master/assets/common.sh
+# shellcheck disable=SC1091
+source docker-lib
+
+# shellcheck disable=SC2153
+docker_registry_mirror=${DOCKER_REGISTRY_MIRROR:-}
+insecure_registries=${INSECURE_REGISTRIES:-registry:5000 registry.ly.fish.local:80 registry.ly.fish.local}
+# https://docs.docker.com/engine/reference/commandline/dockerd/
+max_concurrent_downloads=${MAX_CONCURRENT_DOWNLOADS:-3}
+max_concurrent_uploads=${MAX_CONCURRENT_UPLOADS:-5}
+
 TOKEN=$(cat /shared/.token)
-if [ "x${TOKEN}" == "x" ]; then
+if [[ -n ${TOKEN} ]]; then
     uuidgen > /shared/.token
 fi
 
@@ -16,15 +27,13 @@ TOKEN=$(cat /shared/.token)
 export WORKER_JF_TOKEN="${WORKER_JF_TOKEN:-$TOKEN}"
 ###################################################
 
-(
-    while true; do
-        rm -f /var/run/docker.pid
-        dockerd >/dev/null 2>&1 # too much spam
-        echo "ERROR dockerd exited! Will retry"
-        sleep 1
-    done
-)& 
+rm -f /var/run/docker.pid
 
-while ! docker info >/dev/null 2>&1; do sleep 1s; done
+# shellcheck disable=SC2086
+start_docker \
+  ${max_concurrent_downloads} \
+  ${max_concurrent_uploads} \
+  "${insecure_registries}" \
+  ${docker_registry_mirror}
 
-exec node build/index.js
+exec node build/index.js "$@"

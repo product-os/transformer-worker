@@ -1,6 +1,6 @@
 node_modules
 .idea
-.balena/secrets
+.balena/secrets/*
 .gitsecret/keys/random_seed
 !*.secret
 pki/private.key

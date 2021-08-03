@@ -19,7 +19,7 @@ max_concurrent_downloads=${MAX_CONCURRENT_DOWNLOADS:-3}
 max_concurrent_uploads=${MAX_CONCURRENT_UPLOADS:-5}
 
 TOKEN=$(cat /shared/.token)
-if [[ -n ${TOKEN} ]]; then
+if [[ -z ${TOKEN} ]]; then
     uuidgen > /shared/.token
 fi
 

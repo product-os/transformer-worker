@@ -319,7 +319,9 @@ export default class Jellyfish {
 		}
 		const backflowMapping = task.data.transformer.data.backflowMapping;
 		if (!backflowMapping) {
-			console.log('No backflow mapping defined - skipping');
+			console.log(`No backflow mapping defined for - skipping`, {
+				transformer: task.data.transformer.slug,
+			});
 			return;
 		}
 		if (!Array.isArray(backflowMapping)) {
@@ -330,6 +332,9 @@ export default class Jellyfish {
 		const backflowPatch = this.getBackflowPatch(backflowMapping, parent, child);
 		
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
+		console.log(`backflow processed`, {
+			transformer: task.data.transformer.slug,
+		});
 	}
 
 	public async getContract<TContract extends Contract>(idOrSlug: string) {

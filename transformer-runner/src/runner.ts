@@ -391,9 +391,10 @@ async function runTask(task: TaskContract) {
 	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
-	await prepareWorkspace(task, actorCredentials);
-
-	const transformerImageRef = await pullTransformer(task, actorCredentials);
+	const [transformerImageRef] = await Promise.all([
+		pullTransformer(task, actorCredentials),
+		prepareWorkspace(task, actorCredentials),
+	]);
 
 	const transformerExitCode = await runTransformer(task, transformerImageRef);
 

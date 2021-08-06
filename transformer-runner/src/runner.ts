@@ -277,14 +277,14 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
-		outputContract.version = inputContract.version;
+		outputContract.version = outputContract.version || inputContract.version;
 		outputContract.data.$transformer = {
 			...inputContract.data.$transformer,
 			...outputContract.data.$transformer,
 			artifactReady: false,
 		};
 		const baseSlug = inputContract.data.$transformer?.baseSlug;
-		// If baseSlug exists, then set deterministic slug, 
+		// If baseSlug exists, then set deterministic slug,
 		// otherwise keep transformer-defined slug
 		if (baseSlug) {
 			const outputType = outputContract.type.split('@')[0];

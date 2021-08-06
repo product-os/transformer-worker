@@ -15,15 +15,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import env from './env';
 import { ContainerCreateOptions } from 'dockerode';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import NodeRSA = require('node-rsa');
 import { Contract } from '@balena/jellyfish-types/build/core';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
-const secretsKey = env.secretKey ?
-	new NodeRSA(Buffer.from(env.secretKey, 'base64').toString('utf-8'), 'pkcs1', { encryptionScheme: 'pkcs1' })
-	: undefined
+const secretsKey = env.secretKey
+	? new NodeRSA(
+			Buffer.from(env.secretKey, 'base64').toString('utf-8'),
+			'pkcs1',
+			{ encryptionScheme: 'pkcs1' },
+	  )
+	: undefined;
 
 const directory = {
 	input: (task: TaskContract) => path.join(env.inputDir, `task-${task.id}`),
@@ -31,12 +35,12 @@ const directory = {
 };
 
 const createArtifactReference = ({ slug, version }: Contract) => {
-	let registryPort = "";
+	let registryPort = '';
 	if (env.registryPort) {
 		registryPort = `:${env.registryPort}`;
 	}
 	return `${env.registryHost}${registryPort}/${slug}:${version}`;
-}
+};
 const runningTasks = new Set<string>();
 
 export async function initializeRunner() {
@@ -59,7 +63,7 @@ export async function initializeRunner() {
 	console.log('[WORKER] Waiting for tasks');
 }
 
-const acceptTask = async (update: {data?:{after?: TaskContract}}) => {
+const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 	const task = update?.data?.after;
 	const taskStartTimestamp = Date.now();
 	if (!task) {
@@ -67,7 +71,9 @@ const acceptTask = async (update: {data?:{after?: TaskContract}}) => {
 		return;
 	}
 	if (runningTasks.has(task.id)) {
-		console.log(`[WORKER] WARN the task ${task.id} was already running. Ignoring it`);
+		console.log(
+			`[WORKER] WARN the task ${task.id} was already running. Ignoring it`,
+		);
 		return;
 	}
 	await locker.addActive();
@@ -77,41 +83,56 @@ const acceptTask = async (update: {data?:{after?: TaskContract}}) => {
 		await runTask(task);
 		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
 	} catch (e) {
-		console.log(`[WORKER] ERROR occurred during task processing: ${e}`, 
-			e.stdout?.toString('utf8'), e.stderr?.toString('utf8'));
-		await jf.setTaskStatusFailed(task, e.message, Date.now() - taskStartTimestamp);
+		console.log(
+			`[WORKER] ERROR occurred during task processing: ${e}`,
+			e.stdout?.toString('utf8'),
+			e.stderr?.toString('utf8'),
+		);
+		await jf.setTaskStatusFailed(
+			task,
+			e.message,
+			Date.now() - taskStartTimestamp,
+		);
 	} finally {
 		runningTasks.delete(task.id!);
 		await locker.removeActive();
 	}
-}
+};
 
-async function prepareWorkspace(task: TaskContract, credentials: ActorCredentials) {
+async function prepareWorkspace(
+	task: TaskContract,
+	credentials: ActorCredentials,
+) {
 	console.log(`[WORKER] Preparing transformer workspace`);
 
 	const outputDir = directory.output(task);
 	const inputDir = directory.input(task);
 
 	if (await pathExists(outputDir)) {
-		console.log(`[WORKER] WARN output directory already existed (from previous run?) - deleting it`);
+		console.log(
+			`[WORKER] WARN output directory already existed (from previous run?) - deleting it`,
+		);
 		await fs.promises.rm(outputDir, { recursive: true, force: true });
 	}
 	if (await pathExists(inputDir)) {
-		console.log(`[WORKER] WARN input directory already existed (from previous run?) - deleting it`);
+		console.log(
+			`[WORKER] WARN input directory already existed (from previous run?) - deleting it`,
+		);
 		await fs.promises.rm(inputDir, { recursive: true, force: true });
 	}
 
-	const inputArtifactDir = path.join(
-		inputDir,
-		env.artifactDirectoryName,
-	);
+	const inputArtifactDir = path.join(inputDir, env.artifactDirectoryName);
 
 	await fs.promises.mkdir(inputArtifactDir, { recursive: true });
 	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
 	if (task.data.transformer.data.inputType != 'contract-only') {
-		await registry.pullArtifact(createArtifactReference(inputContract), inputArtifactDir, { username: credentials.slug, password: credentials.sessionToken });
+		await registry.pullArtifact(
+			createArtifactReference(inputContract),
+			inputArtifactDir,
+			{ username: credentials.slug, password: credentials.sessionToken },
+		);
 	}
 
 	// Add input manifest
@@ -120,8 +141,14 @@ async function prepareWorkspace(task: TaskContract, credentials: ActorCredential
 			contract: inputContract,
 			transformerContract: task.data.transformer,
 			artifactPath: env.artifactDirectoryName,
-			decryptedSecrets: decryptSecrets(secretsKey, inputContract.data.$transformer?.encryptedSecrets),
-			decryptedTransformerSecrets:  decryptSecrets(secretsKey,  task.data.transformer.data.encryptedSecrets),
+			decryptedSecrets: decryptSecrets(
+				secretsKey,
+				inputContract.data.$transformer?.encryptedSecrets,
+			),
+			decryptedTransformerSecrets: decryptSecrets(
+				secretsKey,
+				task.data.transformer.data.encryptedSecrets,
+			),
 		},
 	};
 
@@ -136,11 +163,16 @@ async function pullTransformer(
 	task: TaskContract,
 	actorCredentials: ActorCredentials,
 ) {
-	const transformerImageReference = createArtifactReference(task.data.transformer);
+	const transformerImageReference = createArtifactReference(
+		task.data.transformer,
+	);
 	console.log(`[WORKER] Pulling transformer ${transformerImageReference}`);
 	const transformerImageRef = await registry.pullImage(
 		transformerImageReference,
-		{ username: actorCredentials.slug, password: actorCredentials.sessionToken },
+		{
+			username: actorCredentials.slug,
+			password: actorCredentials.sessionToken,
+		},
 	);
 
 	return transformerImageRef;
@@ -155,8 +187,8 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 	const tmpDockerVolume = `tmp-docker-${task.id}`;
 
 	//HACK - dockerode closes the stream unconditionally
-	process.stdout.end = () => { }
-	process.stderr.end = () => { }
+	process.stdout.end = () => {};
+	process.stderr.end = () => {};
 
 	const runResult = await docker.run(
 		transformerImageRef,
@@ -171,7 +203,7 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 			Volumes: {
 				'/input/': {},
 				'/output/': {},
-				'/var/lib/docker': {} // if the transformers uses docker-in-docker, this is required
+				'/var/lib/docker': {}, // if the transformers uses docker-in-docker, this is required
 			},
 			HostConfig: {
 				Init: true, // should ensure that containers never leave zombie processes
@@ -188,10 +220,10 @@ async function runTransformer(task: TaskContract, transformerImageRef: string) {
 	const output = runResult[0];
 	const container = runResult[1];
 
-	await docker.getContainer(container.id).remove({force: true})
-	await docker.getVolume(tmpDockerVolume).remove({force: true})
+	await docker.getContainer(container.id).remove({ force: true });
+	await docker.getVolume(tmpDockerVolume).remove({ force: true });
 
-	console.log("[WORKER] run result", JSON.stringify(runResult));
+	console.log('[WORKER] run result', JSON.stringify(runResult));
 
 	return output.StatusCode;
 }
@@ -245,14 +277,14 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract;
-		outputContract.version = inputContract.version;
+		outputContract.version = outputContract.version || inputContract.version;
 		outputContract.data.$transformer = {
 			...inputContract.data.$transformer,
 			...outputContract.data.$transformer,
 			artifactReady: false,
 		};
 		const baseSlug = inputContract.data.$transformer?.baseSlug;
-		// If baseSlug exists, then set deterministic slug, 
+		// If baseSlug exists, then set deterministic slug,
 		// otherwise keep transformer-defined slug
 		if (baseSlug) {
 			const outputType = outputContract.type.split('@')[0];
@@ -266,23 +298,31 @@ async function pushOutput(
 
 		// Store output artifact
 		const artifactReference = createArtifactReference(outputContract);
-		const authOptions = { username: actorCredentials.slug, password: actorCredentials.sessionToken };
-		if (_.compact([result.imagePath, result.artifactPath, result.manifestList]).length > 1) {
-			throw new Error(`result ${result.contract.slug} contained multiple kinds of artifact`);
+		const authOptions = {
+			username: actorCredentials.slug,
+			password: actorCredentials.sessionToken,
+		};
+		if (
+			_.compact([result.imagePath, result.artifactPath, result.manifestList])
+				.length > 1
+		) {
+			throw new Error(
+				`result ${result.contract.slug} contained multiple kinds of artifact`,
+			);
 		}
 		if (result.imagePath) {
 			await registry.pushImage(
 				artifactReference,
 				path.join(outputDir, result.imagePath),
 				authOptions,
-			)
+			);
 		} else if (result.artifactPath) {
 			await registry.pushArtifact(
 				artifactReference,
 				path.join(outputDir, result.artifactPath),
 				authOptions,
 			);
-		}  else if (result.manifestList) {
+		} else if (result.manifestList) {
 			await registry.pushManifestList(
 				artifactReference,
 				result.manifestList,
@@ -293,8 +333,8 @@ async function pushOutput(
 		}
 
 		// Create links to output contract
-		const contractRepo = await jf.getContractRepository(outputContract)
-		await jf.createLink(contractRepo, outputContract, 'contains')
+		const contractRepo = await jf.getContractRepository(outputContract);
+		await jf.createLink(contractRepo, outputContract, 'contains');
 		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
 		await jf.createLink(task, outputContract, LinkNames.Generated);
 
@@ -303,7 +343,10 @@ async function pushOutput(
 	}
 }
 
-async function processBackflow(task: TaskContract, outputManifest: OutputManifest) {
+async function processBackflow(
+	task: TaskContract,
+	outputManifest: OutputManifest,
+) {
 	console.log(`[WORKER] Processing backflow`);
 
 	const inputContract = task.data.input;
@@ -319,7 +362,9 @@ async function processBackflow(task: TaskContract, outputManifest: OutputManifes
 
 	const propagate = async (contract: ArtifactContract, step: number = 1) => {
 		if (step > backflowLimit) {
-			console.log(`[WORKER] Backflow propagation limit reached, not following further`);
+			console.log(
+				`[WORKER] Backflow propagation limit reached, not following further`,
+			);
 			return;
 		}
 
@@ -328,7 +373,7 @@ async function processBackflow(task: TaskContract, outputManifest: OutputManifes
 			await jf.updateBackflow(contract, parent);
 			await propagate(parent, step + 1);
 		}
-	}
+	};
 
 	await propagate(inputContract);
 }
@@ -346,9 +391,10 @@ async function runTask(task: TaskContract) {
 	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
-	await prepareWorkspace(task, actorCredentials);
-
-	const transformerImageRef = await pullTransformer(task, actorCredentials);
+	const [transformerImageRef] = await Promise.all([
+		pullTransformer(task, actorCredentials),
+		prepareWorkspace(task, actorCredentials),
+	]);
 
 	const transformerExitCode = await runTransformer(task, transformerImageRef);
 
@@ -366,9 +412,9 @@ async function runTask(task: TaskContract) {
 /**
  * This function takes an object tree with all string values expected to be
  * base64 encoded secrets and returns the same tree with the values decrypted
- * but again base64 encoded. 
+ * but again base64 encoded.
  * (The latter allows passing binary secrets as well)
- * 
+ *
  * @param encryptedSecrets object that only contains string values or other encryptedSecrets objects
  */
 export function decryptSecrets(secretsKey: NodeRSA | undefined, sec: any): any {
@@ -376,7 +422,9 @@ export function decryptSecrets(secretsKey: NodeRSA | undefined, sec: any): any {
 		return undefined;
 	}
 	if (!secretsKey) {
-		console.log(`WARN: no secrets key provided! Will pass along secrets without decryption. Should not happen in production`)
+		console.log(
+			`WARN: no secrets key provided! Will pass along secrets without decryption. Should not happen in production`,
+		);
 		return sec;
 	}
 	let result: any = {};
@@ -387,8 +435,8 @@ export function decryptSecrets(secretsKey: NodeRSA | undefined, sec: any): any {
 		} else if (typeof val === 'object') {
 			result[key] = exports.decryptSecrets(secretsKey, val);
 		} else {
-			console.log(`WARN: unknown type in secrets for key ${key}`)
+			console.log(`WARN: unknown type in secrets for key ${key}`);
 		}
 	}
-	return result
+	return result;
 }

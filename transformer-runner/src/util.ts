@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { F_OK } from 'constants';
 import { Formula } from "./types";
-const jellyscript = require('@balena/jellyfish-jellyscript');
+import * as jellyscript from '@balena/jellyfish-jellyscript';
 
 
 export const pathExists = async (path: string) => {
@@ -26,7 +26,8 @@ export function evaluateFormulaOrValue(formulaOrValue: Formula | any, context: a
     if(formulaOrValue.$$formula) {
         try {
             const result = jellyscript.evaluate(formulaOrValue.$$formula, {
-                context
+                context,
+                input: null,
             });
             return result?.value;
         } 

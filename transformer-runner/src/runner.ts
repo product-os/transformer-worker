@@ -1,33 +1,25 @@
 import Jellyfish from './jellyfish';
 import Registry from './registry';
-import { pathExists } from './util';
 import { LinkNames } from './enums';
 import { locker } from './updatelock';
 import type {
 	ActorCredentials,
 	TaskContract,
-	InputManifest,
 	OutputManifest,
 	ArtifactContract,
 } from './types';
-import { validateTask, validateOutputManifest } from './validation';
+import { validateTask } from './validation';
 import * as fs from 'fs';
 import * as path from 'path';
 import env from './env';
-import { ContainerCreateOptions } from 'dockerode';
 import * as _ from 'lodash';
 import NodeRSA = require('node-rsa');
 import { Contract } from '@balena/jellyfish-types/build/core';
+import Runtime from '@balena/transformer-runtime'
+import { pathExists } from './util';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
-const secretsKey = env.secretKey
-	? new NodeRSA(
-			Buffer.from(env.secretKey, 'base64').toString('utf-8'),
-			'pkcs1',
-			{ encryptionScheme: 'pkcs1' },
-	  )
-	: undefined;
 
 const directory = {
 	input: (task: TaskContract) => path.join(env.inputDir, `task-${task.id}`),
@@ -42,6 +34,8 @@ const createArtifactReference = ({ slug, version }: Contract) => {
 	return `${env.registryHost}${registryPort}/${slug}:${version}`;
 };
 const runningTasks = new Set<string>();
+
+const runtime = new Runtime(env.secretKey ? Buffer.from(env.secretKey, 'base64').toString('utf-8') : undefined)
 
 export async function initializeRunner() {
 	console.log(`[WORKER] starting...`);
@@ -134,29 +128,6 @@ async function prepareWorkspace(
 			{ username: credentials.slug, password: credentials.sessionToken },
 		);
 	}
-
-	// Add input manifest
-	const inputManifest: InputManifest = {
-		input: {
-			contract: inputContract,
-			transformerContract: task.data.transformer,
-			artifactPath: env.artifactDirectoryName,
-			decryptedSecrets: decryptSecrets(
-				secretsKey,
-				inputContract.data.$transformer?.encryptedSecrets,
-			),
-			decryptedTransformerSecrets: decryptSecrets(
-				secretsKey,
-				task.data.transformer.data.encryptedSecrets,
-			),
-		},
-	};
-
-	await fs.promises.writeFile(
-		path.join(directory.input(task), env.inputManifestFilename),
-		JSON.stringify(inputManifest, null, 4),
-		'utf8',
-	);
 }
 
 async function pullTransformer(
@@ -176,85 +147,6 @@ async function pullTransformer(
 	);
 
 	return transformerImageRef;
-}
-
-async function runTransformer(task: TaskContract, transformerImageRef: string) {
-	console.log(`[WORKER] Running transformer image ${transformerImageRef}`);
-
-	const docker = registry.docker;
-
-	// docker-in-docker work by mounting a tmpfs for the inner volumes
-	const tmpDockerVolume = `tmp-docker-${task.id}`;
-
-	//HACK - dockerode closes the stream unconditionally
-	process.stdout.end = () => {};
-	process.stderr.end = () => {};
-
-	const runResult = await docker.run(
-		transformerImageRef,
-		[],
-		[process.stdout, process.stderr],
-		{
-			Tty: false,
-			Env: [
-				`INPUT=/input/${env.inputManifestFilename}`,
-				`OUTPUT=/output/${env.outputManifestFilename}`,
-			],
-			Volumes: {
-				'/input/': {},
-				'/output/': {},
-				'/var/lib/docker': {}, // if the transformers uses docker-in-docker, this is required
-			},
-			HostConfig: {
-				Init: true, // should ensure that containers never leave zombie processes
-				Privileged: true, //TODO: this should at least only happen for Transformers that need it
-				Binds: [
-					`${path.resolve(directory.input(task))}:/input/:ro`,
-					`${path.resolve(directory.output(task))}:/output/`,
-					`${tmpDockerVolume}:/var/lib/docker`,
-				],
-			},
-		} as ContainerCreateOptions,
-	);
-
-	const output = runResult[0];
-	const container = runResult[1];
-
-	await docker.getContainer(container.id).remove({ force: true });
-	await docker.getVolume(tmpDockerVolume).remove({ force: true });
-
-	console.log('[WORKER] run result', JSON.stringify(runResult));
-
-	return output.StatusCode;
-}
-
-async function validateOutput(task: TaskContract, transformerExitCode: number) {
-	console.log(`[WORKER] Validating transformer output`);
-
-	if (transformerExitCode !== 0) {
-		throw new Error(
-			`Transformer ${task.data.transformer.id} exited with non-zero status code: ${transformerExitCode}`,
-		);
-	}
-
-	const outputDir = directory.output(task);
-
-	let outputManifest;
-	try {
-		outputManifest = JSON.parse(
-			await fs.promises.readFile(
-				path.join(outputDir, env.outputManifestFilename),
-				'utf8',
-			),
-		) as OutputManifest;
-	} catch (e) {
-		e.message = `Could not load output manifest: ${e.message}`;
-		throw e;
-	}
-
-	await validateOutputManifest(outputManifest, outputDir);
-
-	return outputManifest;
 }
 
 async function pushOutput(
@@ -396,9 +288,8 @@ async function runTask(task: TaskContract) {
 		prepareWorkspace(task, actorCredentials),
 	]);
 
-	const transformerExitCode = await runTransformer(task, transformerImageRef);
+	const outputManifest = await runtime.runTransformer(env.artifactDirectoryName, task.data.input, task.data.transformer, transformerImageRef, directory.input(task), directory.output(task), true)
 
-	const outputManifest = await validateOutput(task, transformerExitCode);
 
 	await pushOutput(task, outputManifest, actorCredentials);
 

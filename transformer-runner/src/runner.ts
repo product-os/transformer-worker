@@ -13,7 +13,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import env from './env';
 import * as _ from 'lodash';
-import NodeRSA = require('node-rsa');
 import { Contract } from '@balena/jellyfish-types/build/core';
 import Runtime from '@balena/transformer-runtime'
 import { pathExists } from './util';

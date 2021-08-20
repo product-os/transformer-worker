@@ -14,7 +14,7 @@ import * as path from 'path';
 import env from './env';
 import * as _ from 'lodash';
 import { Contract } from '@balena/jellyfish-types/build/core';
-import Runtime from '@balena/transformer-runtime'
+import Runtime from '@balena/transformer-runtime';
 import { pathExists } from './util';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
@@ -34,7 +34,11 @@ const createArtifactReference = ({ slug, version }: Contract) => {
 };
 const runningTasks = new Set<string>();
 
-const runtime = new Runtime(env.secretKey ? Buffer.from(env.secretKey, 'base64').toString('utf-8') : undefined)
+const runtime = new Runtime(
+	env.secretKey
+		? Buffer.from(env.secretKey, 'base64').toString('utf-8')
+		: undefined,
+);
 
 export async function initializeRunner() {
 	console.log(`[WORKER] starting...`);
@@ -287,8 +291,15 @@ async function runTask(task: TaskContract) {
 		prepareWorkspace(task, actorCredentials),
 	]);
 
-	const outputManifest = await runtime.runTransformer(env.artifactDirectoryName, task.data.input, task.data.transformer, transformerImageRef, directory.input(task), directory.output(task), true)
-
+	const outputManifest = await runtime.runTransformer(
+		env.artifactDirectoryName,
+		task.data.input,
+		task.data.transformer,
+		transformerImageRef,
+		directory.input(task),
+		directory.output(task),
+		true,
+	);
 
 	await pushOutput(task, outputManifest, actorCredentials);
 

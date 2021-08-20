@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.18.24](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.24) (2021-08-20)
+
 ### [0.18.23](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.23) (2021-08-20)
 
 ### [0.18.22](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.22) (2021-08-19)

@@ -7,6 +7,7 @@ services:
     volumes:
       - shared:/shared
       - shared-docker-socket:/var/run
+      - docker-storage:/var/lib/docker
 
   fleet-launcher:
     build: ./fleet-launcher
@@ -42,3 +43,4 @@ volumes:
   garbage-collector: {}
   shared: {}
   shared-docker-socket: {}
+  docker-storage: {}

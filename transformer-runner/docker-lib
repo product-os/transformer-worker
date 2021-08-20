@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 LOG_FILE=${LOG_FILE:-/tmp/docker.log}
 SKIP_PRIVILEGED=${SKIP_PRIVILEGED:-false}
 STARTUP_TIMEOUT=${STARTUP_TIMEOUT:-120}
@@ -68,7 +70,7 @@ start_docker() {
   local server_args="--mtu ${mtu}"
   local registry=""
 
-  server_args="${server_args} --max-concurrent-downloads=$1 --max-concurrent-uploads=$2"
+  server_args="${server_args} --max-concurrent-downloads=$1 --max-concurrent-uploads=$2 --storage-driver=overlay2"
 
   for registry in $3; do
     server_args="${server_args} --insecure-registry ${registry}"
@@ -79,7 +81,7 @@ start_docker() {
   fi
 
   try_start() {
-    dockerd --data-root /scratch/docker ${server_args} >$LOG_FILE 2>&1 &
+    dockerd ${server_args} >$LOG_FILE 2>&1 &
     echo $! > /tmp/docker.pid
 
     sleep 1

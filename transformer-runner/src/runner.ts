@@ -292,7 +292,7 @@ async function runTask(task: TaskContract) {
 	]);
 
 	const outputManifest = await runtime.runTransformer(
-		env.artifactDirectoryName,
+		path.join(directory.input(task), env.artifactDirectoryName),
 		task.data.input,
 		task.data.transformer,
 		transformerImageRef,

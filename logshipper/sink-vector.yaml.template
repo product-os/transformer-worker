@@ -1,0 +1,14 @@
+---
+sinks:
+  vector:
+    type: vector
+    inputs:
+      - add_labels
+    address: ${VECTOR_ENDPOINT}
+    healthcheck:
+      enabled: true
+    tls:
+      # ca_file: 
+      enabled: true
+      verify_certificate: ${VECTOR_VERIFY_CERTIFICATE}
+      verify_hostname: ${VECTOR_VERIFY_CERTIFICATE}

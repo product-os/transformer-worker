@@ -1,0 +1,14 @@
+FROM timberio/vector:0.15.2-debian as logshipper
+
+RUN mkdir -p /etc/vector/certificates
+
+COPY *.yaml /etc/vector/
+COPY *.template /etc/vector/
+COPY start.sh .
+
+ENV LOG warn
+ENV VECTOR_VERIFY_CERTIFICATE true
+
+ENTRYPOINT [ "bash" ]
+
+CMD [ "start.sh" ]

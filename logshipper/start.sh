@@ -11,7 +11,7 @@ then
     if [ ! -z $VECTOR_TLS_CA_FILE ]
     then
         echo ${VECTOR_TLS_CA_FILE} | base64 -d > ${CERTIFICATES_DIR}/ca.pem || exit 1
-        sed -i "" "s|# ca_file: |ca_file: ${CERTIFICATES_DIR}/ca.pem|g" sink-vector.yaml
+        cat sink-vector.yaml.template | sed "s|# ca_file: |ca_file: ${CERTIFICATES_DIR}/ca.pem|g" > sink-vector.yaml
     fi
 fi
 

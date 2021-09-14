@@ -34,3 +34,9 @@ transforms:
       .device = get_env_var("BALENA_DEVICE_UUID") ?? ""
       .organization = get_env_var("ORGANIZATION") ?? ""
       .source_type = "balena"
+
+sinks:
+  blackhole:
+    type: blackhole
+    inputs:
+      - add_labels

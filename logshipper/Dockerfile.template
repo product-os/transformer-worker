@@ -7,7 +7,6 @@ COPY *.template /etc/vector/
 COPY start.sh .
 
 ENV LOG warn
-ENV VECTOR_VERIFY_CERTIFICATE true
 
 ENTRYPOINT [ "bash" ]
 

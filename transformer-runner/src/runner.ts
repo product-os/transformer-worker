@@ -79,7 +79,7 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 		await jf.setTaskStatusAccepted(task);
 		await runTask(task);
 		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
-	} catch (e) {
+	} catch (e: any) {
 		console.log(
 			`[WORKER] ERROR occurred during task processing: ${e}`,
 			e.stdout?.toString('utf8'),

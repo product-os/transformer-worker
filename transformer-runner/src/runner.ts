@@ -124,6 +124,26 @@ async function prepareWorkspace(
 	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
+
+	const backflows = (inputContract.data.$transformer?.backflow || []);
+	console.log("[WORKER] getting backflow artifacts: ", backflows.length);
+	await Promise.all(
+		backflows.map(
+			async (b) => {
+				if (!b.data.$transformer?.artifactReady) {
+					return;
+				}
+				const subArtifactDir = path.join(inputDir, b.id);
+				await fs.promises.mkdir(subArtifactDir, { recursive: true });
+				return registry.pullArtifact(
+					createArtifactReference(b),
+					subArtifactDir,
+					{ username: credentials.slug, password: credentials.sessionToken },
+				);
+			},
+		),
+	);
+
 	if (task.data.transformer.data.inputType != 'contract-only') {
 		await registry.pullArtifact(
 			createArtifactReference(inputContract),
@@ -131,6 +151,8 @@ async function prepareWorkspace(
 			{ username: credentials.slug, password: credentials.sessionToken },
 		);
 	}
+
+	return inputArtifactDir;
 }
 
 async function pullTransformer(
@@ -300,13 +322,13 @@ async function runTask(task: TaskContract) {
 	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
-	const [transformerImageRef] = await Promise.all([
+	const [transformerImageRef, artifactDir] = await Promise.all([
 		pullTransformer(task, actorCredentials),
 		prepareWorkspace(task, actorCredentials),
 	]);
 
 	const outputManifest = await runtime.runTransformer(
-		path.join(directory.input(task), env.artifactDirectoryName),
+		artifactDir,
 		task.data.input,
 		task.data.transformer,
 		transformerImageRef,

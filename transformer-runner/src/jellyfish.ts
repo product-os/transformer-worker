@@ -400,7 +400,7 @@ export default class Jellyfish {
 			(c) =>
 				({
 					op: 'add',
-					path: `/data/$transformer/backflow/${c.id}`,
+					path: '/data/$transformer/backflow/-',
 					value: c,
 				} as AddOperation<Contract>),
 		);
@@ -409,7 +409,7 @@ export default class Jellyfish {
 			patch.unshift({
 				op: 'add',
 				path: '/data/$transformer/backflow',
-				value: {},
+				value: [],
 			} as AddOperation<any>);
 		}
 

@@ -13,6 +13,7 @@ import { LinkNames, TaskStatus } from './enums';
 import { evaluateFormulaOrValue } from './util';
 import { Contract } from '@balena/jellyfish-types/build/core';
 import { JSONSchema } from '@balena/jellyfish-types';
+import { AddOperation } from 'fast-json-patch';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -377,6 +378,46 @@ export default class Jellyfish {
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
 		console.log(`backflow processed`, {
 			transformer: task.data.transformer.slug,
+		});
+	}
+
+	/**
+	 * stores resulting contracts in the backflow property of the source contract
+	 * so it can be used there when matching with other transformers
+	 * @param parent input of the transformer
+	 * @param backflows all output contracts of the transformer
+	 * @returns 
+	 */
+	public async addBackflow(parent: ArtifactContract, backflows: Contract[]) {
+		if (backflows.length === 0) {
+			console.log(`[WORKER] no backflow to process`, {
+				parent: `${parent.slug}@${parent.version}`,
+			});
+			return;
+		}
+
+		const patch = backflows.map(
+			(c) =>
+				({
+					op: 'add',
+					path: `/data/$transformer/backflow/${c.id}`,
+					value: c,
+				} as AddOperation<Contract>),
+		);
+
+		if (typeof parent.data?.$transformer?.backflow !== 'object') {
+			patch.unshift({
+				op: 'add',
+				path: '/data/$transformer/backflow',
+				value: {},
+			} as AddOperation<any>);
+		}
+
+		await this.sdk.card.update(parent.id, parent.type, patch);
+
+		console.log(`[WORKER] backflow processed`, {
+			parent: `${parent.slug}@${parent.version}`,
+			children: backflows.map((c) => `${c.slug}@${c.version}`),
 		});
 	}
 

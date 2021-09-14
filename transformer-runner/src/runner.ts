@@ -244,7 +244,21 @@ async function processBackflow(
 ) {
 	console.log(`[WORKER] Processing backflow`);
 
-	const inputContract = task.data.input;
+	const inputContract = _.cloneDeep(task.data.input);
+	const outputContracts = outputManifest.results
+		.map((result) => {
+			const outputContract = _.cloneDeep(result.contract);
+			delete outputContract.data.$transformer;
+			return outputContract;
+		});
+	await jf.addBackflow(inputContract, outputContracts)
+
+	// TODO REMOVE BELOW CODE
+	// it's the very generic version of backflow which allowed arbitrary fields
+	// and transformations to happen.
+	// This should be removed once all transformers have been changed to make
+	// use of the simpler solution above.
+	// MR 2021-09-10
 
 	// Process backflow from each output contract, to input contract
 	for (const result of outputManifest.results) {

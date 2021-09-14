@@ -20,6 +20,7 @@ interface ArtifactData extends ContractData {
 		baseSlug?: string;
 		slugSuffix?: string; // used to allow transformers customization of generated slugs. needed when creating multiple instances of same type
 		encryptedSecrets?: any;
+		backflow?: Record<string, Contract<any>>;
 	};
 }
 export interface ArtifactContract extends Contract<ArtifactData> {}

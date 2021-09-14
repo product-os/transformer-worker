@@ -5,10 +5,18 @@ sinks:
     inputs:
       - add_labels
     address: ${VECTOR_ENDPOINT}
+    buffer:
+      max_events: 1000
+      type: memory
+      when_full: drop_newest
     healthcheck:
       enabled: true
+    keepalive:
+      time_secs: 15
     tls:
       # ca_file: 
-      enabled: true
-      verify_certificate: ${VECTOR_VERIFY_CERTIFICATE}
-      verify_hostname: ${VECTOR_VERIFY_CERTIFICATE}
+      # crt_file: 
+      enabled: ${VECTOR_TLS_ENABLED:-"false"}
+      # key_file: 
+      verify_certificate: ${VECTOR_VERIFY_CERTIFICATE:-"true"}
+      verify_hostname: ${VECTOR_VERIFY_CERTIFICATE:-"true"}

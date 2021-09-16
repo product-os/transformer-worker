@@ -79,7 +79,7 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 		await jf.setTaskStatusAccepted(task);
 		await runTask(task);
 		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
-	} catch (e) {
+	} catch (e: any) {
 		console.log(
 			`[WORKER] ERROR occurred during task processing: ${e}`,
 			e.stdout?.toString('utf8'),
@@ -124,6 +124,26 @@ async function prepareWorkspace(
 	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
+
+	const backflows = (inputContract.data.$transformer?.backflow || []);
+	console.log("[WORKER] getting backflow artifacts: ", backflows.length);
+	await Promise.all(
+		backflows.map(
+			async (b) => {
+				if (!b.data.$transformer?.artifactReady) {
+					return;
+				}
+				const subArtifactDir = path.join(inputDir, b.id);
+				await fs.promises.mkdir(subArtifactDir, { recursive: true });
+				return registry.pullArtifact(
+					createArtifactReference(b),
+					subArtifactDir,
+					{ username: credentials.slug, password: credentials.sessionToken },
+				);
+			},
+		),
+	);
+
 	if (task.data.transformer.data.inputType != 'contract-only') {
 		await registry.pullArtifact(
 			createArtifactReference(inputContract),
@@ -131,6 +151,8 @@ async function prepareWorkspace(
 			{ username: credentials.slug, password: credentials.sessionToken },
 		);
 	}
+
+	return inputArtifactDir;
 }
 
 async function pullTransformer(
@@ -244,7 +266,21 @@ async function processBackflow(
 ) {
 	console.log(`[WORKER] Processing backflow`);
 
-	const inputContract = task.data.input;
+	const inputContract = _.cloneDeep(task.data.input);
+	const outputContracts = outputManifest.results
+		.map((result) => {
+			const outputContract = _.cloneDeep(result.contract);
+			delete outputContract.data.$transformer;
+			return outputContract;
+		});
+	await jf.addBackflow(inputContract, outputContracts)
+
+	// TODO REMOVE BELOW CODE
+	// it's the very generic version of backflow which allowed arbitrary fields
+	// and transformations to happen.
+	// This should be removed once all transformers have been changed to make
+	// use of the simpler solution above.
+	// MR 2021-09-10
 
 	// Process backflow from each output contract, to input contract
 	for (const result of outputManifest.results) {
@@ -286,13 +322,13 @@ async function runTask(task: TaskContract) {
 	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
-	const [transformerImageRef] = await Promise.all([
+	const [transformerImageRef, artifactDir] = await Promise.all([
 		pullTransformer(task, actorCredentials),
 		prepareWorkspace(task, actorCredentials),
 	]);
 
 	const outputManifest = await runtime.runTransformer(
-		path.join(directory.input(task), env.artifactDirectoryName),
+		artifactDir,
 		task.data.input,
 		task.data.transformer,
 		transformerImageRef,

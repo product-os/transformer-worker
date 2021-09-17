@@ -144,7 +144,8 @@ async function prepareWorkspace(
 		),
 	);
 
-	if (task.data.transformer.data.inputType != 'contract-only') {
+	if (inputContract.data.$transformer?.artifactReady !== false &&
+		task.data.transformer.data.inputType != 'contract-only') {
 		await registry.pullArtifact(
 			createArtifactReference(inputContract),
 			inputArtifactDir,

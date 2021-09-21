@@ -1,10 +1,10 @@
-import { ContractData } from "@balena/jellyfish-types/build/core";
-import { Contract } from "@balena/jellyfish-types/build/core";
+import { ContractData } from '@balena/jellyfish-types/build/core';
+import { Contract } from '@balena/jellyfish-types/build/core';
 
 export interface ActorCredentials {
 	slug: string;
 	sessionToken: string;
-};
+}
 
 interface TaskData extends ContractData {
 	actor: string;
@@ -12,7 +12,7 @@ interface TaskData extends ContractData {
 	transformer: TransformerContract;
 }
 
-export interface TaskContract extends Contract<TaskData> {};
+export interface TaskContract extends Contract<TaskData> {}
 
 interface ArtifactData extends ContractData {
 	$transformer?: {
@@ -39,25 +39,25 @@ interface TransformerData extends ContractData {
 export interface TransformerContract extends Contract<TransformerData> {}
 
 export interface BackflowMapping {
-	downstreamValue?:  Formula | any;
+	downstreamValue?: Formula | any;
 	upstreamPath: Formula | string;
 }
 
 export interface Formula {
 	$$formula: string;
 }
-	
+
 interface LinkData extends ContractData {
-		from: {
-			id: string;
-			type: string;
-		}
-		inverseName: string;
-		to: {
-			id: string;
-			type: string;
-		}
-	}
+	from: {
+		id: string;
+		type: string;
+	};
+	inverseName: string;
+	to: {
+		id: string;
+		type: string;
+	};
+}
 export interface LinkContract extends Contract<LinkData> {}
 
 export type InputManifest = {
@@ -76,7 +76,7 @@ export type OutputManifest = {
 			contract: ArtifactContract;
 			artifactPath?: string;
 			imagePath?: string;
-			manifestList?: Array<string>;
+			manifestList?: string[];
 		},
 	];
 };
@@ -85,4 +85,4 @@ export type TaskStatusMetadata = {
 	timestamp?: number;
 	duration?: number;
 	message?: string;
-}
+};

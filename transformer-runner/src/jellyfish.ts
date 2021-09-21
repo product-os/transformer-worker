@@ -13,7 +13,7 @@ import { LinkNames, TaskStatus } from './enums';
 import { evaluateFormulaOrValue } from './util';
 import { Contract } from '@balena/jellyfish-types/build/core';
 import { JSONSchema } from '@balena/jellyfish-types';
-import { AddOperation } from 'fast-json-patch';
+import { AddOperation, ReplaceOperation } from 'fast-json-patch';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -348,11 +348,34 @@ export default class Jellyfish {
 		return jsonpatch.compare(upstream, upstreamClone);
 	}
 
+	/**
+	 * stores resulting contracts in the backflow property of the source contract
+	 * so it can be used there when matching with other transformers
+	 * @param parent input of the transformer
+	 * @param child output contract of the transformer
+	 * @returns
+	 */
 	public async updateBackflow(
 		child: ArtifactContract,
 		parent: ArtifactContract,
 		_task?: TaskContract,
 	) {
+		// ensure backflow only happens one level deep
+		if (child.data.$transformer) {
+			const {
+				backflow,
+				...transformerDataWithoutBackflow
+			} = child.data.$transformer;
+			child.data.$transformer = transformerDataWithoutBackflow;
+		}
+
+		// TODO REMOVE backflowMapping
+		// it's the very generic version of backflow which allowed arbitrary fields
+		// and transformations to happen.
+		// This should be removed once all transformers have been changed to make
+		// use of the simpler solution.
+		// MR 2021-09-10
+
 		// Get backflow mapping,
 		// defined in transformer contract of the task that generated artifact contract,
 		const task = _task ?? (await this.getArtifactContractTask(child));
@@ -361,13 +384,8 @@ export default class Jellyfish {
 				`Could not find task that generated contract: ${child.slug}`,
 			);
 		}
-		const backflowMapping = task.data.transformer.data.backflowMapping;
-		if (!backflowMapping) {
-			console.log(`No backflow mapping defined for - skipping`, {
-				transformer: task.data.transformer.slug,
-			});
-			return;
-		}
+
+		const backflowMapping = task.data.transformer.data.backflowMapping || [];
 		if (!Array.isArray(backflowMapping)) {
 			throw Error(`backflowMapping has wrong type: ${backflowMapping}`);
 		}
@@ -375,49 +393,36 @@ export default class Jellyfish {
 		// Get json update patch, and apply
 		const backflowPatch = this.getBackflowPatch(backflowMapping, parent, child);
 
-		await this.sdk.card.update(parent.id, task.type, backflowPatch);
-		console.log(`backflow processed`, {
-			transformer: task.data.transformer.slug,
-		});
-	}
-
-	/**
-	 * stores resulting contracts in the backflow property of the source contract
-	 * so it can be used there when matching with other transformers
-	 * @param parent input of the transformer
-	 * @param backflows all output contracts of the transformer
-	 * @returns 
-	 */
-	public async addBackflow(parent: ArtifactContract, backflows: Contract[]) {
-		if (backflows.length === 0) {
-			console.log(`[WORKER] no backflow to process`, {
-				parent: `${parent.slug}@${parent.version}`,
-			});
-			return;
-		}
-
-		const patch = backflows.map(
-			(c) =>
-				({
-					op: 'add',
-					path: '/data/$transformer/backflow/-',
-					value: c,
-				} as AddOperation<Contract>),
-		);
-
 		if (typeof parent.data?.$transformer?.backflow !== 'object') {
-			patch.unshift({
+			backflowPatch.push({
 				op: 'add',
 				path: '/data/$transformer/backflow',
 				value: [],
 			} as AddOperation<any>);
 		}
 
-		await this.sdk.card.update(parent.id, parent.type, patch);
+		const childIdx = _.findIndex(
+			parent.data.$transformer?.backflow || [],
+			(c) => c.id === child.id,
+		);
+		if (childIdx === -1) {
+			backflowPatch.push({
+				op: 'add',
+				path: '/data/$transformer/backflow/-',
+				value: child,
+			} as AddOperation<Contract>);
+		} else {
+			backflowPatch.push({
+				op: 'replace',
+				path: `/data/$transformer/backflow/${childIdx}`,
+				value: child,
+			} as ReplaceOperation<Contract>);
+		}
 
+		await this.sdk.card.update(parent.id, task.type, backflowPatch);
 		console.log(`[WORKER] backflow processed`, {
-			parent: `${parent.slug}@${parent.version}`,
-			children: backflows.map((c) => `${c.slug}@${c.version}`),
+			transformer: task.data.transformer.slug,
+			transformerVersion: task.data.transformer.version,
 		});
 	}
 

@@ -27,7 +27,7 @@ export default class Jellyfish {
 	constructor(
 		apiUrl: string,
 		apiPrefix: string,
-		private sdk = getSdk({ apiUrl: apiUrl, apiPrefix: apiPrefix }),
+		private sdk = getSdk({ apiUrl, apiPrefix }),
 	) {}
 
 	public async listenForTasks(
@@ -126,7 +126,7 @@ export default class Jellyfish {
 	public async storeArtifactContract(contract: ArtifactContract) {
 		// See if contract already exists
 		const versionedSlug = `${contract.slug}@${contract.version}`;
-		let storedContract = await this.sdk.card.get(versionedSlug);
+		const storedContract = await this.sdk.card.get(versionedSlug);
 
 		if (storedContract) {
 			// ensure local references contain proper IDs
@@ -137,7 +137,7 @@ export default class Jellyfish {
 				{ data: storedContract.data },
 				{ data: contract.data },
 			);
-			if (patch.length == 0) {
+			if (patch.length === 0) {
 				return storedContract;
 			}
 			return await this.sdk.card.update(
@@ -427,7 +427,9 @@ export default class Jellyfish {
 
 	private async getActorSlugFromActorId(actorId: string) {
 		const actorContract = await this.sdk.card.get(actorId);
-		if (!actorContract) throw new Error('actor not found');
+		if (!actorContract) {
+			throw new Error('actor not found');
+		}
 		return actorContract.slug;
 	}
 
@@ -438,7 +440,9 @@ export default class Jellyfish {
 				actor: actorId,
 			},
 		});
-		if (!actorSessionContract) throw new Error('session not created');
+		if (!actorSessionContract) {
+			throw new Error('session not created');
+		}
 		return actorSessionContract.id;
 	}
 
@@ -483,7 +487,9 @@ export default class Jellyfish {
 			},
 		};
 		const createResult = await this.sdk.card.create(newRepo);
-		if (!createResult) throw new Error(`Couldn't create contract repo`);
+		if (!createResult) {
+			throw new Error(`Couldn't create contract repo`);
+		}
 		return { ...newRepo, ...createResult };
 	}
 

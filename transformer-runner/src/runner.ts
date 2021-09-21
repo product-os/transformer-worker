@@ -125,27 +125,26 @@ async function prepareWorkspace(
 
 	const inputContract = task.data.input;
 
-	const backflows = (inputContract.data.$transformer?.backflow || []);
-	console.log("[WORKER] getting backflow artifacts: ", backflows.length);
+	const backflows = inputContract.data.$transformer?.backflow || [];
+	console.log('[WORKER] getting backflow artifacts: ', backflows.length);
 	await Promise.all(
-		backflows.map(
-			async (b) => {
-				if (!b.data.$transformer?.artifactReady) {
-					return;
-				}
-				const subArtifactDir = path.join(inputDir, b.id);
-				await fs.promises.mkdir(subArtifactDir, { recursive: true });
-				return registry.pullArtifact(
-					createArtifactReference(b),
-					subArtifactDir,
-					{ username: credentials.slug, password: credentials.sessionToken },
-				);
-			},
-		),
+		backflows.map(async (b) => {
+			if (!b.data.$transformer?.artifactReady) {
+				return;
+			}
+			const subArtifactDir = path.join(inputDir, b.id);
+			await fs.promises.mkdir(subArtifactDir, { recursive: true });
+			return registry.pullArtifact(createArtifactReference(b), subArtifactDir, {
+				username: credentials.slug,
+				password: credentials.sessionToken,
+			});
+		}),
 	);
 
-	if (inputContract.data.$transformer?.artifactReady !== false &&
-		task.data.transformer.data.inputType != 'contract-only') {
+	if (
+		inputContract.data.$transformer?.artifactReady !== false &&
+		task.data.transformer.data.inputType !== 'contract-only'
+	) {
 		await registry.pullArtifact(
 			createArtifactReference(inputContract),
 			inputArtifactDir,

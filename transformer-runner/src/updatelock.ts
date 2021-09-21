@@ -25,7 +25,7 @@ export const locker = {
 	addActive: async () => {
 		await lockReady;
 		locks++;
-		if (locks == 1) {
+		if (locks === 1) {
 			lockReady = lock(updateLockFile);
 			await lockReady;
 		}
@@ -33,7 +33,7 @@ export const locker = {
 	removeActive: async () => {
 		await lockReady;
 		locks--;
-		if (locks == 0) {
+		if (locks === 0) {
 			lockReady = unlock(updateLockFile);
 			await lockReady;
 		}

@@ -95,54 +95,9 @@ export default class Registry {
 	) {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
+			const manifestResponse = await this.getArtifactManifest(artifactReference, opts)
 			// Check if the artifact is an image or a file (oras or docker)
-			const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
-			const image = p1.split(':')[0].split('/')[1]; // image
-			const tag = p1.split(':')[1];
-			const manifestURL = `http://${this.registryUrl}/v2/${image}/manifests/${tag}`;
-
-			const deniedRegistryResp = await fetch(manifestURL);
-			const wwwAuthenticate = deniedRegistryResp.headers.get(
-				'www-authenticate',
-			);
-			if (deniedRegistryResp.status !== 401 || !wwwAuthenticate) {
-				throw new Error(
-					`Registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
-				);
-			}
-			const { realm, service, scope } = this.parseWwwAuthenticate(
-				wwwAuthenticate,
-			);
-			const authUrl = new URL(realm);
-			authUrl.searchParams.set('service', service);
-			authUrl.searchParams.set('scope', scope);
-
-			// login with session user
-			const loginResp = await fetch(authUrl.href, {
-				headers: {
-					Authorization:
-						'Basic ' +
-						Buffer.from(opts.username + ':' + opts.password).toString('base64'), // basic auth
-				},
-			});
-
-			const loginBody = await loginResp.json();
-			if (!loginBody.token) {
-				throw new Error(
-					`Couldn't log in for registry (status code ${loginResp.status})`,
-				);
-			}
-
-			// get source manifest
-			const srcManifestResp = await fetch(manifestURL, {
-				headers: {
-					Authorization: `bearer ${loginBody.token}`,
-					Accept: [mimeType.dockerManifest, mimeType.ociManifest].join(','),
-				},
-			});
-
-			const respBody: ManifestResponse = await srcManifestResp.json();
-			switch (respBody.mediaType) {
+			switch (manifestResponse.mediaType) {
 				case mimeType.dockerManifest:
 					// Pull image
 					await this.docker.pull(artifactReference);
@@ -317,5 +272,54 @@ export default class Registry {
 		const image = this.docker.getImage(loadResultMatch[1]);
 
 		return image;
+	}
+
+	async getArtifactManifest(artifactReference: string, opts: RegistryAuthOptions): Promise<ManifestResponse> {
+		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
+		const image = p1.split(':')[0].split('/')[1]; // image
+		const tag = p1.split(':')[1];
+		const manifestURL = `http://${this.registryUrl}/v2/${image}/manifests/${tag}`;
+
+		const deniedRegistryResp = await fetch(manifestURL);
+		const wwwAuthenticate = deniedRegistryResp.headers.get(
+			'www-authenticate',
+		);
+		if (deniedRegistryResp.status !== 401 || !wwwAuthenticate) {
+			throw new Error(
+				`Registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
+			);
+		}
+		const { realm, service, scope } = this.parseWwwAuthenticate(
+			wwwAuthenticate,
+		);
+		const authUrl = new URL(realm);
+		authUrl.searchParams.set('service', service);
+		authUrl.searchParams.set('scope', scope);
+
+		// login with session user
+		const loginResp = await fetch(authUrl.href, {
+			headers: {
+				Authorization:
+					'Basic ' +
+					Buffer.from(opts.username + ':' + opts.password).toString('base64'), // basic auth
+			},
+		});
+
+		const loginBody = await loginResp.json();
+		if (!loginBody.token) {
+			throw new Error(
+				`Couldn't log in for registry (status code ${loginResp.status})`,
+			);
+		}
+
+		// get source manifest
+		const srcManifestResp = await fetch(manifestURL, {
+			headers: {
+				Authorization: `bearer ${loginBody.token}`,
+				Accept: [mimeType.dockerManifest, mimeType.ociManifest].join(','),
+			},
+		});
+
+		return await srcManifestResp.json();
 	}
 }

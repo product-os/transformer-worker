@@ -5,6 +5,9 @@ import { streamToPromise } from './util';
 import * as fetch from 'isomorphic-fetch';
 import { ManifestResponse } from './types';
 import { mimeType } from './consts';
+import * as stream from 'stream'
+import { promisify } from 'util';
+const pump = promisify(stream.pipeline) // Node 16 gives native pipeline promise... This is needed to properly handle stream errors
 
 const isLocalRegistry = (registryUri: string) =>
 	!registryUri.includes('.') || registryUri.includes('.local');
@@ -101,6 +104,11 @@ export default class Registry {
 				case mimeType.dockerManifest:
 					// Pull image
 					await this.docker.pull(artifactReference);
+					// Save to tar
+					const destinationStream = fs.createWriteStream(destDir)
+					const imageStream = await this.docker.getImage(artifactReference).get()
+					await pump(imageStream, destinationStream)
+					console.log('[WORKER] Wrote docker image to ' + destDir)
 					break;
 
 				case mimeType.ociManifest:

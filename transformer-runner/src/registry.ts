@@ -105,7 +105,7 @@ export default class Registry {
 					// Pull image
 					await this.docker.pull(artifactReference);
 					// Save to tar
-					const destinationStream = fs.createWriteStream(destDir)
+					const destinationStream = fs.createWriteStream(`${destDir}/artifact.tar`)
 					const imageStream = await this.docker.getImage(artifactReference).get()
 					await pump(imageStream, destinationStream)
 					console.log('[WORKER] Wrote docker image to ' + destDir)

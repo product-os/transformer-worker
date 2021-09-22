@@ -1,7 +1,10 @@
 import * as Docker from 'dockerode';
 import * as spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
-import { streamToPromise } from './util';
+import { streamToPromise } from "./util";
+import * as fetch from 'isomorphic-fetch'
+import { ManifestResponse } from './types';
+import { mimeType } from './consts';
 
 const isLocalRegistry = (registryUri: string) =>
 	!registryUri.includes('.') || registryUri.includes('.local');
@@ -92,19 +95,37 @@ export default class Registry {
 	) {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
-			const output = await this.runOrasCommand(
-				[`pull`, artifactReference],
-				opts,
-				{ cwd: destDir },
-			);
+			// Check if the artifact is an image or a file (oras or docker)
+			const p1 = artifactReference.split(this.registryUrl)[1] // /image:tag
+			const image = p1.split(':')[0].split('/')[1] // image
+			const tag = p1.split(':')[1]
+			const resp = await fetch(`http://${this.registryUrl}/v2/${image}/manifests/${tag}`)
+			const respBody: ManifestResponse = await resp.json()
+			switch (respBody.mediaType) {
+				case mimeType.dockerManifest:
+					// Pull image
+					await this.docker.pull(artifactReference)
+					break;
 
-			const m = output.match(/Downloaded .* (.*)/);
-			if (m[1]) {
-				return m[1];
-			} else {
-				throw new Error(
-					'[ERROR] Could not determine what was pulled from the registry',
-				);
+				case mimeType.ociManifest:
+					// Pull artifact
+					const output = await this.runOrasCommand([
+						`pull`,
+						artifactReference,
+					], opts, { cwd: destDir });
+
+					const m = output.match(/Downloaded .* (.*)/);
+					if (m[1]) {
+						return m[1];
+					} else {
+						throw new Error(
+							'[ERROR] Could not determine what was pulled from the registry',
+						);
+					}
+					break;
+
+				default:
+					throw new Error('Unknown media type found for artifact ' + artifactReference)
 			}
 		} catch (e) {
 			this.logErrorAndThrow(e);

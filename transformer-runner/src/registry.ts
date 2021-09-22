@@ -1,8 +1,8 @@
 import * as Docker from 'dockerode';
 import * as spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
-import { streamToPromise } from "./util";
-import * as fetch from 'isomorphic-fetch'
+import { streamToPromise } from './util';
+import * as fetch from 'isomorphic-fetch';
 import { ManifestResponse } from './types';
 import { mimeType } from './consts';
 
@@ -96,23 +96,65 @@ export default class Registry {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
 			// Check if the artifact is an image or a file (oras or docker)
-			const p1 = artifactReference.split(this.registryUrl)[1] // /image:tag
-			const image = p1.split(':')[0].split('/')[1] // image
-			const tag = p1.split(':')[1]
-			const resp = await fetch(`http://${this.registryUrl}/v2/${image}/manifests/${tag}`)
-			const respBody: ManifestResponse = await resp.json()
+			const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
+			const image = p1.split(':')[0].split('/')[1]; // image
+			const tag = p1.split(':')[1];
+			const manifestURL = `http://${this.registryUrl}/v2/${image}/manifests/${tag}`;
+
+			const deniedRegistryResp = await fetch(manifestURL);
+			const wwwAuthenticate = deniedRegistryResp.headers.get(
+				'www-authenticate',
+			);
+			if (deniedRegistryResp.status !== 401 || !wwwAuthenticate) {
+				throw new Error(
+					`Registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
+				);
+			}
+			const { realm, service, scope } = this.parseWwwAuthenticate(
+				wwwAuthenticate,
+			);
+			const authUrl = new URL(realm);
+			authUrl.searchParams.set('service', service);
+			authUrl.searchParams.set('scope', scope);
+
+			// login with session user
+			const loginResp = await fetch(authUrl.href, {
+				headers: {
+					Authorization:
+						'Basic ' +
+						Buffer.from(opts.username + ':' + opts.password).toString('base64'), // basic auth
+				},
+			});
+
+			const loginBody = await loginResp.json();
+			if (!loginBody.token) {
+				throw new Error(
+					`Couldn't log in for registry (status code ${loginResp.status})`,
+				);
+			}
+
+			// get source manifest
+			const srcManifestResp = await fetch(manifestURL, {
+				headers: {
+					Authorization: `bearer ${loginBody.token}`,
+					Accept: [mimeType.dockerManifest, mimeType.ociManifest].join(','),
+				},
+			});
+
+			const respBody: ManifestResponse = await srcManifestResp.json();
 			switch (respBody.mediaType) {
 				case mimeType.dockerManifest:
 					// Pull image
-					await this.docker.pull(artifactReference)
+					await this.docker.pull(artifactReference);
 					break;
 
 				case mimeType.ociManifest:
 					// Pull artifact
-					const output = await this.runOrasCommand([
-						`pull`,
-						artifactReference,
-					], opts, { cwd: destDir });
+					const output = await this.runOrasCommand(
+						[`pull`, artifactReference],
+						opts,
+						{ cwd: destDir },
+					);
 
 					const m = output.match(/Downloaded .* (.*)/);
 					if (m[1]) {
@@ -125,7 +167,9 @@ export default class Registry {
 					break;
 
 				default:
-					throw new Error('Unknown media type found for artifact ' + artifactReference)
+					throw new Error(
+						'Unknown media type found for artifact ' + artifactReference,
+					);
 			}
 		} catch (e) {
 			this.logErrorAndThrow(e);
@@ -146,6 +190,14 @@ export default class Registry {
 			this.logErrorAndThrow(e);
 		}
 	}
+
+	parseWwwAuthenticate = (wwwAuthenticate: any) => {
+		return {
+			realm: (/realm="([^"]+)/.exec(wwwAuthenticate) || [])[1],
+			service: (/service="([^"]+)/.exec(wwwAuthenticate) || [])[1],
+			scope: (/scope="([^"]+)/.exec(wwwAuthenticate) || [])[1],
+		};
+	};
 
 	public async pushManifestList(
 		artifactReference: string,

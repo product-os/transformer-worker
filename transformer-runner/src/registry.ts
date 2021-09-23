@@ -7,6 +7,7 @@ import { ManifestResponse } from './types';
 import { mimeType } from './consts';
 import * as stream from 'stream'
 import { promisify } from 'util';
+import path = require('path');
 const pump = promisify(stream.pipeline) // Node 16 gives native pipeline promise... This is needed to properly handle stream errors
 
 const isLocalRegistry = (registryUri: string) =>
@@ -105,7 +106,7 @@ export default class Registry {
 					// Pull image
 					await this.docker.pull(artifactReference);
 					// Save to tar
-					const destinationStream = fs.createWriteStream(`${destDir}/artifact.tar`)
+					const destinationStream = fs.createWriteStream(path.join(destDir, 'artifact.tar'))
 					const imageStream = await this.docker.getImage(artifactReference).get()
 					await pump(imageStream, destinationStream)
 					console.log('[WORKER] Wrote docker image to ' + destDir)

@@ -128,7 +128,6 @@ export default class Registry {
 							'[ERROR] Could not determine what was pulled from the registry',
 						);
 					}
-					break;
 
 				default:
 					throw new Error(
@@ -287,7 +286,7 @@ export default class Registry {
 		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
 		const image = p1.split(':')[0].split('/')[1]; // image
 		const tag = p1.split(':')[1];
-		const manifestURL = `http://${this.registryUrl}/v2/${image}/manifests/${tag}`;
+		const manifestURL = `https://${this.registryUrl}/v2/${image}/manifests/${tag}`;
 
 		const deniedRegistryResp = await fetch(manifestURL);
 		const wwwAuthenticate = deniedRegistryResp.headers.get(

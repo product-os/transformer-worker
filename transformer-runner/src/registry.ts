@@ -99,10 +99,10 @@ export default class Registry {
 	) {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
-			const manifestResponse = await this.getArtifactManifest(artifactReference, opts)
+			const imageType = await this.getImageType(artifactReference, opts)
 			// Check if the artifact is an image or a file (oras or docker)
-			switch (manifestResponse.mediaType) {
-				case mimeType.dockerManifest:
+			switch (imageType) {
+				case 'docker':
 					// Pull image
 					await this.docker.pull(artifactReference);
 					// Save to tar
@@ -112,7 +112,7 @@ export default class Registry {
 					console.log('[WORKER] Wrote docker image to ' + destDir)
 					break;
 
-				case mimeType.ociManifest:
+				case 'oras':
 					// Pull artifact
 					const output = await this.runOrasCommand(
 						[`pull`, artifactReference],
@@ -282,7 +282,7 @@ export default class Registry {
 		return image;
 	}
 
-	async getArtifactManifest(artifactReference: string, opts: RegistryAuthOptions): Promise<ManifestResponse> {
+	async getImageType(artifactReference: string, opts: RegistryAuthOptions): Promise<'docker' | 'oras'> {
 		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
 		const image = p1.split(':')[0].split('/')[1]; // image
 		const tag = p1.split(':')[1];
@@ -328,6 +328,15 @@ export default class Registry {
 			},
 		});
 
-		return await srcManifestResp.json();
+		if (srcManifestResp.headers.get('content-type')?.startsWith('application/vnd.docker')) {
+			return 'docker'
+		} else if (srcManifestResp.headers.get('content-type')?.startsWith('application/vnd.oci')) {
+			return 'oras'
+		}
+		console.error('Got unknown artifact type!', {
+			artifactReference,
+			contentType: srcManifestResp.headers.get('content-type')
+		})
+		throw new Error('Unknown artifact type found')
 	}
 }

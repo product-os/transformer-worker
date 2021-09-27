@@ -3,12 +3,11 @@ import * as spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
 import { streamToPromise } from './util';
 import * as fetch from 'isomorphic-fetch';
-import { ManifestResponse } from './types';
 import { mimeType } from './consts';
-import * as stream from 'stream'
+import * as stream from 'stream';
 import { promisify } from 'util';
 import path = require('path');
-const pump = promisify(stream.pipeline) // Node 16 gives native pipeline promise... This is needed to properly handle stream errors
+const pump = promisify(stream.pipeline); // Node 16 gives native pipeline promise... This is needed to properly handle stream errors
 
 const isLocalRegistry = (registryUri: string) =>
 	!registryUri.includes('.') || registryUri.includes('.local');
@@ -99,20 +98,24 @@ export default class Registry {
 	) {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
 		try {
-			const imageType = await this.getImageType(artifactReference, opts)
+			const imageType = await this.getImageType(artifactReference, opts);
 			// Check if the artifact is an image or a file (oras or docker)
 			switch (imageType) {
-				case 'docker':
+				case mimeType.dockerManifest:
 					// Pull image
 					await this.docker.pull(artifactReference);
 					// Save to tar
-					const destinationStream = fs.createWriteStream(path.join(destDir, 'artifact.tar'))
-					const imageStream = await this.docker.getImage(artifactReference).get()
-					await pump(imageStream, destinationStream)
-					console.log('[WORKER] Wrote docker image to ' + destDir)
+					const destinationStream = fs.createWriteStream(
+						path.join(destDir, 'artifact.tar'),
+					);
+					const imageStream = await this.docker
+						.getImage(artifactReference)
+						.get();
+					await pump(imageStream, destinationStream);
+					console.log('[WORKER] Wrote docker image to ' + destDir);
 					break;
 
-				case 'oras':
+				case mimeType.ociManifest:
 					// Pull artifact
 					const output = await this.runOrasCommand(
 						[`pull`, artifactReference],
@@ -282,16 +285,17 @@ export default class Registry {
 		return image;
 	}
 
-	async getImageType(artifactReference: string, opts: RegistryAuthOptions): Promise<'docker' | 'oras'> {
+	async getImageType(
+		artifactReference: string,
+		opts: RegistryAuthOptions,
+	): Promise<string | null> {
 		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
 		const image = p1.split(':')[0].split('/')[1]; // image
 		const tag = p1.split(':')[1];
 		const manifestURL = `https://${this.registryUrl}/v2/${image}/manifests/${tag}`;
 
 		const deniedRegistryResp = await fetch(manifestURL);
-		const wwwAuthenticate = deniedRegistryResp.headers.get(
-			'www-authenticate',
-		);
+		const wwwAuthenticate = deniedRegistryResp.headers.get('www-authenticate');
 		if (deniedRegistryResp.status !== 401 || !wwwAuthenticate) {
 			throw new Error(
 				`Registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
@@ -328,15 +332,6 @@ export default class Registry {
 			},
 		});
 
-		if (srcManifestResp.headers.get('content-type')?.startsWith('application/vnd.docker')) {
-			return 'docker'
-		} else if (srcManifestResp.headers.get('content-type')?.startsWith('application/vnd.oci')) {
-			return 'oras'
-		}
-		console.error('Got unknown artifact type!', {
-			artifactReference,
-			contentType: srcManifestResp.headers.get('content-type')
-		})
-		throw new Error('Unknown artifact type found')
+		return srcManifestResp.headers.get('content-type')
 	}
 }

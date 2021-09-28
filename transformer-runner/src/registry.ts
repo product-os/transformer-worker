@@ -134,7 +134,7 @@ export default class Registry {
 
 				default:
 					throw new Error(
-						'Unknown media type found for artifact ' + artifactReference,
+						'Unknown media type found for artifact ' + artifactReference + ' : ' + imageType,
 					);
 			}
 		} catch (e) {

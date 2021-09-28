@@ -327,7 +327,7 @@ export default class Registry {
 		// get source manifest
 		const srcManifestResp = await fetch(manifestURL, {
 			headers: {
-				Authorization: `bearer ${loginBody.token}`,
+				Authorization: `Bearer ${loginBody.token}`,
 				Accept: [mimeType.dockerManifest, mimeType.ociManifest].join(','),
 			},
 		});

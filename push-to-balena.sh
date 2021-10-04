@@ -7,4 +7,4 @@ mv balena.yml balena.yml.bak
 trap "mv balena.yml.bak balena.yml" EXIT
 
 balena push "${app}" \
-  --release-tag version "$(git describe --abbrev=0)"
+  --release-tag version "$(cat VERSION)"

@@ -142,7 +142,7 @@ async function prepareWorkspace(
 	);
 
 	if (
-		inputContract.data.$transformer?.artifactReady !== false &&
+		inputContract.data.$transformer?.artifactReady &&
 		task.data.transformer.data.inputType !== 'contract-only'
 	) {
 		await registry.pullArtifact(

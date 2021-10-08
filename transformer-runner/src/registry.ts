@@ -103,7 +103,13 @@ export default class Registry {
 			switch (imageType) {
 				case mimeType.dockerManifest:
 					// Pull image
-					await this.docker.pull(artifactReference);
+					await this.pullImage(
+						artifactReference,
+						{
+							username: opts.username,
+							password: opts.password,
+						},
+					);
 					// Save to tar
 					const destinationStream = fs.createWriteStream(
 						path.join(destDir, 'artifact.tar'),
@@ -330,7 +336,7 @@ export default class Registry {
 		// get source manifest
 		const srcManifestResp = await fetch(manifestURL, {
 			headers: {
-				Authorization: `bearer ${loginBody.token}`,
+				Authorization: `Bearer ${loginBody.token}`,
 				Accept: Object.values(mimeType).join(','),
 			},
 		});

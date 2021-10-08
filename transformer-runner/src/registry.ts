@@ -308,6 +308,8 @@ export default class Registry {
 		authUrl.searchParams.set('service', service);
 		authUrl.searchParams.set('scope', scope);
 
+		console.log('[WORKER] Got wwwAuthenticate for getting access token')
+
 		// login with session user
 		const loginResp = await fetch(authUrl.href, {
 			headers: {
@@ -323,6 +325,7 @@ export default class Registry {
 				`Couldn't log in for registry (status code ${loginResp.status})`,
 			);
 		}
+		console.log('[WORKER] Got access token, fetching manifest for image')
 
 		// get source manifest
 		const srcManifestResp = await fetch(manifestURL, {

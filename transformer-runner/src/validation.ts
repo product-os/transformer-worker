@@ -9,19 +9,18 @@ export async function validateTask(task: TaskContract) {
 		throw new Error(`${message} missing id`);
 	}
 
-	if (!task?.data) {
-		throw new Error(`${message} missing data property`);
-	}
-
-	if (!task?.data?.actor || task?.id === '') {
+	if (!task?.data?.actor) {
 		throw new Error(`${message} missing actor property`);
 	}
 
-	if (!task?.data?.input) {
+	if (!task?.data?.input?.id) {
 		throw new Error(`${message} missing input contract`);
 	}
 
-	if (!task?.data?.transformer) {
+	if (
+		!task?.data?.transformer?.id ||
+		task?.data?.transformer?.type?.startsWith('transformer@')
+	) {
 		throw new Error(`${message} missing transformer`);
 	}
 }

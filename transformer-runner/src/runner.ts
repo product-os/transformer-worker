@@ -259,7 +259,7 @@ async function pushOutput(
 
 		if (hasArtifact) {
 			// Mark artifact ready, allowing it to be processed by downstream transformers
-			await jf.markArtifactContractReady(outputContract);
+			await jf.markArtifactContractReady(outputContract, artifactReference);
 		} else {
 			// contracts without artifacts shouldn't have an `artifactReady` field at all, but we keep it
 			// with "false" until now, to block it being processed before links are created

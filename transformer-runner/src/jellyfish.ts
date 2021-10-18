@@ -157,12 +157,12 @@ export default class Jellyfish {
 		return createdCard;
 	}
 
-	public async markArtifactContractReady(contract: ArtifactContract) {
+	public async markArtifactContractReady(contract: ArtifactContract, artifactValue: string) {
 		await this.sdk.card.update(contract.id, contract.type, [
 			{
 				op: 'replace',
 				path: '/data/$transformer/artifactReady',
-				value: new Date().toISOString(),
+				value: artifactValue,
 			} as ReplaceOperation<string>,
 		]);
 	}

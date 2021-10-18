@@ -19,7 +19,7 @@ export async function validateTask(task: TaskContract) {
 
 	if (
 		!task?.data?.transformer?.id ||
-		task?.data?.transformer?.type?.startsWith('transformer@')
+		!task?.data?.transformer?.type?.startsWith('transformer@')
 	) {
 		throw new Error(`${message} missing transformer`);
 	}

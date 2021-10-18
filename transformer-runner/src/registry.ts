@@ -103,7 +103,13 @@ export default class Registry {
 			switch (imageType) {
 				case mimeType.dockerManifest:
 					// Pull image
-					await this.docker.pull(artifactReference);
+					await this.pullImage(
+						artifactReference,
+						{
+							username: opts.username,
+							password: opts.password,
+						},
+					);
 					// Save to tar
 					const destinationStream = fs.createWriteStream(
 						path.join(destDir, 'artifact.tar'),
@@ -308,6 +314,8 @@ export default class Registry {
 		authUrl.searchParams.set('service', service);
 		authUrl.searchParams.set('scope', scope);
 
+		console.log('[WORKER] Got wwwAuthenticate for getting access token')
+
 		// login with session user
 		const loginResp = await fetch(authUrl.href, {
 			headers: {
@@ -323,11 +331,12 @@ export default class Registry {
 				`Couldn't log in for registry (status code ${loginResp.status})`,
 			);
 		}
+		console.log('[WORKER] Got access token, fetching manifest for image')
 
 		// get source manifest
 		const srcManifestResp = await fetch(manifestURL, {
 			headers: {
-				Authorization: `bearer ${loginBody.token}`,
+				Authorization: `Bearer ${loginBody.token}`,
 				Accept: Object.values(mimeType).join(','),
 			},
 		});

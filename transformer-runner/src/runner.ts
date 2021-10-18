@@ -227,6 +227,7 @@ async function pushOutput(
 				`result ${result.contract.slug} contained multiple kinds of artifact`,
 			);
 		}
+		let hasArtifact = true;
 		if (result.imagePath) {
 			await registry.pushImage(
 				artifactReference,
@@ -246,6 +247,7 @@ async function pushOutput(
 				authOptions,
 			);
 		} else {
+			hasArtifact = false;
 			console.log(`[WORKER] no artifact for result ${result.contract.slug}`);
 		}
 
@@ -255,8 +257,14 @@ async function pushOutput(
 		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
 		await jf.createLink(task, outputContract, LinkNames.Generated);
 
-		// Mark artifact ready, allowing it to be processed by downstream transformers
-		await jf.markArtifactContractReady(outputContract);
+		if (hasArtifact) {
+			// Mark artifact ready, allowing it to be processed by downstream transformers
+			await jf.markArtifactContractReady(outputContract, artifactReference);
+		} else {
+			// contracts without artifacts shouldn't have an `artifactReady` field at all, but we keep it
+			// with "false" until now, to block it being processed before links are created
+			await jf.removeArtifactReady(outputContract);
+		}
 	}
 }
 

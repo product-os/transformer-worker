@@ -13,7 +13,7 @@ import { LinkNames, TaskStatus } from './enums';
 import { evaluateFormulaOrValue } from './util';
 import { Contract } from '@balena/jellyfish-types/build/core';
 import { JSONSchema } from '@balena/jellyfish-types';
-import { AddOperation, ReplaceOperation } from 'fast-json-patch';
+import { AddOperation, RemoveOperation, ReplaceOperation } from 'fast-json-patch';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -163,7 +163,16 @@ export default class Jellyfish {
 				op: 'replace',
 				path: '/data/$transformer/artifactReady',
 				value: new Date().toISOString(),
-			},
+			} as ReplaceOperation<string>,
+		]);
+	}
+
+	public async removeArtifactReady(contract: ArtifactContract) {
+		await this.sdk.card.update(contract.id, contract.type, [
+			{
+				op: 'remove',
+				path: '/data/$transformer/artifactReady',
+			} as RemoveOperation,
 		]);
 	}
 

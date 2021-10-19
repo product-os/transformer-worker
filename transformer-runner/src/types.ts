@@ -27,7 +27,6 @@ export interface ArtifactContract extends Contract<ArtifactData> {}
 
 interface TransformerData extends ContractData {
 	inputFilter: any;
-	inputType?: 'contract-only' | 'full';
 	requirements?: {
 		os?: string;
 		architecture?: string;

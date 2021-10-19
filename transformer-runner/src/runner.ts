@@ -85,7 +85,7 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 			e.stdout?.toString('utf8'),
 			e.stderr?.toString('utf8'),
 		);
-		console.log(e)
+		console.log(e);
 		await jf.setTaskStatusFailed(
 			task,
 			e.message,
@@ -142,10 +142,7 @@ async function prepareWorkspace(
 		}),
 	);
 
-	if (
-		inputContract.data.$transformer?.artifactReady &&
-		task.data.transformer.data.inputType !== 'contract-only'
-	) {
+	if (inputContract.data.$transformer?.artifactReady) {
 		await registry.pullArtifact(
 			createArtifactReference(inputContract),
 			inputArtifactDir,

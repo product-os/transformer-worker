@@ -295,6 +295,7 @@ export default class Registry {
 		artifactReference: string,
 		opts: RegistryAuthOptions,
 	): Promise<string | null> {
+		console.log('[WORKER] Getting image type for', artifactReference)
 		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
 		const image = p1.split(':')[0].split('/')[1]; // image
 		const tag = p1.split(':')[1];

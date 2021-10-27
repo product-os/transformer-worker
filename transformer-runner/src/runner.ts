@@ -331,7 +331,7 @@ async function runTask(task: TaskContract) {
 		true,
 	);
 
-	console.log('[WORKER] GOT output manifest', outputManifest)
+	console.log('[WORKER] GOT output manifest', JSON.stringify(outputManifest))
 
 	await pushOutput(task, outputManifest, actorCredentials);
 

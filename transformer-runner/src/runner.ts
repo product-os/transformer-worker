@@ -331,6 +331,8 @@ async function runTask(task: TaskContract) {
 		true,
 	);
 
+	console.log('[WORKER] GOT output manifest', outputManifest)
+
 	await pushOutput(task, outputManifest, actorCredentials);
 
 	await processBackflow(task, outputManifest);

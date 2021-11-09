@@ -18,6 +18,7 @@ interface ArtifactData extends ContractData {
 	$transformer?: {
 		artifactReady: boolean;
 		baseSlug?: string;
+		parentVersion?: string;
 		slugSuffix?: string; // used to allow transformers customization of generated slugs. needed when creating multiple instances of same type
 		encryptedSecrets?: any;
 		backflow?: ArtifactContract[];

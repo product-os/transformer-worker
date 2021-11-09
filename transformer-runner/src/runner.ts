@@ -25,7 +25,10 @@ const directory = {
 	output: (task: TaskContract) => path.join(env.outputDir, `task-${task.id}`),
 };
 
-const createArtifactReference = ({ slug, version }: Contract) => {
+const createArtifactReference = ({
+	slug,
+	version,
+}: Pick<Contract, 'slug' | 'version'>) => {
 	let registryPort = '';
 	if (env.registryPort) {
 		registryPort = `:${env.registryPort}`;
@@ -97,6 +100,13 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 	}
 };
 
+/**
+ * creates input and output directories and pulls the input and backflow
+ * artifacts into (subdirectories of) the input dir
+ * @param task
+ * @param credentials for pulling from the registry
+ * @returns path to artifacts
+ */
 async function prepareWorkspace(
 	task: TaskContract,
 	credentials: ActorCredentials,
@@ -331,7 +341,7 @@ async function runTask(task: TaskContract) {
 		true,
 	);
 
-	console.log('[WORKER] GOT output manifest', JSON.stringify(outputManifest))
+	console.log('[WORKER] GOT output manifest', JSON.stringify(outputManifest));
 
 	await pushOutput(task, outputManifest, actorCredentials);
 

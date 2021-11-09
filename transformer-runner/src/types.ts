@@ -84,21 +84,21 @@ export type TaskStatusMetadata = {
 	timestamp?: number;
 	duration?: number;
 	message?: string;
-}
+};
 
 export type ManifestResponse = {
-	schemaVersion: number
-	mediaType: string
+	schemaVersion: number;
+	mediaType: string;
 	config: {
-		 mediaType: string
-		 size: number
-		 digest: string
-	},
+		mediaType: string;
+		size: number;
+		digest: string;
+	};
 	layers: [
-		 {
-				mediaType: string
-				size: number
-				digest: string
-		 }
-	]
-}
+		{
+			mediaType: string;
+			size: number;
+			digest: string;
+		},
+	];
+};

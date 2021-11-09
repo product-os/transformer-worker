@@ -34,7 +34,7 @@ export function evaluateFormulaOrValue(
 				input: null,
 			});
 			return result?.value;
-		} catch (e) {
+		} catch (e: any) {
 			if (e.message) {
 				e.message = `Formula eval error: ${e.message}`;
 			}

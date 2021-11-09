@@ -25,7 +25,10 @@ const directory = {
 	output: (task: TaskContract) => path.join(env.outputDir, `task-${task.id}`),
 };
 
-const createArtifactReference = ({ slug, version }: Contract) => {
+const createArtifactReference = ({
+	slug,
+	version,
+}: Pick<Contract, 'slug' | 'version'>) => {
 	let registryPort = '';
 	if (env.registryPort) {
 		registryPort = `:${env.registryPort}`;
@@ -97,6 +100,13 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 	}
 };
 
+/**
+ * creates input and output directories and pulls the input and backflow
+ * artifacts into (subdirectories of) the input dir
+ * @param task
+ * @param credentials for pulling from the registry
+ * @returns path to artifacts
+ */
 async function prepareWorkspace(
 	task: TaskContract,
 	credentials: ActorCredentials,
@@ -142,6 +152,10 @@ async function prepareWorkspace(
 		}),
 	);
 
+	const secondaryInput = task.data.input.data.$transformer?.backflow?.map(
+		(bf) => ({ contract: bf, artifactDirectory: path.join(inputDir, bf.id) }),
+	);
+
 	if (inputContract.data.$transformer?.artifactReady) {
 		await registry.pullArtifact(
 			createArtifactReference(inputContract),
@@ -150,7 +164,36 @@ async function prepareWorkspace(
 		);
 	}
 
-	return inputArtifactDir;
+	// TODO parent contract into input manifest
+	if (inputContract.data.$transformer?.parentVersion) {
+		const parentContract = await jf.getContract(
+			`${inputContract.slug}@${inputContract.data.$transformer?.parentVersion}`,
+		);
+		if (!parentContract) {
+			console.log('[WORKER] no contract found for parent');
+		} else if (
+			(parentContract as ArtifactContract).data.$transformer?.artifactReady
+		) {
+			const subArtifactDir = path.join(inputDir, parentContract.id);
+			await registry.pullArtifact(
+				createArtifactReference({
+					slug: inputContract.slug,
+					version: inputContract.data.$transformer?.parentVersion,
+				}),
+				subArtifactDir,
+				{ username: credentials.slug, password: credentials.sessionToken },
+			);
+			secondaryInput?.push({
+				contract: parentContract,
+				artifactDirectory: subArtifactDir,
+			});
+		}
+	}
+
+	return {
+		artifactDir: inputArtifactDir,
+		secondaryInput,
+	};
 }
 
 async function pullTransformer(
@@ -316,22 +359,24 @@ async function runTask(task: TaskContract) {
 	// The actor is the loop, and to start with that will always be product-os
 	const actorCredentials = await jf.getActorCredentials(task.data.actor);
 
-	const [transformerImageRef, artifactDir] = await Promise.all([
+	const [transformerImageRef, workspace] = await Promise.all([
 		pullTransformer(task, actorCredentials),
 		prepareWorkspace(task, actorCredentials),
 	]);
 
 	const outputManifest = await runtime.runTransformer(
-		artifactDir,
+		workspace.artifactDir,
 		task.data.input,
 		task.data.transformer,
 		transformerImageRef,
 		directory.input(task),
 		directory.output(task),
 		true,
+		{ ['io.balena.transformer.task.id']: task.id },
+		workspace.secondaryInput,
 	);
 
-	console.log('[WORKER] GOT output manifest', JSON.stringify(outputManifest))
+	console.log('[WORKER] GOT output manifest', JSON.stringify(outputManifest));
 
 	await pushOutput(task, outputManifest, actorCredentials);
 

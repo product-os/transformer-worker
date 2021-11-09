@@ -47,13 +47,9 @@ export default class Registry {
 	) {
 		console.log(`[WORKER] Pushing image ${imageReference}`);
 		const image = await this.loadImage(imagePath);
-		const {
-			registry,
-			repo,
-			tag,
-		} = /^(?<registry>[^/]+)\/(?<repo>.*):(?<tag>[^:]+)$/.exec(
-			imageReference,
-		)?.groups!;
+		const { registry, repo, tag } =
+			/^(?<registry>[^/]+)\/(?<repo>.*):(?<tag>[^:]+)$/.exec(imageReference)
+				?.groups!;
 		await image.tag({ repo: `${registry}/${repo}`, tag, force: true });
 		const taggedImage = await this.docker.getImage(imageReference);
 		const authconfig = this.getDockerAuthConfig(authOpts);
@@ -75,7 +71,7 @@ export default class Registry {
 		return new Promise((resolve, reject) =>
 			this.docker.modem.followProgress(
 				progressStream,
-				(err: Error) => (err ? reject(err) : resolve(null)),
+				(err: Error | null) => (err ? reject(err) : resolve(null)),
 				(line: any) => {
 					if (line.progress || line.progressDetail) {
 						// Progress bar's just spam the logs
@@ -103,13 +99,10 @@ export default class Registry {
 			switch (imageType) {
 				case mimeType.dockerManifest:
 					// Pull image
-					await this.pullImage(
-						artifactReference,
-						{
-							username: opts.username,
-							password: opts.password,
-						},
-					);
+					await this.pullImage(artifactReference, {
+						username: opts.username,
+						password: opts.password,
+					});
 					// Save to tar
 					const destinationStream = fs.createWriteStream(
 						path.join(destDir, 'artifact.tar'),
@@ -140,7 +133,10 @@ export default class Registry {
 
 				default:
 					throw new Error(
-						'Unknown media type found for artifact ' + artifactReference + ' : ' + imageType,
+						'Unknown media type found for artifact ' +
+							artifactReference +
+							' : ' +
+							imageType,
 					);
 			}
 		} catch (e) {
@@ -184,8 +180,8 @@ export default class Registry {
 
 		let fqArtifactReference = artifactReference;
 		if (localRegistry) {
-			const [host, path] = artifactReference.split('/', 2);
-			fqArtifactReference = `${host}:80/${path}`;
+			const [host, urlPath] = artifactReference.split('/', 2);
+			fqArtifactReference = `${host}:80/${urlPath}`;
 		}
 
 		console.log(`[WORKER] creating manifest list for ${fqArtifactReference}`);
@@ -295,7 +291,7 @@ export default class Registry {
 		artifactReference: string,
 		opts: RegistryAuthOptions,
 	): Promise<string | null> {
-		console.log('[WORKER] Getting image type for', artifactReference)
+		console.log('[WORKER] Getting image type for', artifactReference);
 		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
 		const image = p1.split(':')[0].split('/')[1]; // image
 		const tag = p1.split(':')[1];
@@ -308,14 +304,13 @@ export default class Registry {
 				`Registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
 			);
 		}
-		const { realm, service, scope } = this.parseWwwAuthenticate(
-			wwwAuthenticate,
-		);
+		const { realm, service, scope } =
+			this.parseWwwAuthenticate(wwwAuthenticate);
 		const authUrl = new URL(realm);
 		authUrl.searchParams.set('service', service);
 		authUrl.searchParams.set('scope', scope);
 
-		console.log('[WORKER] Got wwwAuthenticate for getting access token')
+		console.log('[WORKER] Got wwwAuthenticate for getting access token');
 
 		// login with session user
 		const loginResp = await fetch(authUrl.href, {
@@ -332,7 +327,7 @@ export default class Registry {
 				`Couldn't log in for registry (status code ${loginResp.status})`,
 			);
 		}
-		console.log('[WORKER] Got access token, fetching manifest for image')
+		console.log('[WORKER] Got access token, fetching manifest for image');
 
 		// get source manifest
 		const srcManifestResp = await fetch(manifestURL, {
@@ -342,6 +337,6 @@ export default class Registry {
 			},
 		});
 
-		return srcManifestResp.headers.get('content-type')
+		return srcManifestResp.headers.get('content-type');
 	}
 }

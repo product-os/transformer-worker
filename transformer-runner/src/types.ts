@@ -18,6 +18,7 @@ interface ArtifactData extends ContractData {
 	$transformer?: {
 		artifactReady: boolean;
 		baseSlug?: string;
+		parentVersion?: string;
 		slugSuffix?: string; // used to allow transformers customization of generated slugs. needed when creating multiple instances of same type
 		encryptedSecrets?: any;
 		backflow?: ArtifactContract[];
@@ -84,21 +85,21 @@ export type TaskStatusMetadata = {
 	timestamp?: number;
 	duration?: number;
 	message?: string;
-}
+};
 
 export type ManifestResponse = {
-	schemaVersion: number
-	mediaType: string
+	schemaVersion: number;
+	mediaType: string;
 	config: {
-		 mediaType: string
-		 size: number
-		 digest: string
-	},
+		mediaType: string;
+		size: number;
+		digest: string;
+	};
 	layers: [
-		 {
-				mediaType: string
-				size: number
-				digest: string
-		 }
-	]
-}
+		{
+			mediaType: string;
+			size: number;
+			digest: string;
+		},
+	];
+};

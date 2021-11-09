@@ -13,7 +13,11 @@ import { LinkNames, TaskStatus } from './enums';
 import { evaluateFormulaOrValue } from './util';
 import { Contract } from '@balena/jellyfish-types/build/core';
 import { JSONSchema } from '@balena/jellyfish-types';
-import { AddOperation, RemoveOperation, ReplaceOperation } from 'fast-json-patch';
+import {
+	AddOperation,
+	RemoveOperation,
+	ReplaceOperation,
+} from 'fast-json-patch';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -157,7 +161,10 @@ export default class Jellyfish {
 		return createdCard;
 	}
 
-	public async markArtifactContractReady(contract: ArtifactContract, artifactValue: string) {
+	public async markArtifactContractReady(
+		contract: ArtifactContract,
+		artifactValue: string,
+	) {
 		await this.sdk.card.update(contract.id, contract.type, [
 			{
 				op: 'replace',
@@ -371,10 +378,8 @@ export default class Jellyfish {
 	) {
 		// ensure backflow only happens one level deep
 		if (child.data.$transformer) {
-			const {
-				backflow,
-				...transformerDataWithoutBackflow
-			} = child.data.$transformer;
+			const { backflow, ...transformerDataWithoutBackflow } =
+				child.data.$transformer;
 			child.data.$transformer = transformerDataWithoutBackflow;
 		}
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.19.0
+## (2021-11-09)
+
+* remove broken contract [Martin Rauscher]
+* get parent version as secondary input [Martin Rauscher]
+* linter cleanup and TS 4.4 fixes [Martin Rauscher]
+* update deps [Martin Rauscher]
+
 ### [0.18.50](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.50) (2021-10-27)
 
 ### [0.18.49](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.49) (2021-10-27)

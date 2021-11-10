@@ -131,7 +131,6 @@ async function prepareWorkspace(
 
 	const inputArtifactDir = path.join(inputDir, env.artifactDirectoryName);
 
-	await fs.promises.mkdir(inputArtifactDir, { recursive: true });
 	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;
@@ -144,7 +143,6 @@ async function prepareWorkspace(
 				return;
 			}
 			const subArtifactDir = path.join(inputDir, b.id);
-			await fs.promises.mkdir(subArtifactDir, { recursive: true });
 			return registry.pullArtifact(createArtifactReference(b), subArtifactDir, {
 				username: credentials.slug,
 				password: credentials.sessionToken,
@@ -175,7 +173,6 @@ async function prepareWorkspace(
 			(parentContract as ArtifactContract).data.$transformer?.artifactReady
 		) {
 			const subArtifactDir = path.join(inputDir, parentContract.id);
-			await fs.promises.mkdir(subArtifactDir, { recursive: true });
 			await registry.pullArtifact(
 				createArtifactReference(parentContract),
 				subArtifactDir,

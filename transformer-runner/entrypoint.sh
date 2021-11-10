@@ -18,12 +18,12 @@ insecure_registries=${INSECURE_REGISTRIES:-registry:5000 registry.ly.fish.local:
 max_concurrent_downloads=${MAX_CONCURRENT_DOWNLOADS:-3}
 max_concurrent_uploads=${MAX_CONCURRENT_UPLOADS:-5}
 
-TOKEN=$(cat /shared/.token)
+TOKEN=$(cat /shared/jf-token)
 if [[ -z ${TOKEN} ]]; then
     uuidgen > /shared/.token
 fi
 
-TOKEN=$(cat /shared/.token)
+TOKEN=$(cat /shared/jf-token)
 export WORKER_JF_TOKEN="${WORKER_JF_TOKEN:-$TOKEN}"
 ###################################################
 

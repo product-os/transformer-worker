@@ -175,11 +175,9 @@ async function prepareWorkspace(
 			(parentContract as ArtifactContract).data.$transformer?.artifactReady
 		) {
 			const subArtifactDir = path.join(inputDir, parentContract.id);
+			await fs.promises.mkdir(subArtifactDir, { recursive: true });
 			await registry.pullArtifact(
-				createArtifactReference({
-					slug: inputContract.slug,
-					version: inputContract.data.$transformer?.parentVersion,
-				}),
+				createArtifactReference(parentContract),
 				subArtifactDir,
 				{ username: credentials.slug, password: credentials.sessionToken },
 			);

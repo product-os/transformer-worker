@@ -20,7 +20,7 @@ max_concurrent_uploads=${MAX_CONCURRENT_UPLOADS:-5}
 
 TOKEN=$(cat /shared/jf-token)
 if [[ -z ${TOKEN} ]]; then
-    uuidgen > /shared/.token
+    uuidgen > /shared/jf-token
 fi
 
 TOKEN=$(cat /shared/jf-token)

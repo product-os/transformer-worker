@@ -131,6 +131,7 @@ async function prepareWorkspace(
 
 	const inputArtifactDir = path.join(inputDir, env.artifactDirectoryName);
 
+	await fs.promises.mkdir(inputDir, { recursive: true });
 	await fs.promises.mkdir(outputDir, { recursive: true });
 
 	const inputContract = task.data.input;

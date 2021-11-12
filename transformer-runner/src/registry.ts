@@ -93,6 +93,7 @@ export default class Registry {
 		opts: RegistryAuthOptions,
 	) {
 		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
+		await fs.promises.mkdir(destDir, { recursive: true });
 		try {
 			const imageType = await this.getImageType(artifactReference, opts);
 			// Check if the artifact is an image or a file (oras or docker)

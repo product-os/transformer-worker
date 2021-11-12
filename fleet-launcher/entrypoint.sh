@@ -1,11 +1,9 @@
 #!/bin/bash
 
-device_uuid=$(curl -s "$BALENA_SUPERVISOR_ADDRESS/v1/device/host-config?apikey=$BALENA_SUPERVISOR_API_KEY" | jq -r .network.hostname)
-
 while [ "x" == "x$WORKER_JF_TOKEN" ]; do
 	echo "waiting for JF token..."
 	sleep 1
-	export WORKER_JF_TOKEN=$(cat /shared/.token)
+	export WORKER_JF_TOKEN=$(cat /shared/jf-token)
 done
 while [ "x" == "x$FLEET_ENROLL_SECRET" ]; do
 	echo "waiting for enroll secret..."
@@ -20,5 +18,5 @@ launcher --hostname=${FLEET_HOSTNAME} \
 	--enroll_secret=${FLEET_ENROLL_SECRET} \
 	--osquery_flag docker_socket=/var/run/balena-engine.sock \
 	--osquery_flag host-identifier=specified \
-	--osquery_flag specified-identifier="$device_uuid" \
+	--osquery_flag specified-identifier="${BALENA_DEVICE_UUID}" \
 	${FLEET_EXTRA_ARGS}

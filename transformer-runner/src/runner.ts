@@ -322,7 +322,7 @@ async function processBackflow(
 	}
 
 	// Propagate backflow recursively from input contract upstream
-	const backflowLimit = 20;
+	const backflowLimit = 100;
 
 	const propagate = async (contract: ArtifactContract, step: number = 1) => {
 		if (step > backflowLimit) {
@@ -334,7 +334,9 @@ async function processBackflow(
 
 		const parent = await jf.getUpstreamContract(contract);
 		if (parent) {
-			await jf.updateBackflow(contract, parent);
+			// the previous step might have resulted in changes to formulas
+			const freshContract = (await jf.getContract<ArtifactContract>(contract.id))!;
+			await jf.updateBackflow(freshContract, parent);
 			await propagate(parent, step + 1);
 		}
 	};

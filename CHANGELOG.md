@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.19.1
+## (2021-11-12)
+
+* ensure backflowed data considers latest formula updates [Martin Rauscher]
+* add commit sha to release tags [Martin Rauscher]
+* use device-uuid as fleet identifier [Martin Rauscher]
+* create dir for parent contract [Martin Rauscher]
+
 # v0.19.0
 ## (2021-11-09)
 

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.19.3
+## (2021-11-25)
+
+* Use product-os/renovate-config [Josh Bowling]
+
 # v0.19.2
 ## (2021-11-18)
 

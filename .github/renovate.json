@@ -1,5 +1,5 @@
 {
   "extends": [
-    "github>product-os/jellyfish-renovate-config"
+    "github>product-os/renovate-config"
   ]
 }

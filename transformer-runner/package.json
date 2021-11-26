@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@balena/jellyfish-types": "^1.2.33",
-    "@balena/lint": "^6.1.1",
+    "@balena/lint": "^6.2.0",
     "@types/dockerode": "^3.3.0",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/lockfile": "^1.0.2",

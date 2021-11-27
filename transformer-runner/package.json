@@ -16,7 +16,7 @@
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
     "@balena/jellyfish-client-sdk": "^7.0.20",
-    "@balena/jellyfish-jellyscript": "^4.9.137",
+    "@balena/jellyfish-jellyscript": "^4.9.138",
     "@balena/transformer-runtime": "^1.0.0",
     "@types/rewire": "^2.5.28",
     "dockerode": "^3.3.1",
@@ -29,7 +29,7 @@
     "tar": "^6.1.11"
   },
   "devDependencies": {
-    "@balena/jellyfish-types": "^1.2.34",
+    "@balena/jellyfish-types": "^1.2.35",
     "@balena/lint": "^6.2.0",
     "@types/dockerode": "^3.3.0",
     "@types/isomorphic-fetch": "0.0.35",

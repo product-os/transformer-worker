@@ -248,6 +248,10 @@ async function pushOutput(
 				outputContract.slug += `-${slugSuffix}`;
 			}
 		}
+		if (outputContract.type.endsWith('@latest')) {
+			const latestType = await jf.getContract(outputContract.type);
+			outputContract.type = `${latestType!.slug}@${latestType!.version}`;
+		}
 		await jf.storeArtifactContract(outputContract);
 
 		// Store output artifact
@@ -335,7 +339,9 @@ async function processBackflow(
 		const parent = await jf.getUpstreamContract(contract);
 		if (parent) {
 			// the previous step might have resulted in changes to formulas
-			const freshContract = (await jf.getContract<ArtifactContract>(contract.id))!;
+			const freshContract = (await jf.getContract<ArtifactContract>(
+				contract.id,
+			))!;
 			await jf.updateBackflow(freshContract, parent);
 			await propagate(parent, step + 1);
 		}

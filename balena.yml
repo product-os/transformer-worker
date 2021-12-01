@@ -1,0 +1,10 @@
+type: type-balena-io-t-balena-app-source@1.0.4
+name: Transformer worker
+version: 0.19.18
+data:
+  $transformer:
+    encryptedSecrets:
+      balenaApiKey: >-
+        ZVHQiIKm8eusONh7YhFxxm8PNP0CWykc44yhGLfuCRkLVwSShLLykenUfGICB1DzlA7BIlZm2kHa2v0G6ek19RmQP9r9fHOt+lxaPR8rb2/GSpMUdfcyGaIMl/dUVhPW3mX26Ir6Hla1jOOtBp+98kycCVR6ZAE4SwGe8j1A7CJoBa+iuI4XXcPHtLS6ugapT+0FWMYyi110enTM9gqkShgxRfyfZMDLJGLOZKho9awTrjaWz/3B2IdgYts8MAqqNHMDEekpIxgnAi1soadXrYk0IWSPbe8fRqRN62fnzFWNzrxG05bs2v1yikchb4wP2YJyrgq/YvFJTldw+fCCjA==
+  balenaAppName: 'product_os/transformers-workers'
+slug: type-balena-io-t-balena-app-source-product-os-transformer-worker

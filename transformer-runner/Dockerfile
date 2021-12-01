@@ -15,10 +15,7 @@ RUN git clone https://github.com/deislabs/oras.git \
 
 COPY ./package*.json ./
 
-RUN cat < /run/secrets/npmrc > ~/.npmrc \
-    && JOBS=MAX npm ci --unsafe-perm \
-    && rm -f ~/.npmrc
-
+RUN JOBS=MAX npm ci --unsafe-perm
 
 # runtime
 FROM docker:dind

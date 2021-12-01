@@ -4,8 +4,7 @@
 
 ## Building and deploying
 
-1. Create symbolic link `ln -s ~/.npmrc .balena/secrets/npmrc`
-2. Run `BALENA_APP=<Balena app> ./push-to-balena.sh`
+* Run `BALENA_APP=<Balena app> ./push-to-balena.sh`
 
 ### fleet-launcher required env-variables
 * `FLEET_HOSTNAME`: Url to `transformers-fleet` server

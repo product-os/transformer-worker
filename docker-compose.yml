@@ -43,10 +43,7 @@ services:
         context: ./logshipper
     environment:
       LOG: warn
-      # VECTOR_ENDPOINT: 'vector-internal.product-os.io:9000'
-      # VECTOR_VERIFY_CERTIFICATE: false
     labels:
-      io.balena.features.supervisor-api: '1'
       io.balena.features.journal-logs: '1'
     restart: unless_stopped
     volumes:

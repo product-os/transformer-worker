@@ -466,40 +466,24 @@ export default class Jellyfish {
 	}
 
 	async getContractRepository(contract: ArtifactContract) {
-		const [repo] = await this.sdk.query(
-			{
-				type: 'object',
-				required: ['type', 'data'],
-				properties: {
-					type: {
-						const: 'contract-repository@1.0.0',
-						type: 'string',
-					},
-					data: {
-						type: 'object',
-						required: ['base_slug'],
-						properties: {
-							base_slug: {
-								const: contract.slug,
-								type: 'string',
-							},
-						},
-					},
-				},
-			},
-			{
-				limit: 1,
-			},
-		);
+		const repoSlug = `contract-repository-${contract.slug}`;
+		const repoName = `Repo of ${contract.name || contract.slug}`;
+
+		const repo = await this.sdk.card.get(repoSlug);
 		if (repo) {
+			if (repo.name != repoName) {
+				await this.sdk.card.update(repo.id, repo.type, [
+					{ op: 'replace', path: '/name', value: repoName },
+				]);
+			}
 			return repo;
 		}
 		// In the future contract repositories might become natively supported by JF.
 		// For now, the worker takes the responsibility to create them as needed.
 		const newRepo = {
 			type: 'contract-repository@1.0.0',
-			name: `Repo of ${contract.name || contract.slug}`,
-			slug: `contract-repository-${contract.slug}`,
+			name: repoName,
+			slug: repoSlug,
 			data: {
 				base_slug: contract.slug,
 				base_type: contract.type,

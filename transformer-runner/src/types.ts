@@ -70,17 +70,6 @@ export type InputManifest = {
 	};
 };
 
-export type OutputManifest = {
-	results: [
-		{
-			contract: ArtifactContract;
-			artifactPath?: string;
-			imagePath?: string;
-			manifestList?: string[];
-		},
-	];
-};
-
 export type TaskStatusMetadata = {
 	timestamp?: number;
 	duration?: number;

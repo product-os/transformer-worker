@@ -1,6 +1,7 @@
-import type { OutputManifest, TaskContract } from './types';
+import type { TaskContract } from './types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { OutputManifest } from '@balena/transformer-runtime/build/types';
 
 export async function validateTask(task: TaskContract) {
 	// this could be simplified with e.g. https://github.com/PicnicSupermarket/aegis

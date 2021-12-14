@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.20.13
+## (2021-12-14)
+
+* Update PKI docs for linux/macos compatibility [danthegoodman1]
+
 # v0.20.12
 ## (2021-12-14)
 

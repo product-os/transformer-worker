@@ -1,6 +1,13 @@
-# transformer-worker
+**CI/CD reimagined Balena-style. Reactive. Scalable. Batteries included.**
 
-`transformer-worker` is a balena app that enables balena devices to run transformers. Is composed by three services: [fleet-launcher](./fleet-launcher), [transformer-runner](./transformer-runner), and [garbage-collector](./garbage-collector)
+## Highlights
+
+- **adds CI/CD capabilities to [ProductOS](https://github.com/product-os/)**: using a primitive that we call a "Transformer". 
+- **A Transformer is a piece of code, wrapped in a container, that takes input and produces output**: Input and output can be anything but must be described with some our own meta-data format which we call "contracts" and which you typically find in a file called `balena.yml`. Transformers have an input filter, which is a JSON schema which gets matched against any contract that gets picked up by our GitHub integration. If it matches the Transformer gets executed with the input and its contract.
+
+## Motivation
+
+Because other CI/CD systems just didn't cut it...
 
 ## Building and deploying
 
@@ -19,3 +26,7 @@
 
 ### garbage-collector required env variables
 * `GC_MAX_STORAGE_THRESHOLD`: GC will kick in when the disk space is below this threshold
+
+## License
+
+balenaSense is free software, and may be redistributed under the terms specified in the [license](https://github.com/product-os/transformer-worker/blob/master/LICENSE).

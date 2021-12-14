@@ -25,7 +25,11 @@
 ## encrypt
 
     plaintext='foo-bar'
+    
+    # For linux & macOS
+    echo -n ${plaintext} | openssl rsautl -encrypt -inkey public.pem -pubin | openssl base64 -A
 
+    # For windows
     echo -n ${plaintext} | openssl rsautl -encrypt -inkey public.pem -pubin -in - | openssl base64 -A
 
 ## decrypt

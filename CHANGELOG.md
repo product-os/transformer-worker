@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.20.15
+## (2021-12-15)
+
+* Update 05-secrets.md [Martin Rauscher]
+
 # v0.20.14
 ## (2021-12-14)
 

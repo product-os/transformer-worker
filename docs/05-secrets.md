@@ -15,7 +15,7 @@ In your `balena.yml` the key `data.$transformer.encryptedSecrets` may contain an
 data:
   $transformer:
     encryptedSecrets:
-      api-key: xxxxxxxxxxxxxxxxxxxxx
+      NPM_TOKEN: xxxxxxxxxxxxxxxxxxxxx
       more-stuff:
         db-key: xxxxxxxxxxxxxxxxxxxxx
         root-password: xxxxxxxxxxxxxxxxxxxxx
@@ -34,7 +34,7 @@ data:
     data:
     $transformer:
       encryptedSecrets:
-        api-key: xxxxxxxxxxxxxxxxxxxxx
+        NPM_TOKEN: xxxxxxxxxxxxxxxxxxxxx
         more-stuff:
           db-key: xxxxxxxxxxxxxxxxxxxxx
           root-password: xxxxxxxxxxxxxxxxxxxxx
@@ -48,9 +48,10 @@ The worker passes the decrypted secrets in separate fields of the input manifest
 ```javascript
 const input = (await readInput(inputPath)).input;
 const secrets = {
-  ...input.decryptedSecrets?.buildSecrets,
-  ...input.decryptedTransformerSecrets?.buildSecrets,
+  ...input.decryptedTransformerSecrets,
+  ...input.decryptedSecrets,
 };
+npm.doSomething(secrets.NPM_TOKEN);
 ```
 
 ## How to encrypt secrets

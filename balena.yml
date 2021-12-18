@@ -1,6 +1,6 @@
 type: type-balena-io-t-balena-app-source@1.0.4
 name: Transformer worker
-version: 0.20.18
+version: 0.20.19
 data:
   $transformer:
     encryptedSecrets:

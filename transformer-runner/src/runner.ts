@@ -252,6 +252,7 @@ async function pushOutput(
 			const slugSuffix = outputContract.data.$transformer?.slugSuffix;
 			if (slugSuffix) {
 				outputContract.slug += `-${slugSuffix}`;
+				delete outputContract.data.$transformer.slugSuffix;
 			}
 		}
 		if (outputContract.type.endsWith('@latest')) {

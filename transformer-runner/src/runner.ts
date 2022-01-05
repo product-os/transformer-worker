@@ -231,7 +231,8 @@ async function pushOutput(
 
 		// Store output contract
 		const outputContract = result.contract as ArtifactContract;
-		outputContract.version = outputContract.version || inputContract.version;
+		outputContract.name = outputContract.name ?? inputContract.name;
+		outputContract.version = outputContract.version ?? inputContract.version;
 		outputContract.data.$transformer = {
 			...inputContract.data.$transformer,
 			...outputContract.data.$transformer,

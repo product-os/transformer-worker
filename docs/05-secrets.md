@@ -24,15 +24,14 @@ data:
 
 ## Setting a loop-level secret
 
-⚠️ We currently don't have Transformer installation yet. That means we only offer transformer-level secrets:
+⚠️ We currently don't have Transformer installations yet. That means we only offer transformer-level secrets:
 
-In the `balena.yml` of your Transformer the key `data.fragment.data.$transformer.encryptedSecrets` may contain an object with keys (or sub-objects) which are encrypted. E.g.
+In the `balena.yml` of your Transformer the key `data.fragment.data.encryptedSecrets` may contain an object with keys (or sub-objects) which are encrypted. E.g.
 ```yml
 type: service-source
 data:
   fragment:
     data:
-    $transformer:
       encryptedSecrets:
         NPM_TOKEN: xxxxxxxxxxxxxxxxxxxxx
         more-stuff:

@@ -11,7 +11,7 @@ import {
 import * as _ from 'lodash';
 import { LinkNames, TaskStatus } from './enums';
 import { evaluateFormulaOrValue } from './util';
-import { Contract } from '@balena/jellyfish-types/build/core';
+import { Contract, ContractSummary } from '@balena/jellyfish-types/build/core';
 import { JSONSchema } from '@balena/jellyfish-types';
 import {
 	AddOperation,
@@ -127,38 +127,41 @@ export default class Jellyfish {
 		};
 	}
 
-	public async storeArtifactContract(contract: ArtifactContract) {
-		// See if contract already exists
-		const versionedSlug = `${contract.slug}@${contract.version}`;
-		const storedContract = await this.sdk.card.get(versionedSlug);
+	public async upsertContract(contract: Partial<ArtifactContract>) {
+		if (contract.slug && contract.version) {
+			// See if contract already exists
+			const versionedSlug = `${contract.slug}@${contract.version}`;
+			const storedContract = await this.sdk.card.get(versionedSlug);
 
-		if (storedContract) {
-			// ensure local references contain proper IDs
-			contract.id = storedContract.id;
+			if (storedContract) {
+				// ensure local references contain proper IDs
+				contract.id = storedContract.id;
 
-			// Update existing but only change thing under /data
-			const patch = jsonpatch.compare(
-				{ data: storedContract.data },
-				{ data: contract.data },
-			);
-			if (patch.length === 0) {
-				return storedContract;
+				// Update existing but only change thing under /data
+				const patch = jsonpatch.compare(
+					{ data: storedContract.data },
+					{ data: contract.data },
+				);
+				if (patch.length === 0) {
+					return storedContract;
+				}
+				return await this.sdk.card.update(
+					storedContract.id,
+					storedContract.type,
+					patch,
+				);
 			}
-			return await this.sdk.card.update(
-				storedContract.id,
-				storedContract.type,
-				patch,
-			);
 		}
 		// Create new contract
-		const createdCard = await this.sdk.card.create(contract);
-		if (!createdCard) {
+		const createdContract = await this.sdk.card.create(contract);
+		if (!createdContract) {
 			throw new Error(`Couldn't create contract: ${contract}`);
 		}
 		// ensure local references contain proper IDs
-		contract.id = createdCard.id;
-		contract.slug = createdCard.slug;
-		return createdCard;
+		contract.id = createdContract.id;
+		contract.slug = createdContract.slug;
+		contract.version = createdContract.version;
+		return createdContract;
 	}
 
 	public async markArtifactContractReady(
@@ -233,7 +236,7 @@ export default class Jellyfish {
 		return task;
 	}
 
-	public async createLink(from: Contract, to: Contract, linkName: string) {
+	public async createLink(from: ContractSummary, to: ContractSummary, linkName: string) {
 		await this.sdk.card.link(from, to, linkName);
 	}
 

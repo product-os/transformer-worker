@@ -9,6 +9,7 @@ export enum LinkNames {
 	WasBuiltInto = 'was built into',
 	Generated = 'generated',
 	Ran = 'ran',
+	RepoContains = 'contains',
 }
 
 export enum LinkNamesInverse {

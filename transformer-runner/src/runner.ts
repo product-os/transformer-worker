@@ -78,18 +78,27 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 		await jf.setTaskStatusAccepted(task);
 		await runTask(task);
 		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
-	} catch (e: any) {
+	} catch (err: any) {
 		console.log(
 			`[WORKER] ERROR occurred during task processing:`,
-			e.stdout?.toString('utf8'),
-			e.stderr?.toString('utf8'),
+			err.stdout?.toString('utf8'),
+			err.stderr?.toString('utf8'),
 		);
-		console.log(e);
-		await jf.setTaskStatusFailed(
-			task,
-			e.message,
-			Date.now() - taskStartTimestamp,
-		);
+		console.log(err);
+		try {
+			await jf.setTaskStatusFailed(
+				task,
+				err.message,
+				Date.now() - taskStartTimestamp,
+			);
+		} catch (err: any) {
+			console.log(`[WORKER] ERROR couldn't set task to failed`, err);
+		}
+		try {
+			await produceErrorContract(task, err);
+		} catch (err: any) {
+			console.log(`[WORKER] ERROR couldn't set task to failed`, err);
+		}
 	} finally {
 		runningTasks.delete(task.id!);
 		await locker.removeActive();
@@ -249,7 +258,7 @@ async function pushOutput(
 			const latestType = await jf.getContract(outputContract.type);
 			outputContract.type = `${latestType!.slug}@${latestType!.version}`;
 		}
-		await jf.storeArtifactContract(outputContract);
+		await jf.upsertContract(outputContract);
 
 		// Store output artifact
 		const artifactReference = createArtifactReference(outputContract);
@@ -291,7 +300,7 @@ async function pushOutput(
 
 		// Create links to output contract
 		const contractRepo = await jf.getContractRepository(outputContract);
-		await jf.createLink(contractRepo, outputContract, 'contains');
+		await jf.createLink(contractRepo, outputContract, LinkNames.RepoContains);
 		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
 		await jf.createLink(task, outputContract, LinkNames.Generated);
 
@@ -387,4 +396,22 @@ async function runTask(task: TaskContract) {
 	await cleanupWorkspace(task);
 
 	console.log(`[WORKER] Task ${task.slug} completed successfully`);
+}
+
+async function produceErrorContract(task: TaskContract, err: any) {
+	const transformer = task.data.transformer;
+	const errorContract = {
+		type: 'error@1.0.0',
+		name: `Runtime Error - ${transformer.name} - ${task.data.input.name}`,
+		data: {
+			message: err.message,
+			code: err.code ?? 'unknown',
+			transformer: `${transformer.slug}@${transformer.version}`,
+			expectedOutputTypes: transformer.data?.expectedOutputTypes ?? [],
+			stdOutTail: err.stdout?.toString('utf8'),
+			stdErrTail: err.stderr?.toString('utf8'),
+		},
+	};
+	const createdErr = await jf.upsertContract(errorContract);
+	await jf.createLink(task.data.input, createdErr!, LinkNames.WasBuiltInto);
 }

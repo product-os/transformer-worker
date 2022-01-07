@@ -11,8 +11,6 @@ sinks:
       when_full: drop_newest
     healthcheck:
       enabled: true
-    keepalive:
-      time_secs: 15
     tls:
       # ca_file: 
       # crt_file: 
@@ -20,3 +18,4 @@ sinks:
       # key_file: 
       verify_certificate: ${VECTOR_VERIFY_CERTIFICATE:-"true"}
       verify_hostname: ${VECTOR_VERIFY_CERTIFICATE:-"true"}
+    version: "1"

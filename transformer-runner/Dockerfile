@@ -1,5 +1,5 @@
 # builder
-FROM golang:1.17.5-alpine as builder
+FROM golang:1.17.6-alpine as builder
 
 RUN apk add --no-cache \
     git \

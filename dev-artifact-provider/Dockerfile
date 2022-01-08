@@ -1,4 +1,4 @@
-FROM golang:1.17.5-alpine as oras-base
+FROM golang:1.17.6-alpine as oras-base
 WORKDIR /usr/src/app
 RUN apk add --no-cache git
 RUN git clone https://github.com/deislabs/oras.git \

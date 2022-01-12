@@ -8,9 +8,14 @@ In the Transformers system secrets are always encrypted and only decrypted durin
 
 Both kinds of secrets are encrypted and decrypted in the same way. The difference is only in which contracts you place them in where in your input manifest the Transformer will receive the decrypted value.
 
+## How to encrypt secrets
+
+See [here](https://github.com/product-os/transformer-worker/tree/master/pki) to learn how to encrypt a secret before adding it to your contracts.
+
 ## Setting a repo-level secret
 
 In your `balena.yml` the key `data.$transformer.encryptedSecrets` may contain an object with keys (or sub-objects) which are encrypted. E.g.
+
 ```yml
 data:
   $transformer:
@@ -27,6 +32,7 @@ data:
 ⚠️ We currently don't have Transformer installations yet. That means we only offer transformer-level secrets:
 
 In the `balena.yml` of your Transformer the key `data.fragment.data.encryptedSecrets` may contain an object with keys (or sub-objects) which are encrypted. E.g.
+
 ```yml
 type: service-source
 data:
@@ -44,15 +50,13 @@ data:
 
 The worker passes the decrypted secrets in separate fields of the input manifest to the Transformer, where you can just read them like this:
 
+📓 Note that decrypted secrets are always Base64 encoded. This allows passing of encrypted binaries without breaking JSON structures.
+
 ```javascript
 const input = (await readInput(inputPath)).input;
 const secrets = {
   ...input.decryptedTransformerSecrets,
   ...input.decryptedSecrets,
 };
-npm.doSomething(secrets.NPM_TOKEN);
+npm.doSomething(Buffer.from(secrets.NPM_TOKEN, 'base64').toString('utf-8'));
 ```
-
-## How to encrypt secrets
-
-See [here](https://github.com/product-os/transformer-worker/tree/master/pki) to learn how to encrypt a secret before adding it to your contracts.

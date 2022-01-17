@@ -18,6 +18,7 @@ import {
 	RemoveOperation,
 	ReplaceOperation,
 } from 'fast-json-patch';
+import { logger } from './logger';
 
 export default class Jellyfish {
 	static readonly LOGIN_RETRY_INTERVAL_SECS: number = 5;
@@ -44,11 +45,11 @@ export default class Jellyfish {
 		taskStream.on('update', taskHandler);
 
 		taskStream.on('streamError', (error: Error) => {
-			console.error(error);
+			logger.error(error, 'error processing tasks stream');
 		});
 		const queryId = user.id;
 		const handler = async ({ data }: { data: any }) => {
-			console.log(`initial query handler`, data);
+			logger.info({ initialTasks: data }, 'initial query handler');
 			if (data.id === queryId) {
 				taskStream.off('dataset', handler);
 				await Promise.all(
@@ -75,11 +76,11 @@ export default class Jellyfish {
 		await this.sdk.setAuthToken(authToken);
 		const user = await this.sdk.auth.whoami();
 		if (user?.slug) {
-			console.log(`[WORKER] Logged in to JF, id ${user.id}`);
+			logger.info({ user }, 'logged in to JF');
 			this._userId = user.id;
 			return user.id;
 		} else {
-			throw new Error(`Login failed. User: '${user}'`);
+			throw new Error(`login failed. User: '${user}'`);
 		}
 	}
 
@@ -90,7 +91,7 @@ export default class Jellyfish {
 		//  - reconnection
 
 		const session = await this.sdk.auth.login({ username, password });
-		console.log(`[WORKER] Logged in to JF, session: ${session}`);
+		logger.info({ session: session?.id }, 'logged in to JF');
 	}
 
 	private createTaskQuery(workerId: string): JSONSchema {
@@ -155,7 +156,7 @@ export default class Jellyfish {
 		// Create new contract
 		const createdContract = await this.sdk.card.create(contract);
 		if (!createdContract) {
-			throw new Error(`Couldn't create contract: ${contract}`);
+			throw new Error(`couldn't create contract: ${contract}`);
 		}
 		// ensure local references contain proper IDs
 		contract.id = createdContract.id;
@@ -321,7 +322,7 @@ export default class Jellyfish {
 			return await this.getContract<TaskContract>(link.data.from.id);
 		} else {
 			throw new Error(
-				`Could not get task contract for artifact ${contract.slug} (no link)`,
+				`could not get task contract for artifact ${contract.slug} (no link)`,
 			);
 		}
 	}
@@ -345,7 +346,7 @@ export default class Jellyfish {
 				});
 			} else {
 				throw new Error(
-					`Missing backflow mapping source for contract '${downstream.slug}'`,
+					`missing backflow mapping source for contract '${downstream.slug}'`,
 				);
 			}
 
@@ -359,7 +360,7 @@ export default class Jellyfish {
 				});
 			} else {
 				throw new Error(
-					`Missing backflow mapping target for contract '${downstream.slug}'`,
+					`missing backflow mapping target for contract '${downstream.slug}'`,
 				);
 			}
 
@@ -402,7 +403,7 @@ export default class Jellyfish {
 		const task = _task ?? (await this.getArtifactContractTask(child));
 		if (!task) {
 			throw new Error(
-				`Could not find task that generated contract: ${child.slug}`,
+				`could not find task that generated contract: ${child.slug}`,
 			);
 		}
 
@@ -441,10 +442,13 @@ export default class Jellyfish {
 		}
 
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
-		console.log(`[WORKER] backflow processed`, {
-			transformer: task.data.transformer.slug,
-			transformerVersion: task.data.transformer.version,
-		});
+		logger.info(
+			{
+				transformer: task.data.transformer.slug,
+				transformerVersion: task.data.transformer.version,
+			},
+			'backflow processed',
+		);
 	}
 
 	public async getContract<TContract extends Contract>(idOrSlug: string) {
@@ -478,7 +482,7 @@ export default class Jellyfish {
 
 		const repo = await this.sdk.card.get(repoSlug);
 		if (repo) {
-			if (repo.name != repoName) {
+			if (repo.name !== repoName) {
 				await this.sdk.card.update(repo.id, repo.type, [
 					{ op: 'replace', path: '/name', value: repoName },
 				]);
@@ -498,7 +502,7 @@ export default class Jellyfish {
 		};
 		const createResult = await this.sdk.card.create(newRepo);
 		if (!createResult) {
-			throw new Error(`Couldn't create contract repo`);
+			throw new Error(`couldn't create contract repo`);
 		}
 		return { ...newRepo, ...createResult };
 	}

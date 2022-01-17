@@ -1,5 +1,6 @@
 import { ContractData } from '@balena/jellyfish-types/build/core';
 import { Contract } from '@balena/jellyfish-types/build/core';
+import Logger from 'bunyan';
 
 export interface ActorCredentials {
 	slug: string;
@@ -22,6 +23,12 @@ interface ArtifactData extends ContractData {
 		slugSuffix?: string; // used to allow transformers customization of generated slugs. needed when creating multiple instances of same type
 		encryptedSecrets?: any;
 		backflow?: ArtifactContract[];
+		repoData?: {
+			org: string;
+			repo: string;
+			branch: string;
+			commit: string;
+		};
 	};
 }
 export interface ArtifactContract extends Contract<ArtifactData> {}

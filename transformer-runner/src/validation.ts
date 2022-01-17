@@ -2,10 +2,11 @@ import type { TaskContract } from './types';
 import * as fs from 'fs';
 import * as path from 'path';
 import { OutputManifest } from '@balena/transformer-runtime/build/types';
+import { logger } from './logger';
 
 export async function validateTask(task: TaskContract) {
 	// this could be simplified with e.g. https://github.com/PicnicSupermarket/aegis
-	const message = 'Task validation error: ';
+	const message = 'task validation error: ';
 	if (!task?.id || task?.id === '') {
 		throw new Error(`${message} missing id`);
 	}
@@ -30,13 +31,13 @@ export async function validateOutputManifest(
 	m: OutputManifest,
 	outputDir: string,
 ) {
-	const message = 'Output manifest validation error: ';
+	const message = 'output manifest validation error: ';
 	if (!Array.isArray(m.results)) {
 		throw new Error(`${message} missing results array`);
 	}
 
 	if (m.results.length < 1) {
-		console.log(`[WORKER] INFO: empty results array`);
+		logger.info('empty results array');
 	}
 
 	for (const result of m.results) {

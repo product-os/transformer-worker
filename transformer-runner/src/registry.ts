@@ -1,12 +1,13 @@
-import * as Docker from 'dockerode';
+import Docker from 'dockerode';
 import * as spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
 import { streamToPromise } from './util';
-import * as fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 import { mimeType } from './consts';
 import * as stream from 'stream';
 import { promisify } from 'util';
 import path = require('path');
+import { logger } from './logger';
 const pump = promisify(stream.pipeline); // Node 16 gives native pipeline promise... This is needed to properly handle stream errors
 
 const isLocalRegistry = (registryUri: string) =>
@@ -33,7 +34,7 @@ export default class Registry {
 		authOpts: RegistryAuthOptions,
 	) {
 		const imageRef = imageReference;
-		console.log(`[WORKER] Pulling image ${imageRef}`);
+		logger.info({ imageRef }, 'pulling image');
 		const authconfig = this.getDockerAuthConfig(authOpts);
 		const progressStream = await this.docker.pull(imageRef, { authconfig });
 		await this.followDockerProgress(progressStream);
@@ -45,7 +46,7 @@ export default class Registry {
 		imagePath: string,
 		authOpts: RegistryAuthOptions,
 	) {
-		console.log(`[WORKER] Pushing image ${imageReference}`);
+		logger.info({ imageReference }, 'pushing image');
 		const image = await this.loadImage(imagePath);
 		const { registry, repo, tag } =
 			/^(?<registry>[^/]+)\/(?<repo>.*):(?<tag>[^:]+)$/.exec(imageReference)
@@ -54,7 +55,7 @@ export default class Registry {
 		const taggedImage = await this.docker.getImage(imageReference);
 		const authconfig = this.getDockerAuthConfig(authOpts);
 		const pushOpts = { registry, authconfig };
-		console.log('pushing image', taggedImage);
+		logger.info({ image: taggedImage.id }, 'pushing image');
 		const progressStream = await taggedImage.push(pushOpts);
 		await this.followDockerProgress(progressStream);
 	}
@@ -77,7 +78,7 @@ export default class Registry {
 						// Progress bar's just spam the logs
 						return;
 					}
-					console.log('DOCKER', line);
+					logger.info({ line }, 'docker');
 					if (line.error) {
 						// For some reason not all errors appear in the error callback above
 						reject(line);
@@ -92,7 +93,7 @@ export default class Registry {
 		destDir: string,
 		opts: RegistryAuthOptions,
 	) {
-		console.log(`[WORKER] Pulling artifact ${artifactReference}`);
+		logger.info({ artifactReference }, 'pulling artifact');
 		await fs.promises.mkdir(destDir, { recursive: true });
 		try {
 			const imageType = await this.getImageType(artifactReference, opts);
@@ -112,13 +113,13 @@ export default class Registry {
 						.getImage(artifactReference)
 						.get();
 					await pump(imageStream, destinationStream);
-					console.log('[WORKER] Wrote docker image to ' + destDir);
+					logger.info({ destDir }, 'wrote docker image');
 					break;
 
 				case mimeType.ociManifest:
 					// Pull artifact
 					const output = await this.runOrasCommand(
-						[`pull`, artifactReference],
+						['pull', artifactReference],
 						opts,
 						{ cwd: destDir },
 					);
@@ -134,7 +135,7 @@ export default class Registry {
 
 				default:
 					throw new Error(
-						'Unknown media type found for artifact ' +
+						'unknown media type found for artifact ' +
 							artifactReference +
 							' : ' +
 							imageType,
@@ -150,10 +151,10 @@ export default class Registry {
 		artifactPath: string,
 		opts: RegistryAuthOptions,
 	) {
-		console.log(`[WORKER] Pushing artifact ${artifactReference}`);
+		logger.info({ artifactReference }, 'pushing artifact');
 		try {
 			const artifacts = await fs.promises.readdir(artifactPath);
-			const orasCmd = [`push`, artifactReference, ...artifacts];
+			const orasCmd = ['push', artifactReference, ...artifacts];
 			await this.runOrasCommand(orasCmd, opts, { cwd: artifactPath });
 		} catch (e) {
 			this.logErrorAndThrow(e);
@@ -185,7 +186,7 @@ export default class Registry {
 			fqArtifactReference = `${host}:80/${urlPath}`;
 		}
 
-		console.log(`[WORKER] creating manifest list for ${fqArtifactReference}`);
+		logger.info({ fqArtifactReference }, 'creating manifest list');
 		await this.runDockerCliCommand(
 			[
 				'manifest',
@@ -197,7 +198,7 @@ export default class Registry {
 			authOptions,
 		);
 
-		console.log(`[WORKER] pushing manifest list for ${fqArtifactReference}`);
+		logger.info({ fqArtifactReference }, 'pushing manifest list');
 		await this.runDockerCliCommand(
 			['manifest', 'push', ...insecureOpts, fqArtifactReference],
 			authOptions,
@@ -212,9 +213,9 @@ export default class Registry {
 		opts: RegistryAuthOptions,
 		dockerSpawnOptions: any = {},
 	) {
-		console.log(`Docker-CLI command: \ndocker ${dockerArgs.join(' ')}`);
+		logger.info({ dockerArgs }, 'running docker-CLI command');
 		const run = async (args: string[], spawnOptions: any = {}) => {
-			const streams = await spawn(`docker`, args, spawnOptions);
+			const streams = await spawn('docker', args, spawnOptions);
 			const stdout = streams.stdout.toString('utf8');
 			const stderr = streams.stderr.toString('utf8');
 			return { stdout, stderr };
@@ -230,7 +231,7 @@ export default class Registry {
 			];
 			this.dockerLogins.add(opts.username);
 			const { stdout, stderr } = await run(loginCmd, dockerSpawnOptions);
-			console.log(`Docker login:`, { stdout, stderr });
+			logger.info({ stdout, stderr }, 'docker login');
 		}
 		return await run(dockerArgs, dockerSpawnOptions);
 	}
@@ -244,25 +245,27 @@ export default class Registry {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
 		}
-		console.log(`Oras command: \n${args.concat(' ')}`);
+		logger.info({ args }, 'running oras command');
 		if (opts.username) {
 			args.push('--username');
 			args.push(opts.username);
 			args.push('--password');
 			args.push(opts.password);
 		}
-		const streams = await spawn(`oras`, args, spawnOptions);
+		const streams = await spawn('oras', args, spawnOptions);
 		const output = streams.stdout.toString('utf8');
-		console.log(`Oras output: ${output}`);
+		logger.info({ output }, 'oras finished');
 		return output;
 	}
 
 	private logErrorAndThrow = (e: any) => {
 		if (e.spawnargs) {
-			console.error(e.spawnargs);
-			console.error(e.stderr.toString('utf8'));
+			logger.error(
+				{ args: e.spawnargs, stderr: e.stderr.toString('utf8') },
+				'error',
+			);
 		} else {
-			console.error(e);
+			logger.error(e, 'error');
 		}
 		throw e;
 	};
@@ -280,7 +283,7 @@ export default class Registry {
 		const loadResultMatch = successfulLoadRegex.exec(loadResult);
 		if (!loadResultMatch) {
 			throw new Error(
-				`Failed to load image : ${imageFilePath} .  ${loadResult}`,
+				`failed to load image : ${imageFilePath} .  ${loadResult}`,
 			);
 		}
 		const image = this.docker.getImage(loadResultMatch[1]);
@@ -292,7 +295,7 @@ export default class Registry {
 		artifactReference: string,
 		opts: RegistryAuthOptions,
 	): Promise<string | null> {
-		console.log('[WORKER] Getting image type for', artifactReference);
+		logger.info({ artifactReference }, 'getting image type for');
 		const p1 = artifactReference.split(this.registryUrl)[1]; // /image:tag
 		const image = p1.split(':')[0].split('/')[1]; // image
 		const tag = p1.split(':')[1];
@@ -302,7 +305,7 @@ export default class Registry {
 		const wwwAuthenticate = deniedRegistryResp.headers.get('www-authenticate');
 		if (deniedRegistryResp.status !== 401 || !wwwAuthenticate) {
 			throw new Error(
-				`Registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
+				`registry didn't ask for authentication (status code ${deniedRegistryResp.status})`,
 			);
 		}
 		const { realm, service, scope } =
@@ -311,7 +314,7 @@ export default class Registry {
 		authUrl.searchParams.set('service', service);
 		authUrl.searchParams.set('scope', scope);
 
-		console.log('[WORKER] Got wwwAuthenticate for getting access token');
+		logger.info('got wwwAuthenticate for getting access token');
 
 		// login with session user
 		const loginResp = await fetch(authUrl.href, {
@@ -325,10 +328,10 @@ export default class Registry {
 		const loginBody = await loginResp.json();
 		if (!loginBody.token) {
 			throw new Error(
-				`Couldn't log in for registry (status code ${loginResp.status})`,
+				`couldn't log in for registry (status code ${loginResp.status})`,
 			);
 		}
-		console.log('[WORKER] Got access token, fetching manifest for image');
+		logger.info('got access token, fetching manifest for image');
 
 		// get source manifest
 		const srcManifestResp = await fetch(manifestURL, {

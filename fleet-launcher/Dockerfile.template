@@ -5,12 +5,15 @@ ENV FLEET_ENROLL_SECRET ""
 ENV FLEET_EXTRA_ARGS ""
 ENV FLEET_LAUNCHER_VERSION 0.11.14
 
-# Install launcher
+RUN apt-get update \
+    && apt-get install -y curl unzip jq \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y curl unzip jq
+# Install launcher
 RUN curl -L https://github.com/kolide/launcher/releases/download/v${FLEET_LAUNCHER_VERSION}/launcher_v${FLEET_LAUNCHER_VERSION}.zip -o /tmp/fleet-launcher.zip \
     && unzip /tmp/fleet-launcher.zip -d /tmp \
-    && cp -v /tmp/linux/* /usr/local/bin
+    && cp -v /tmp/linux/* /usr/local/bin \
+    && rm -rf /tmp/fleet-launcher.zip
 
 COPY entrypoint.sh .
 CMD ./entrypoint.sh

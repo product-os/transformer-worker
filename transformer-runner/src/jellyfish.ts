@@ -236,7 +236,11 @@ export default class Jellyfish {
 		return task;
 	}
 
-	public async createLink(from: ContractSummary, to: ContractSummary, linkName: string) {
+	public async createLink(
+		from: ContractSummary,
+		to: ContractSummary,
+		linkName: string,
+	) {
 		await this.sdk.card.link(from, to, linkName);
 	}
 

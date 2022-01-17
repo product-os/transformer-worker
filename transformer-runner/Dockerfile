@@ -43,5 +43,6 @@ COPY --from=builder /usr/bin/oras /usr/bin/oras
 COPY . .
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 RUN npm run build
+RUN npm run lint
 
 ENTRYPOINT ["/sbin/tini", "--", "./entrypoint.sh"]

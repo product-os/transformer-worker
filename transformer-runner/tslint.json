@@ -1,3 +1,7 @@
 {
-  "extends": "./node_modules/@balena/lint/config/tslint-prettier.json"
+  "extends": "./node_modules/@balena/lint/config/tslint-prettier.json",
+  "rulesDirectory": "./lint-rules",
+  "rules": {
+    "no-console-log": true
+  }
 }

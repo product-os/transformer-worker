@@ -1,6 +1,5 @@
 import { ContractData } from '@balena/jellyfish-types/build/core';
 import { Contract } from '@balena/jellyfish-types/build/core';
-import Logger from 'bunyan';
 
 export interface ActorCredentials {
 	slug: string;

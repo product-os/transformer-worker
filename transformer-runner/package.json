@@ -9,7 +9,8 @@
     "watch": "tsc --watch --project tsconfig.json",
     "livepush": "nodemon --watch src -e js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts",
     "test": "jest --coverage --verbose",
-    "lint-fix": "balena-lint --typescript --fix src tests"
+    "lint": "balena-lint src tests",
+    "lint:fix": "balena-lint --fix src tests"
   },
   "author": "Balena Ltd",
   "license": "UNLICENSED",

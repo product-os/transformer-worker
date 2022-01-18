@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.23.0
+## (2022-01-18)
+
+* add lint commit hook [Martin Rauscher]
+* fix and improve runner docker build [Martin Rauscher]
+* add lint rule: don't use console.log [Martin Rauscher]
+* switch to structured logging [Martin Rauscher]
+
 # v0.22.5
 ## (2022-01-17)
 

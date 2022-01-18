@@ -1,17 +1,19 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as _ from 'lodash';
+import { Contract } from '@balena/jellyfish-types/build/core';
+import Runtime from '@balena/transformer-runtime';
+import { OutputManifest } from '@balena/transformer-runtime/build/types';
+
 import Jellyfish from './jellyfish';
 import Registry from './registry';
 import { LinkNames } from './enums';
 import { locker } from './updatelock';
 import type { ActorCredentials, TaskContract, ArtifactContract } from './types';
 import { validateTask } from './validation';
-import * as fs from 'fs';
-import * as path from 'path';
 import env from './env';
-import * as _ from 'lodash';
-import { Contract } from '@balena/jellyfish-types/build/core';
-import Runtime from '@balena/transformer-runtime';
 import { pathExists } from './util';
-import { OutputManifest } from '@balena/transformer-runtime/build/types';
+import { logger, withLogger } from './logger';
 
 const jf = new Jellyfish(env.jfApiUrl, env.jfApiPrefix);
 const registry = new Registry(env.registryHost, env.registryPort);
@@ -40,7 +42,7 @@ const runtime = new Runtime(
 );
 
 export async function initializeRunner() {
-	console.log(`[WORKER] starting...`);
+	logger.info('starting...');
 
 	await locker.init();
 
@@ -49,60 +51,69 @@ export async function initializeRunner() {
 	// New registration process
 	/*
 	if(!env.workerJfUsername ?? !env.workerJfPassword) {
-		console.log(`[WORKER] WARN no jf username/password set for worker ${env.workerSlug}. Halting.`);
+		logger.warn('no jf username/password set for worker ${env.workerSlug}. Halting.');
 		return;
 	}
 	await jf.login(env.workerJfUsername, env.workerJfPassword);
 	*/
 
 	await jf.listenForTasks(acceptTask);
-	console.log('[WORKER] Waiting for tasks');
+	logger.info('waiting for tasks');
 }
 
 const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 	const task = update?.data?.after;
 	const taskStartTimestamp = Date.now();
 	if (!task) {
-		console.log(`[WORKER] WARN got an empty task`);
+		logger.warn('got an empty task');
 		return;
 	}
-	if (runningTasks.has(task.id)) {
-		console.log(
-			`[WORKER] WARN the task ${task.id} was already running. Ignoring it`,
-		);
-		return;
-	}
-	await locker.addActive();
-	runningTasks.add(task.id!);
-	try {
-		await jf.setTaskStatusAccepted(task);
-		await runTask(task);
-		await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
-	} catch (err: any) {
-		console.log(
-			`[WORKER] ERROR occurred during task processing:`,
-			err.stdout?.toString('utf8'),
-			err.stderr?.toString('utf8'),
-		);
-		console.log(err);
-		try {
-			await jf.setTaskStatusFailed(
-				task,
-				err.message,
-				Date.now() - taskStartTimestamp,
-			);
-		} catch (err: any) {
-			console.log(`[WORKER] ERROR couldn't set task to failed`, err);
-		}
-		try {
-			await produceErrorContract(task, err);
-		} catch (err: any) {
-			console.log(`[WORKER] ERROR couldn't set task to failed`, err);
-		}
-	} finally {
-		runningTasks.delete(task.id!);
-		await locker.removeActive();
-	}
+	// ensure all log lines written within the context of this task get the appropriate context data appended
+	await withLogger(
+		logger.child({
+			task: task.id,
+			commit: task.data.input.data.$transformer?.repoData?.commit,
+		}),
+		async () => {
+			if (runningTasks.has(task.id)) {
+				logger.warn('the task was already running. Ignoring it');
+				return;
+			}
+			await locker.addActive();
+			runningTasks.add(task.id!);
+			try {
+				await jf.setTaskStatusAccepted(task);
+				await runTask(task);
+				await jf.setTaskStatusCompleted(task, Date.now() - taskStartTimestamp);
+			} catch (err: any) {
+				logger.error(
+					{
+						err,
+						stdout: err.stdout?.toString('utf8'),
+						stderr: err.stderr?.toString('utf8'),
+					},
+					'error occurred during task processing',
+				);
+				try {
+					await jf.setTaskStatusFailed(
+						task,
+						err.message,
+						Date.now() - taskStartTimestamp,
+					);
+				} catch (err: any) {
+					logger.error(err, `couldn't set task to failed`);
+				}
+				try {
+					await produceErrorContract(task, err);
+				} catch (err: any) {
+					logger.error(err, `couldn't set task to failed`);
+				}
+			} finally {
+				runningTasks.delete(task.id!);
+				await locker.removeActive();
+			}
+		},
+	);
 };
 
 /**
@@ -116,21 +127,17 @@ async function prepareWorkspace(
 	task: TaskContract,
 	credentials: ActorCredentials,
 ) {
-	console.log(`[WORKER] Preparing transformer workspace`);
+	logger.info('preparing transformer workspace');
 
 	const outputDir = directory.output(task);
 	const inputDir = directory.input(task);
 
 	if (await pathExists(outputDir)) {
-		console.log(
-			`[WORKER] WARN output directory already existed (from previous run?) - deleting it`,
-		);
+		logger.warn('output directory already existed- deleting it');
 		await fs.promises.rm(outputDir, { recursive: true, force: true });
 	}
 	if (await pathExists(inputDir)) {
-		console.log(
-			`[WORKER] WARN input directory already existed (from previous run?) - deleting it`,
-		);
+		logger.warn('input directory already existed- deleting it');
 		await fs.promises.rm(inputDir, { recursive: true, force: true });
 	}
 
@@ -142,7 +149,10 @@ async function prepareWorkspace(
 	const inputContract = task.data.input;
 
 	const backflows = inputContract.data.$transformer?.backflow ?? [];
-	console.log('[WORKER] getting backflow artifacts: ', backflows.length);
+	logger.info(
+		{ backflowLen: backflows.length },
+		'getting backflow artifacts: ',
+	);
 	await Promise.all(
 		backflows.map(async (b) => {
 			if (!b.data.$transformer?.artifactReady) {
@@ -174,7 +184,7 @@ async function prepareWorkspace(
 			`${inputContract.slug}@${inputContract.data.$transformer?.parentVersion}`,
 		);
 		if (!parentContract) {
-			console.log('[WORKER] no contract found for parent');
+			logger.info('no contract found for parent');
 		} else if (
 			(parentContract as ArtifactContract).data.$transformer?.artifactReady
 		) {
@@ -204,7 +214,7 @@ async function pullTransformer(
 	const transformerImageReference = createArtifactReference(
 		task.data.transformer,
 	);
-	console.log(`[WORKER] Pulling transformer ${transformerImageReference}`);
+	logger.info({ transformerImageReference }, 'pulling transformer');
 	const transformerImageRef = await registry.pullImage(
 		transformerImageReference,
 		{
@@ -221,7 +231,7 @@ async function pushOutput(
 	outputManifest: OutputManifest,
 	actorCredentials: ActorCredentials,
 ) {
-	console.log(`[WORKER] Storing transformer output`);
+	logger.info('storing transformer output');
 
 	const outputDir = directory.output(task);
 	const inputContract = task.data.input;
@@ -296,7 +306,7 @@ async function pushOutput(
 			);
 		} else {
 			hasArtifact = false;
-			console.log(`[WORKER] no artifact for result ${outputContract.slug}`);
+			logger.info({ slug: outputContract.slug }, 'no artifact for result');
 		}
 
 		// Create links to output contract
@@ -309,7 +319,7 @@ async function pushOutput(
 			// Mark artifact ready, allowing it to be processed by downstream transformers
 			await jf.markArtifactContractReady(outputContract, artifactReference);
 		} else {
-			// contracts without artifacts shouldn't have an `artifactReady` field at all, but we keep it
+			// contracts without artifacts shouldn't have an 'artifactReady' field at all, but we keep it
 			// with "false" until now, to block it being processed before links are created
 			await jf.removeArtifactReady(outputContract);
 		}
@@ -320,7 +330,7 @@ async function processBackflow(
 	task: TaskContract,
 	outputManifest: OutputManifest,
 ) {
-	console.log(`[WORKER] Processing backflow`);
+	logger.info('processing backflow');
 
 	const inputContract = _.cloneDeep(task.data.input);
 
@@ -338,8 +348,9 @@ async function processBackflow(
 
 	const propagate = async (contract: ArtifactContract, step: number = 1) => {
 		if (step > backflowLimit) {
-			console.log(
-				`[WORKER] Backflow propagation limit reached, not following further`,
+			logger.info(
+				{ backflowLimit },
+				'backflow propagation limit reached, not following further',
 			);
 			return;
 		}
@@ -364,7 +375,7 @@ async function cleanupWorkspace(task: TaskContract) {
 }
 
 async function runTask(task: TaskContract) {
-	console.log(`[WORKER] Running task ${task.slug}`);
+	logger.info({ taskSlug: task.slug }, 'running task');
 
 	await validateTask(task);
 
@@ -388,7 +399,7 @@ async function runTask(task: TaskContract) {
 		workspace.secondaryInput,
 	);
 
-	console.log('[WORKER] GOT output manifest', JSON.stringify(outputManifest));
+	logger.info({ outputManifest }, 'received output manifest');
 
 	await pushOutput(task, outputManifest, actorCredentials);
 
@@ -396,7 +407,7 @@ async function runTask(task: TaskContract) {
 
 	await cleanupWorkspace(task);
 
-	console.log(`[WORKER] Task ${task.slug} completed successfully`);
+	logger.info('task completed successfully');
 }
 
 async function produceErrorContract(task: TaskContract, err: any) {

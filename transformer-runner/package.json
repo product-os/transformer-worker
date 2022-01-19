@@ -16,8 +16,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@ahmadnassri/spawn-promise": "^1.2.0",
-    "@balena/jellyfish-client-sdk": "^7.0.27",
-    "@balena/jellyfish-jellyscript": "^4.9.163",
+    "@balena/jellyfish-client-sdk": "^7.0.39",
+    "@balena/jellyfish-jellyscript": "^4.9.174",
     "@balena/transformer-runtime": "^1.5.0",
     "@types/rewire": "^2.5.28",
     "debugnyan": "^3.0.0",
@@ -31,7 +31,7 @@
     "tar": "^6.1.11"
   },
   "devDependencies": {
-    "@balena/jellyfish-types": "^1.2.41",
+    "@balena/jellyfish-types": "^1.2.42",
     "@balena/lint": "^6.2.0",
     "@types/bunyan": "^1.8.8",
     "@types/dockerode": "^3.3.1",

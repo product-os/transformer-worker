@@ -70,10 +70,13 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 	}
 	// ensure all log lines written within the context of this task get the appropriate context data appended
 	await withLogger(
-		logger.child({
-			task: task.id,
-			commit: task.data.input.data.$transformer?.repoData?.commit,
-		}),
+		logger.child(
+			{
+				task: task.id,
+				commit: task.data.input.data.$transformer?.repoData?.commit,
+			},
+			true,
+		),
 		async () => {
 			if (runningTasks.has(task.id)) {
 				logger.warn('the task was already running. Ignoring it');
@@ -387,6 +390,8 @@ async function runTask(task: TaskContract) {
 		prepareWorkspace(task, actorCredentials),
 	]);
 
+	// unfortunately logger is not happy when you try to set some fields :/
+	const { name: _n, hostname: _h, pid: _p, ...logMeta } = logger.fields;
 	const outputManifest = await runtime.runTransformer(
 		workspace.artifactDir,
 		task.data.input,
@@ -397,6 +402,7 @@ async function runTask(task: TaskContract) {
 		true,
 		{ ['io.balena.transformer.task.id']: task.id },
 		workspace.secondaryInput,
+		logMeta,
 	);
 
 	logger.info({ outputManifest }, 'received output manifest');

@@ -12,7 +12,7 @@ const currentLogger = new AsyncLocalStorage<Logger>();
 const defaultLogger = debugnyan('transformer-runner', {});
 
 export const logger = new Proxy(defaultLogger, {
-	get: (target, prop) => {
+	get: (target, prop, _receiver) => {
 		const l = currentLogger.getStore() ?? target;
 		return (l as any)[prop];
 	},
@@ -28,5 +28,8 @@ export const logger = new Proxy(defaultLogger, {
  * @returns the original method's return value
  */
 export const withLogger = <R>(l: Logger, cb: (...args: any[]) => R) => {
+	// this line is NECESSARY. I'm not sure why, but it seems the binding to the stream needs to happen before
+	// entering a async context
+	l.debug('entering new log context');
 	return currentLogger.run(l, cb);
 };

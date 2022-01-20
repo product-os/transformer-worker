@@ -52,7 +52,7 @@
     "typescript": "^4.5.4"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "cd transformer-runner && npx lint-staged"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

@@ -1,12 +1,12 @@
 import Docker from 'dockerode';
-import * as spawn from '@ahmadnassri/spawn-promise';
+import spawn from '@ahmadnassri/spawn-promise';
 import * as fs from 'fs';
 import { streamToPromise } from './util';
 import fetch from 'isomorphic-fetch';
 import { mimeType } from './consts';
 import * as stream from 'stream';
 import { promisify } from 'util';
-import path = require('path');
+import path from 'path';
 import { logger } from './logger';
 const pump = promisify(stream.pipeline); // Node 16 gives native pipeline promise... This is needed to properly handle stream errors
 
@@ -245,7 +245,7 @@ export default class Registry {
 			// this is a local name. therefore we allow http
 			args.push('--plain-http');
 		}
-		logger.info({ args }, 'running oras command');
+		logger.info({ args: args.join(' ') }, 'running oras command');
 		if (opts.username) {
 			args.push('--username');
 			args.push(opts.username);

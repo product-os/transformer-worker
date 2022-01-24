@@ -68,12 +68,15 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 		logger.warn('got an empty task');
 		return;
 	}
+	const commitId = task.data.input.type.startsWith('commit@')
+		? (task.data.input.data as any).head.sha
+		: task.data.input.data.$transformer?.repoData?.commit;
 	// ensure all log lines written within the context of this task get the appropriate context data appended
 	await withLogger(
 		logger.child(
 			{
 				task: task.id,
-				commit: task.data.input.data.$transformer?.repoData?.commit,
+				commit: commitId,
 			},
 			true,
 		),

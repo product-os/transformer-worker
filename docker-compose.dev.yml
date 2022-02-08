@@ -14,7 +14,7 @@ services:
       JF_API_PREFIX: "api/v2"
       
   registry:
-    image: "registry:2.7.1"
+    image: "registry:2.8.0"
     volumes:
       - "registry-data:/data"
 

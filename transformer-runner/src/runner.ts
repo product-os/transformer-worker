@@ -77,6 +77,9 @@ const acceptTask = async (update: { data?: { after?: TaskContract } }) => {
 			{
 				task: task.id,
 				commit: commitId,
+				taskName: task.name,
+				transformerSlug: task.data.transformer.slug,
+				inputSlug: task.data.input.slug,
 			},
 			true,
 		),
@@ -275,9 +278,11 @@ async function pushOutput(
 			const latestType = await jf.getContract(outputContract.type);
 			outputContract.type = `${latestType!.slug}@${latestType!.version}`;
 		}
+		logger.info({ slug: outputContract.slug }, 'upserting output contract');
 		await jf.upsertContract(outputContract);
 
 		// Store output artifact
+		logger.info({ slug: outputContract.slug }, 'storing output artifact');
 		const artifactReference = createArtifactReference(outputContract);
 		const authOptions = {
 			username: actorCredentials.slug,
@@ -316,6 +321,7 @@ async function pushOutput(
 		}
 
 		// Create links to output contract
+		logger.info({ slug: outputContract.slug }, 'linking output contract');
 		const contractRepo = await jf.getContractRepository(outputContract);
 		await jf.createLink(contractRepo, outputContract, LinkNames.RepoContains);
 		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
@@ -323,10 +329,18 @@ async function pushOutput(
 
 		if (hasArtifact) {
 			// Mark artifact ready, allowing it to be processed by downstream transformers
+			logger.info(
+				{ slug: outputContract.slug },
+				'marking output contract artifactReady',
+			);
 			await jf.markArtifactContractReady(outputContract, artifactReference);
 		} else {
 			// contracts without artifacts shouldn't have an 'artifactReady' field at all, but we keep it
 			// with "false" until now, to block it being processed before links are created
+			logger.info(
+				{ slug: outputContract.slug },
+				'removing output contract artifactReady, since no artifact',
+			);
 			await jf.removeArtifactReady(outputContract);
 		}
 	}

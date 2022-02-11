@@ -1,5 +1,5 @@
 # oras builder
-FROM golang:1.17.6-alpine as oras_builder
+FROM golang:1.17.7-alpine as oras_builder
 
 RUN apk add --no-cache git
 

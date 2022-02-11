@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.23.8
+## (2022-02-11)
+
+* Update golang Docker tag to v1.17.7 [Renovate Bot]
+
 # v0.23.7
 ## (2022-02-09)
 

@@ -384,6 +384,16 @@ export default class Jellyfish {
 		parent: ArtifactContract,
 		_task?: TaskContract,
 	) {
+		const logMeta = {
+			parentSlug: parent.slug,
+			parentVersion: parent.version,
+			childSlug: child.slug,
+			childVersion: child.slug,
+		};
+		logger.info(
+			logMeta,
+			`updating backflow for ${parent.slug}@${parent.version} with child ${child.slug}@${child.version}`,
+		);
 		// ensure backflow only happens one level deep
 		if (child.data.$transformer) {
 			const { backflow, ...transformerDataWithoutBackflow } =
@@ -400,6 +410,7 @@ export default class Jellyfish {
 
 		// Get backflow mapping,
 		// defined in transformer contract of the task that generated artifact contract,
+		logger.info(logMeta, 'backflow getting child task');
 		const task = _task ?? (await this.getArtifactContractTask(child));
 		if (!task) {
 			throw new Error(
@@ -413,6 +424,7 @@ export default class Jellyfish {
 		}
 
 		// Get json update patch, and apply
+		logger.info(logMeta, 'backflow getting mapping patch');
 		const backflowPatch = this.getBackflowPatch(backflowMapping, parent, child);
 
 		if (typeof parent.data?.$transformer?.backflow !== 'object') {
@@ -441,6 +453,20 @@ export default class Jellyfish {
 			} as ReplaceOperation<Contract>);
 		}
 
+		logger.info(
+			{
+				...logMeta,
+				patches: backflowPatch.map((patch) => {
+					return {
+						op: patch.op,
+						path: patch.path,
+						childSlug: (patch as any)?.value?.slug,
+						childVersion: (patch as any)?.value?.version,
+					};
+				}),
+			},
+			'backflow update parent with patch',
+		);
 		await this.sdk.card.update(parent.id, task.type, backflowPatch);
 		logger.info(
 			{

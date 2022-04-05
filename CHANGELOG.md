@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.1
+## (2022-04-05)
+
+* Update jellyscript from 4.9.163 to 7.0.4 and fix already broken tests [Thomas Manning]
+* Remove secrets handling tests that were migrated to transformer-runtime [Thomas Manning]
+
 # v0.24.0
 ## (2022-04-05)
 

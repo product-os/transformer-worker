@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { F_OK } from 'constants';
 import { Formula } from './types';
-import * as jellyscript from '@balena/jellyfish-jellyscript';
+import { Jellyscript } from '@balena/jellyfish-jellyscript';
 
 export const pathExists = async (path: string) => {
 	try {
@@ -29,6 +29,7 @@ export function evaluateFormulaOrValue(
 ) {
 	if (formulaOrValue.$$formula) {
 		try {
+			const jellyscript = new Jellyscript();
 			const result = jellyscript.evaluate(formulaOrValue.$$formula, {
 				context,
 				input: null,

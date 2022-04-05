@@ -1,5 +1,6 @@
 import Jellyfish from '../src/jellyfish';
 import * as jsonpatch from 'fast-json-patch';
+import { evaluateFormulaOrValue } from '../src/util';
 
 describe('getBackflowPatch', () => {
 	let getBackflowPatch: any;
@@ -25,6 +26,14 @@ describe('getBackflowPatch', () => {
 	});
 
 	describe('should produce correct patch when passed', () => {
+		test('simple script', () => {
+			const value = evaluateFormulaOrValue(
+				{ $$formula: 'ADD(a, b)' },
+				{ a: 1, b: 2 },
+			);
+			expect(value).toEqual(3);
+		});
+
 		test('literal source value, static target path', () => {
 			const backFlowMapping = [
 				{
@@ -47,7 +56,7 @@ describe('getBackflowPatch', () => {
 			const backFlowMapping = [
 				{
 					downstreamValue: {
-						$$formula: 'ADD(this.downstream.b, this.downstream.c)',
+						$$formula: 'ADD(downstream.b, downstream.c)',
 					},
 					upstreamPath: 'x.a',
 				},
@@ -70,7 +79,7 @@ describe('getBackflowPatch', () => {
 				{
 					downstreamValue: 'a slug',
 					upstreamPath: {
-						$$formula: 'this.downstream.d',
+						$$formula: 'downstream.d',
 					},
 				},
 			];
@@ -132,7 +141,7 @@ describe('getBackflowPatch', () => {
 				getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
 			};
 
-			expect(call).toThrowError(/Missing backflow mapping source/);
+			expect(call).toThrowError(/missing backflow mapping source/);
 		});
 
 		test('downstreamValue contains invalid formula', () => {
@@ -148,7 +157,7 @@ describe('getBackflowPatch', () => {
 				getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
 			};
 
-			expect(call).toThrowError(/Formula eval error/);
+			expect(call).toThrowError(/formula eval error/);
 		});
 
 		test('upstreamPath is undefined ', () => {
@@ -161,7 +170,7 @@ describe('getBackflowPatch', () => {
 				getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
 			};
 
-			expect(call).toThrowError(/Missing backflow mapping target/);
+			expect(call).toThrowError(/missing backflow mapping target/);
 		});
 
 		test('upstreamPath contains invalid formula', () => {
@@ -177,7 +186,7 @@ describe('getBackflowPatch', () => {
 				getBackflowPatch(backFlowMapping, upstreamContract, downstreamContract);
 			};
 
-			expect(call).toThrowError(/Formula eval error/);
+			expect(call).toThrowError(/formula eval error/);
 		});
 	});
 });

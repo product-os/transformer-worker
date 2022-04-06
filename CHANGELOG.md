@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.3
+## (2022-04-06)
+
+* Update transformer-runtime from 1.5.0 to 1.5.1 [Thomas Manning]
+
 # v0.24.2
 ## (2022-04-05)
 

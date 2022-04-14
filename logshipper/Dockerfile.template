@@ -1,4 +1,4 @@
-FROM timberio/vector:0.19.0-debian as logshipper
+FROM timberio/vector:0.18.1-debian as logshipper
 
 RUN mkdir -p /etc/vector/certificates
 

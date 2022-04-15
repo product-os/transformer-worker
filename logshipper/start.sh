@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # shellcheck disable=SC2034,SC2086
 
 set -ae
@@ -37,7 +37,7 @@ fi
 cat < sink-vector.yaml.template | envsubst > sink-vector.yaml
 
 # https://vector.dev/docs/administration/validating/
-#cat ${CONFIG_FILES} && (vector validate ${CONFIG_FILES} || sleep "$((RANDOM%10+1))s")
+cat ${CONFIG_FILES} && (vector validate ${CONFIG_FILES} || sleep "60s")
 
 # shellcheck disable=SC2086
-vector --config ${CONFIG_FILES}
+vector --config-dir /etc/vector/

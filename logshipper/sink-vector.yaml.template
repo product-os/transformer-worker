@@ -21,4 +21,4 @@ sinks:
       #ca_file: "${CERTIFICATES_DIR}/ca.pem"
       #crt_file: "${CERTIFICATES_DIR}/client.pem"
       #key_file: "${CERTIFICATES_DIR}/client-key.pem"
-    version: 1
+    version: "1"

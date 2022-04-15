@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.22
+## (2022-04-15)
+
+* Update @types/isomorphic-fetch from 0.0.35 to 0.0.36 [Renovate Bot]
+
 # v0.24.21
 ## (2022-04-15)
 

@@ -23,7 +23,7 @@ sources:
       - balena
 
 transforms:
-  add_labels:
+  balena:
     type: remap
     inputs:
       - journald
@@ -32,11 +32,10 @@ transforms:
       .container = .CONTAINER_NAME
       .fleet = get_env_var("BALENA_FLEET_NAME") ?? ""
       .device = get_env_var("BALENA_DEVICE_UUID") ?? ""
-      .organization = get_env_var("ORGANIZATION") ?? ""
       .source_type = "balena"
 
 sinks:
   blackhole:
     type: blackhole
     inputs:
-      - add_labels
+      - balena

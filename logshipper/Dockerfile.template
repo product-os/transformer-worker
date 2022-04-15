@@ -5,7 +5,8 @@ RUN apt update \
     gettext \
     && rm -rf /var/cache/apt
 
-RUN mkdir -p /etc/vector/certificates
+RUN rm -rf /etc/vector \
+    && mkdir -p /etc/vector/certificates
 
 COPY *.yaml /etc/vector/
 COPY *.template /etc/vector/

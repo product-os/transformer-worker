@@ -1,9 +1,9 @@
 # logshipper
 
 A log collection agent that ships logs from the balena engine
-to a log aggregation service.
+to a downstream log aggregator.
 
-The agent currently ships logs to the following log aggregation services:
+The agent currently ships logs to the following log aggregators:
 - Vector
 
 
@@ -12,7 +12,7 @@ The agent currently ships logs to the following log aggregation services:
 To use this image, create a service in your docker-compose.yml file as shown below:
 ```
 logshipper:
-    image: balenablocks/logshipper:<device arch name>
+    image: bh.cr/product-os/logshipper
     labels:
       io.balena.features.journal-logs: '1'
     restart: unless_stopped
@@ -40,14 +40,8 @@ services:
 
 *Dockerfile.template*
 ```
-FROM balenablocks/logshipper:%%BALENA_ARCH%%
+FROM bh.cr/product-os/logshipper:%%BALENA_ARCH%%
 ```
-
-`balenablocks/logshipper` is built for the following archs:
-
-- `aarch64`
-- `armv7hf`
-- `amd64`
 
 
 ## Customisation
@@ -56,7 +50,6 @@ FROM balenablocks/logshipper:%%BALENA_ARCH%%
 
 | Environment Variable        | Default| Description                                          |
 | --------------------------- | ------ | -----------------------------------------------------|
-| `CONSOLE`                   | `true` | Sends collected logs to the console                  |
 | `VECTOR_ENDPOINT`           | ``     | The endpoint of the vector log aggregator            |
 | `VECTOR_TLS_CA_FILE`        | ``     | An additional CA certificate file encoded in base 64 |
 | `VECTOR_VERIFY_CERTIFICATE` | `true` | Enables TLS certificate verification.                |

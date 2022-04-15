@@ -33,8 +33,8 @@ fi
 function start_vector() {
 	# https://vector.dev/docs/administration/validating/
 	cat /etc/vector/*.y*ml \
-	&& vector validate /etc/vector/*.y*ml \
-	&& vector --config "/etc/vector/*.y*ml"
+	&& vector validate --config-yaml "/etc/vector/*.y*ml" \
+	&& vector --config-yaml "/etc/vector/*.y*ml"
 }
 
 

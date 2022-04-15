@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.8
+## (2022-04-15)
+
+* logshipper: temporarily disable config validation. [Carlo Miguel F. Cruz]
+* logshipper: remove Vector sink batch configuration. [Carlo Miguel F. Cruz]
+
 # v0.24.7
 ## (2022-04-15)
 

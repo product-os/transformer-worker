@@ -1,21 +1,24 @@
 ---
+# https://vector.dev/docs/reference/configuration/sinks/vector/
 sinks:
   vector:
-    type: vector
+    type: "vector"
     inputs:
-      - add_labels
-    address: ${VECTOR_ENDPOINT}
+      - "add_labels"
+    address: "${VECTOR_ENDPOINT}"
     buffer:
       max_events: 1000
-      type: memory
-      when_full: drop_newest
+      type: "memory"
+      when_full: "drop_newest"
     healthcheck:
       enabled: true
+    keepalive:
+      time_secs: 15
     tls:
-      # ca_file: 
-      # crt_file: 
-      enabled: ${VECTOR_TLS_ENABLED:-"false"}
-      # key_file: 
-      verify_certificate: ${VECTOR_VERIFY_CERTIFICATE:-"true"}
-      verify_hostname: ${VECTOR_VERIFY_CERTIFICATE:-"true"}
+      enabled: ${VECTOR_TLS_ENABLED}
+      #verify_certificate: ${VECTOR_TLS_ENABLED}
+      #verify_hostname: ${VECTOR_TLS_ENABLED}
+      #ca_file: "${CERTIFICATES_DIR}/ca.pem"
+      #crt_file: "${CERTIFICATES_DIR}/client.pem"
+      #key_file: "${CERTIFICATES_DIR}/client-key.pem"
     version: "1"

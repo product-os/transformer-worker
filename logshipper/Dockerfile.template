@@ -9,7 +9,7 @@ RUN rm -rf /etc/vector \
     && mkdir -p /etc/vector/certificates
 
 COPY *.yaml /etc/vector/
-COPY *.template /etc/vector/
+COPY *.yaml.template /etc/vector/
 COPY start.sh .
 
 ENV LOG warn

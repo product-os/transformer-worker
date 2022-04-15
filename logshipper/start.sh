@@ -7,11 +7,9 @@ cd /etc/vector/
 
 BALENA_FLEET_NAME=${BALENA_APP_NAME}
 CERTIFICATES_DIR=/etc/vector/certificates
-CONFIG_FILES=vector.yaml
 VECTOR_TLS_ENABLED=false
 
 if [ -n "${VECTOR_ENDPOINT}" ]; then
-	CONFIG_FILES="${CONFIG_FILES} sink-vector.yaml"
 	if [ -n "${VECTOR_TLS_CA_FILE}" ]
 	then
 		echo "${VECTOR_TLS_CA_FILE}" | base64 -d > "${CERTIFICATES_DIR}/ca.pem"
@@ -37,9 +35,6 @@ fi
 cat < sink-vector.yaml.template | envsubst > sink-vector.yaml
 
 # https://vector.dev/docs/administration/validating/
-cat ${CONFIG_FILES} && (vector validate ${CONFIG_FILES} || sleep "60s")
-
-# shellcheck disable=SC2086
-vector --config-dir /etc/vector
-
-sleep 300
+cat /etc/vector/*.yaml \
+&& vector validate --config-dir /etc/vector \
+&& vector --config-dir /etc/vector

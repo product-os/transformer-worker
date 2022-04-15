@@ -6,10 +6,14 @@ sinks:
     inputs:
       - "add_labels"
     address: "${VECTOR_ENDPOINT}"
+    batch:
+      max_events: 100
+      timeout_secs: 1
     buffer:
       max_events: 1000
       type: "memory"
       when_full: "drop_newest"
+    compression: true
     healthcheck:
       enabled: true
     keepalive:

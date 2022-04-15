@@ -40,4 +40,4 @@ cat < sink-vector.yaml.template | envsubst > sink-vector.yaml
 cat ${CONFIG_FILES} && (vector validate ${CONFIG_FILES} || sleep "60s")
 
 # shellcheck disable=SC2086
-vector --config ${CONFIG_FILES}
+vector --config /etc/vector/*.yaml

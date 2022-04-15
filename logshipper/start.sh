@@ -6,7 +6,6 @@ set -ae
 function prepare_vector_sink() {
 	VECTOR_TLS_ENABLED=false
 	if [ -n "${VECTOR_ENDPOINT}" ]; then
-		CONFIG_FILES="${CONFIG_FILES} sink-vector.yaml"
 		if [ -n "${VECTOR_TLS_CA_FILE}" ]
 		then
 			echo "${VECTOR_TLS_CA_FILE}" | base64 -d > "${CERTIFICATES_DIR}/ca.pem"
@@ -33,9 +32,9 @@ fi
 
 function start_vector() {
 	# https://vector.dev/docs/administration/validating/
-	cat ${CONFIG_FILES} \
-	&& vector validate /etc/vector/*.yaml \
-	&& vector --config "/etc/vector/*.yaml"
+	cat /etc/vector/*.yml /etc/vector/*.yaml \
+	&& vector validate --config-dir /etc/vector \
+	&& vector --config-dir /etc/vector
 }
 
 

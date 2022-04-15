@@ -34,8 +34,8 @@ fi
 function start_vector() {
 	# https://vector.dev/docs/administration/validating/
 	cat ${CONFIG_FILES} \
-	&& vector validate --config-dir /etc/vector \
-	&& vector --config-dir /etc/vector 
+	&& vector validate --config /etc/vector/*.yaml \
+	&& vector --config "/etc/vector/*.yaml"
 }
 
 

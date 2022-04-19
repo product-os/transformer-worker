@@ -39,8 +39,7 @@ services:
     restart: 'no'
 
   logshipper:
-    build:
-        context: ./logshipper
+    image: bh.cr/balenablocks/logshipper/0.1.0
     environment:
       LOG: warn
     labels:

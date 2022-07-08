@@ -303,7 +303,7 @@ export default class Jellyfish {
 	public async getUpstreamContract(contract: ArtifactContract) {
 		const type = undefined;
 		const link = await this.getLinkTo(
-			LinkNames.WasBuiltInto,
+			LinkNames.WasTransformedTo,
 			type,
 			contract.id,
 		);

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.27
+## (2022-07-22)
+
+* Update transformer-runner package-lock.json. [Carlo Miguel F. Cruz]
+* Update balena API key for building the transformer-worker app. [Carlo Miguel F. Cruz]
+* Bump transformer-runtime from v1.5.1 to v1.5.2. [Carlo Miguel F. Cruz]
+* Bump jellyfish-client-sdk from v7.0.27 to v12.0.1. [Carlo Miguel F. Cruz]
+* Remove unused links and added inverse link for 'contains'. [Carlo Miguel F. Cruz]
+* Change 'was built into' to 'was transformed to'. [Carlo Miguel F. Cruz]
+
 # v0.24.26
 ## (2022-07-22)
 

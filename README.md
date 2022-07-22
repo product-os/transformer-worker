@@ -49,6 +49,13 @@ The Github workflow uses the [deploy-to-balena][deploy-to-balena] Github action.
 ### garbage-collector required env variables
 * `GC_MAX_STORAGE_THRESHOLD`: GC will kick in when the disk space is below this threshold
 
+### logshipper required env variables
+* `VECTOR_ENDPOINT`: The endpoint of the vector log aggregator
+* `VECTOR_TLS_CA_FILE`: An additional CA certificate file encoded in base 64
+* `VECTOR_TLS_CRT_FILE`: The client certificate file encoded in base 64
+* `VECTOR_TLS_KEY_FILE`: The client certificate key file encoded in base 64
+* `VECTOR_VERIFY_CERTIFICATE`: Enables TLS certificate verification
+
 ## License
 
 transformer-worker is free software, and may be redistributed under the terms specified in the [license](https://github.com/product-os/transformer-worker/blob/master/LICENSE).

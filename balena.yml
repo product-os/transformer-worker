@@ -5,6 +5,6 @@ data:
   $transformer:
     encryptedSecrets:
       balenaApiKey: >-
-        ZVHQiIKm8eusONh7YhFxxm8PNP0CWykc44yhGLfuCRkLVwSShLLykenUfGICB1DzlA7BIlZm2kHa2v0G6ek19RmQP9r9fHOt+lxaPR8rb2/GSpMUdfcyGaIMl/dUVhPW3mX26Ir6Hla1jOOtBp+98kycCVR6ZAE4SwGe8j1A7CJoBa+iuI4XXcPHtLS6ugapT+0FWMYyi110enTM9gqkShgxRfyfZMDLJGLOZKho9awTrjaWz/3B2IdgYts8MAqqNHMDEekpIxgnAi1soadXrYk0IWSPbe8fRqRN62fnzFWNzrxG05bs2v1yikchb4wP2YJyrgq/YvFJTldw+fCCjA==
+        P4zRNMR8oevQyHUeK97f9C4KnDWPIvitqRhujNUTQ+ir4AaBTbGq205ob9/ALFRNiWgTmgbPHW6ouidalrmEhUwAi3tyDjPObuUCojK+2jeOoQgFx3jZRo4y8WNDUJeDooMCUFeN1LMnJtSeDTWA9r6jquYW+nqGWUE3YAyOsyHYTv9iaBzSsnmMk64UEwk0hRZz+ckOm5jxIZXBVb/usvHvHk3W5PfmeXreEOlUFOvz9wAlkYDvn/u9fltVQ0lAANYjEFD92kIsRSfztS8A3ewSxBgSdBBmtZZ8ZSkCM5wYbO2ZoA8v08nKo9JY82ybjV9v/qHcUDqnYgyPFj1ZKw==
   balenaAppName: 'product_os/transformers-workers'
 slug: type-balena-io-t-balena-app-source-product-os-transformer-worker

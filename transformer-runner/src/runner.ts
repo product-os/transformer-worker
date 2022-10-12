@@ -324,7 +324,11 @@ async function pushOutput(
 		logger.info({ slug: outputContract.slug }, 'linking output contract');
 		const contractRepo = await jf.getContractRepository(outputContract);
 		await jf.createLink(contractRepo, outputContract, LinkNames.RepoContains);
-		await jf.createLink(inputContract, outputContract, LinkNames.WasBuiltInto);
+		await jf.createLink(
+			inputContract,
+			outputContract,
+			LinkNames.WasTransformedTo,
+		);
 		await jf.createLink(task, outputContract, LinkNames.Generated);
 
 		if (hasArtifact) {
@@ -448,5 +452,5 @@ async function produceErrorContract(task: TaskContract, err: any) {
 		},
 	};
 	const createdErr = await jf.upsertContract(errorContract);
-	await jf.createLink(task.data.input, createdErr!, LinkNames.WasBuiltInto);
+	await jf.createLink(task.data.input, createdErr!, LinkNames.WasTransformedTo);
 }

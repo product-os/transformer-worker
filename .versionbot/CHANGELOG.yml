@@ -1,4 +1,17 @@
 - commits:
+    - subject: Bump logshipper to v1.0.0+rev6.
+      hash: 7f9102fce1fff3af25a662e1f0ad0f4be2b5ea0b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+        signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+      author: Carlo Miguel F. Cruz
+  version: 0.24.24
+  title: ""
+  date: 2022-10-13T06:57:04.098Z
+- commits:
     - subject: Push release to balena using Flowzone.
       hash: fca2e199fd0d7b491c3fd2ae724c7aed40390d58
       body: ""

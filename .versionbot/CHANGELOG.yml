@@ -1,4 +1,26 @@
 - commits:
+    - subject: "logshipper: bump to version 1.0.1+rev3."
+      hash: 423e6f286a4299cd5bb738224ed2d89f2da8df19
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+        signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+      author: Carlo Miguel F. Cruz
+    - subject: "logshipper: bump to version 1.0.1+rev2."
+      hash: 93eea58e68b5bb200514dd8fce99a32b074a4c83
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+        signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+      author: Carlo Miguel F. Cruz
+  version: 0.24.25
+  title: ""
+  date: 2022-10-13T12:09:56.791Z
+- commits:
     - subject: Bump logshipper to v1.0.0+rev6.
       hash: 7f9102fce1fff3af25a662e1f0ad0f4be2b5ea0b
       body: ""

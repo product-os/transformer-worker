@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.25
+## (2022-10-13)
+
+* logshipper: bump to version 1.0.1+rev3. [Carlo Miguel F. Cruz]
+* logshipper: bump to version 1.0.1+rev2. [Carlo Miguel F. Cruz]
+
 # v0.24.24
 ## (2022-10-13)
 

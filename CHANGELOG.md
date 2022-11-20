@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.18.51](https://github.com/product-os/transformer-worker/compare/v0.18.18...v0.18.51) (2021-10-27)
 
+# v0.24.26
+## (2022-11-20)
+
+* Update alpine Docker tag to v3.17 [renovate[bot]]
+
 # v0.24.25
 ## (2022-10-13)
 

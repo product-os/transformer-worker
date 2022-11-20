@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update alpine Docker tag to v3.17
+      hash: 9bcbfad3414b4d0cda08d96138b1de0f69fdee81
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: renovate[bot]
+  version: 0.24.26
+  title: ""
+  date: 2022-11-20T13:39:37.267Z
+- commits:
     - subject: "logshipper: bump to version 1.0.1+rev3."
       hash: 423e6f286a4299cd5bb738224ed2d89f2da8df19
       body: ""
@@ -67,7 +78,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^4.9.140"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.14
 - date: 2021-11-27T15:13:39Z
 - commits:
@@ -80,7 +91,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^4.9.139"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.13
 - date: 2021-11-27T03:50:39Z
 - commits:
@@ -93,7 +104,7 @@
 - commits:
     - subject: "patch: Update internal-patch"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.12
 - date: 2021-11-27T01:53:46Z
 - commits:
@@ -106,7 +117,7 @@
 - commits:
     - subject: "patch: Update external-non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.11
 - date: 2021-11-26T20:02:41Z
 - commits:
@@ -119,7 +130,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^4.9.137"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.10
 - date: 2021-11-26T19:52:49Z
 - commits:
@@ -132,7 +143,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^7.0.20"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.9
 - date: 2021-11-26T18:02:27Z
 - commits:
@@ -145,7 +156,7 @@
 - commits:
     - subject: "patch: Update internal-patch"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.8
 - date: 2021-11-26T15:51:54Z
 - commits:
@@ -171,7 +182,7 @@
 - commits:
     - subject: "patch: Update internal-patch"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.6
 - date: 2021-11-25T10:44:04Z
 - commits:
@@ -184,7 +195,7 @@
 - commits:
     - subject: "patch: Update internal-patch"
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.5
 - date: 2021-11-25T10:32:15Z
 - commits:
@@ -226,7 +237,7 @@
 - commits:
     - subject: Use product-os/renovate-config
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.2
 - date: 2021-11-18T08:37:50Z
 - commits:
@@ -239,7 +250,7 @@
 - commits:
     - subject: put code under AGPL
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.1
 - date: 2021-11-15T10:21:52Z
 - commits:
@@ -255,7 +266,7 @@
 - commits:
     - subject: ensure backflowed data considers latest formula updates
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: b20ce0cc2e00baa6f7ebc075139527d42fbaaa87
 - commits:
@@ -269,7 +280,7 @@
 - commits:
     - subject: create dir for parent contract
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 29e3aad512536beb8d2e11a5b6c899f933f6c1f0
 - commits:
@@ -283,7 +294,7 @@
 - commits:
     - subject: use device-uuid as fleet identifier
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: cdd8145c4893992da16191bda0eae37ef31ecbd5
 - commits:
@@ -297,7 +308,7 @@
 - commits:
     - subject: add commit sha to release tags
 - commits:
-    - ? body
+    - body: null
 - version: 0.19.0
 - date: 2021-11-09T16:51:29Z
 - commits:
@@ -313,7 +324,7 @@
 - commits:
     - subject: update deps
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: bbff80249fc6cc1ad2931e5a6d96b6c9e8e5b69f
 - commits:
@@ -327,7 +338,7 @@
 - commits:
     - subject: linter cleanup and TS 4.4 fixes
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 955856e6bf4bb71c60f4bd1367bae9fef517c342
 - commits:
@@ -341,7 +352,7 @@
 - commits:
     - subject: get parent version as secondary input
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: bf7dc02bf8abae87eb954d4bb5aef5332d3c24b6
 - commits:
@@ -355,7 +366,7 @@
 - commits:
     - subject: remove broken contract
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.51
 - date: 2021-10-27T14:20:18Z
 - commits:
@@ -371,7 +382,7 @@
 - commits:
     - subject: drop `inputType` feature in favor proper `artifactReady` handling
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: bbf269c55dcce03356e9ea3beeaf2bd67d2078b2
 - commits:
@@ -379,7 +390,7 @@
 - commits:
     - subject: "chore(release): 0.18.46"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: fdf31b98cd44af18a661bb84ee998f76c8e947b6
 - commits:
@@ -393,7 +404,7 @@
 - commits:
     - subject: update runtime to 0.1.1
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 9b41eda8151ebffc61e5f8825618818831462b31
 - commits:
@@ -404,7 +415,7 @@
 - commits:
     - subject: Add extra logs
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: ba850f0287f7816710cc0627b24a7003e948aece
 - commits:
@@ -412,7 +423,7 @@
 - commits:
     - subject: Auth fix for pulling docker image
 - commits:
-    - ? body
+    - body: null
 - commits:
     - footers:
         change-type: patch
@@ -426,7 +437,7 @@
 - commits:
     - subject: "chore(release): 0.18.45"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 2d6134c8b862cdecaa0b31b7b7fc897e69b8cb11
 - commits:
@@ -434,7 +445,7 @@
 - commits:
     - subject: fix artifactReady handling of contract-only results
 - commits:
-    - ? body
+    - body: null
 - commits:
     - footers:
         change-type: patch
@@ -454,7 +465,7 @@
 - commits:
     - subject: fill artifactReady with artifact reference
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1e1558220fe52b9ad3deeed5c05e70eafbd643a4
 - commits:
@@ -462,7 +473,7 @@
 - commits:
     - subject: "chore(release): 0.18.44"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 257bbf1a5449a645aaa876390ae2aebfed230aa4
 - commits:
@@ -476,7 +487,7 @@
 - commits:
     - subject: fix transformer validation
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 3ff52eb24c838ea252fbcf70ef56953cd57a8e66
 - commits:
@@ -484,7 +495,7 @@
 - commits:
     - subject: bail out early of invalid transformer gets passed in
 - commits:
-    - ? body
+    - body: null
 - commits:
     - footers:
         change-type: patch
@@ -498,7 +509,7 @@
 - commits:
     - subject: "chore(release): 0.18.43"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: f2d25faee4ca05b93f048c8dad99d30f8c7b64ee
 - commits:
@@ -512,7 +523,7 @@
 - commits:
     - subject: ensure version set at balena is from source
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 01e83349c5bdf41f4675443428876cfe9928a176
 - commits:
@@ -520,7 +531,7 @@
 - commits:
     - subject: "chore(release): 0.18.41"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 464271297038b126cd23100461f67bdc909417e2
 - commits:
@@ -534,7 +545,7 @@
 - commits:
     - subject: Only pull artifact when artifactReady is truthly
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 6d81269b9698c8c0b93a9f34c4f3c0bf8fbce9af
 - commits:
@@ -542,7 +553,7 @@
 - commits:
     - subject: "chore(release): 0.18.42"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 805e677dc620897475468390c063aff9d3ff4bf5
 - commits:
@@ -553,7 +564,7 @@
 - commits:
     - subject: Set correct headers in registry request
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 7d7dc3221a35830d05253279b10ee273ed9196b5
 - commits:
@@ -561,7 +572,7 @@
 - commits:
     - subject: "chore(release): 0.18.40"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 2457ea64ccc79c75e08dd40d34f9e96df23f6cab
 - commits:
@@ -572,7 +583,7 @@
 - commits:
     - subject: Fix a single character
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: afce2a88323314891ce7e7e17d2e3e23ba71a430
 - commits:
@@ -583,7 +594,7 @@
 - commits:
     - subject: Fix headers
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1b376502ad5cb75c17a73aa18dc8b305fc096f75
 - commits:
@@ -591,7 +602,7 @@
 - commits:
     - subject: "chore(release): 0.18.37"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 7043f71869e39e82273f34324561012483a31e1b
 - commits:
@@ -602,7 +613,7 @@
 - commits:
     - subject: Add image type to error output
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 3ae51425a24d958702ac97638f9175a16f2b2a6f
 - commits:
@@ -610,7 +621,7 @@
 - commits:
     - subject: "chore(release): 0.18.36"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: f6bf7870a6dddafffed6b20030310f8a73df48b2
 - commits:
@@ -621,7 +632,7 @@
 - commits:
     - subject: update dependencies
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 58c3905f13c26d4f906b41267d9fae528b45a947
 - commits:
@@ -629,7 +640,7 @@
 - commits:
     - subject: "chore(release): 0.18.39"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 2c9f3ad691f34e61f1f93ee9f22c00c174111cc4
 - commits:
@@ -643,7 +654,7 @@
 - commits:
     - subject: tell Dan the secret
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 80b804dbda71b75bf4ee129e38eef763f8a092e1
 - commits:
@@ -651,7 +662,7 @@
 - commits:
     - subject: "chore(release): 0.18.27"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 494892d49ebaf2f610f08ecd9dd9066fbbdced33
 - commits:
@@ -670,7 +681,7 @@
 - commits:
     - subject: "chore(release): 0.18.26"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: cd755b21f091a886e5608dd3a7ca9448ad6ba509
 - commits:
@@ -678,7 +689,7 @@
 - commits:
     - subject: "chore(release): 0.18.27"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: cb8e1daa16525e5c7d4791460d1b761c7fb69ec0
 - commits:
@@ -697,7 +708,7 @@
 - commits:
     - subject: "chore(release): 0.18.28"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 7eb9883047a4b8b3f23a7cfabdd4ce23899a8d17
 - commits:
@@ -708,7 +719,7 @@
 - commits:
     - subject: Make function getArtifactManifest
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 7ac490254cf57b5d1c2c53bd49aa9e9d2a25fced
 - commits:
@@ -716,7 +727,7 @@
 - commits:
     - subject: "chore(release): 0.18.29"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: a36ba844d5698d182c09f775ead4e4f54b76eea4
 - commits:
@@ -727,7 +738,7 @@
 - commits:
     - subject: Write docker image file to destDir
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 5c8454ddd7addb1cdd8e720c7ff53072d49b1b65
 - commits:
@@ -735,7 +746,7 @@
 - commits:
     - subject: "chore(release): 0.18.30"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 0fc7721e34fd943cb46105bf060f83a2c9b7f43a
 - commits:
@@ -746,7 +757,7 @@
 - commits:
     - subject: Artifact to tar file
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: cbecee81226c847f7ae31f10ee47393596db441a
 - commits:
@@ -754,7 +765,7 @@
 - commits:
     - subject: "chore(release): 0.18.31"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 94d182b2b62113ac48ae559d671f38451cd93438
 - commits:
@@ -765,7 +776,7 @@
 - commits:
     - subject: remove package lock file
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1008fa5a8134bcfeef54a1abdf816a5fb39ea51a
 - commits:
@@ -773,7 +784,7 @@
 - commits:
     - subject: "chore(release): 0.18.32"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 324b5a101eb7c4b34a29e734bb3ccc9e2d3b97d3
 - commits:
@@ -784,7 +795,7 @@
 - commits:
     - subject: join paths
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 8bb855414802d519e0937c866f51d262bd3bee55
 - commits:
@@ -792,7 +803,7 @@
 - commits:
     - subject: "chore(release): 0.18.33"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 5e8ca044caf54c0e522700e3d1320bbc532bff39
 - commits:
@@ -804,7 +815,7 @@
     - subject: Use HTTPS to prevent timeout in URL since the registry rejects HTTP
         traffic
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 4883a3b032d04cd9cf72cc3d86fb4a7975141c40
 - commits:
@@ -815,7 +826,7 @@
 - commits:
     - subject: Proper handling of image type
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 33ec91b5b7992e4f4597be8379a287c97fadc6b1
 - commits:
@@ -826,7 +837,7 @@
 - commits:
     - subject: Working checks with new accept headers
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 20711df271e58b742a3d48c3489e16a592d3d910
 - commits:
@@ -834,7 +845,7 @@
 - commits:
     - subject: "chore(release): 0.18.34"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 6486ddae4ae52d345cad8484ee6bea4bb11536f4
 - commits:
@@ -846,7 +857,7 @@
     - subject: Merge branch 'master' of
         https://github.com/product-os/transformer-worker into docker-image-pull
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 49d09840e7c343035c2dee858639e0f2c172731d
 - commits:
@@ -854,7 +865,7 @@
 - commits:
     - subject: "chore(release): 0.18.35"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 20bf4955914e03470080ab589028be2aa000cd17
 - commits:
@@ -868,7 +879,7 @@
 - commits:
     - subject: linter
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 5a506111cc6c7927f3bd068ca68cc3385c8232fd
 - commits:
@@ -882,7 +893,7 @@
 - commits:
     - subject: make backflow v2 work recursively (as before)
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 0c5ae2cdbc161d8ac71cd58e9b75c72716ab566d
 - commits:
@@ -890,7 +901,7 @@
 - commits:
     - subject: "chore(release): 0.18.26"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1ffe3ce386961c9ef46cb114e3957d8d5e17143d
 - commits:
@@ -919,7 +930,7 @@
 - commits:
     - subject: "Logging: Simplify startup script to use env vars as switches."
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 3a0d9a2cb76178afc623038aa79c8ba36e44d440
 - commits:
@@ -927,7 +938,7 @@
 - commits:
     - subject: linting
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 7578e52009f6dc45760c03f5aadc4944b8089769
 - commits:
@@ -941,7 +952,7 @@
 - commits:
     - subject: always pass backflow to source contract
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 0a57da13cf14eae43f3e8d3f7f9ccc594ff8b381
 - commits:
@@ -955,7 +966,7 @@
 - commits:
     - subject: pass in all backflowed contract artifacts to transformer run
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 522fc910bc90475121b7000bada140046e8ae0aa
 - commits:
@@ -969,7 +980,7 @@
 - commits:
     - subject: Adds logshipper to send logs to Grafana Loki.
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 364fa095965458d451d4d998353c4a1635c0d7ad
 - commits:
@@ -983,7 +994,7 @@
 - commits:
     - subject: "Logshipper: Fixup certificate path replacement in startup."
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 8805f08b49b87d5ad7ca05e8e6c3452718ac4fab
 - commits:
@@ -991,7 +1002,7 @@
 - commits:
     - subject: "chore(release): 0.18.25"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 141e7ba045bdef3f363ff21e96977cd9d012d411
 - commits:
@@ -1002,7 +1013,7 @@
 - commits:
     - subject: Update runtime version
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 368c278f019d5c61d2caeee0b4042d4a06c31a0b
 - commits:
@@ -1010,7 +1021,7 @@
 - commits:
     - subject: cleanup
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 2f1d88d7b8e5e8920a9b0da48932e01c0f29c86e
 - commits:
@@ -1024,7 +1035,7 @@
 - commits:
     - subject: fix wrong artifact dir mount
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 904d6bb5691caf267e75a0bf3ec95b2c7029597a
 - commits:
@@ -1032,7 +1043,7 @@
 - commits:
     - subject: "chore(release): 0.18.24"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 97c76ba28db9dcf1d0382dcd0a0a7f19e65ee5f1
 - commits:
@@ -1046,7 +1057,7 @@
 - commits:
     - subject: use overlay filesystem for docker
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 88da6c2f818bf4f5e9df9d7bfd46cb701d4c7930
 - commits:
@@ -1060,7 +1071,7 @@
 - commits:
     - subject: update runtime
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: e7b6dd1c10d010e24c0417b9754b26f7dd664ccb
 - commits:
@@ -1068,7 +1079,7 @@
 - commits:
     - subject: "chore(release): 0.18.21"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 829fc7cbbd85d8984a463632127048c7c06ab4b0
 - commits:
@@ -1079,7 +1090,7 @@
 - commits:
     - subject: remove secrets
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: e555f0223e348bea64d5e075f661f902708d7bc9
 - commits:
@@ -1087,7 +1098,7 @@
 - commits:
     - subject: "chore(release): 0.18.22"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 41f6e70045d1a1a81c9805f2260ab7e84a3a5810
 - commits:
@@ -1101,7 +1112,7 @@
 - commits:
     - subject: update runtime fix secrets fix
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: d30cdbe4d5c740d8300e64cb406379a720974281
 - commits:
@@ -1109,7 +1120,7 @@
 - commits:
     - subject: "chore(release): 0.18.23"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: b792295534624da93069ca1605eb81032efa06fc
 - commits:
@@ -1134,7 +1145,7 @@
 - commits:
     - subject: Switch to runtime package
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 722ba90259ec2e35b9d4b3be4df7ef13bff823e9
 - commits:
@@ -1148,7 +1159,7 @@
 - commits:
     - subject: update deps - fix stream handling
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 86d74fb7c82805655f91f7702cefea229941f22d
 - commits:
@@ -1156,7 +1167,7 @@
 - commits:
     - subject: cleanup
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: eb2e762da8316e921282e787cad580245cfc56b1
 - commits:
@@ -1170,7 +1181,7 @@
 - commits:
     - subject: fix version overwriting
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 4a75220ef1e44b48d0aaf104023ac351a81a5c53
 - commits:
@@ -1184,7 +1195,7 @@
 - commits:
     - subject: parallelize pulling fo transformer and artifact
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: dfedadf079fd0597abcbf2718f10bdcc0fabfa2e
 - commits:
@@ -1198,7 +1209,7 @@
 - commits:
     - subject: fix use of jellyscript
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: d71e294afb7ec5f29709491d3ec73a1af766acb4
 - commits:
@@ -1206,7 +1217,7 @@
 - commits:
     - subject: "chore(release): 0.18.19"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 97fbcc2d5f318ca2f12ddc232df5f1358798c73b
 - commits:
@@ -1220,7 +1231,7 @@
 - commits:
     - subject: add npmrc secret
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1fddeea61721f2029a8841a22201936329800c06
 - commits:
@@ -1234,7 +1245,7 @@
 - commits:
     - subject: fix push script after app move
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: cb60b215226fcd8443bcce0a79fe0790d724f07d
 - commits:
@@ -1248,7 +1259,7 @@
 - commits:
     - subject: fix broken token check
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 3362cf987407c747957618fa9279f59f808a1dcf
 - commits:
@@ -1262,7 +1273,7 @@
 - commits:
     - subject: Added Martin to git secret chain
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 4e1cbd79cc86b516397aaf1c4e976d0b58951309
 - commits:
@@ -1307,7 +1318,7 @@
 - commits:
     - subject: "chore(release): 0.18.18"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.17
 - date: 2021-05-13T01:11:10Z
 - commits:
@@ -1320,7 +1331,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.4.1"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.16
 - date: 2021-05-12T20:37:05Z
 - commits:
@@ -1333,7 +1344,7 @@
 - commits:
     - subject: "patch: Update dependency @types/node to ^14.14.45"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.15
 - date: 2021-05-12T10:06:53Z
 - commits:
@@ -1346,7 +1357,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.190"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.14
 - date: 2021-05-12T07:22:23Z
 - commits:
@@ -1359,7 +1370,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.13
 - date: 2021-05-12T01:35:03Z
 - commits:
@@ -1372,7 +1383,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.189"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.12
 - date: 2021-05-11T10:05:32Z
 - commits:
@@ -1385,7 +1396,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.11
 - date: 2021-05-11T09:36:12Z
 - commits:
@@ -1398,7 +1409,7 @@
 - commits:
     - subject: fix new-lines in encrypted content
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.10
 - date: 2021-05-10T08:25:08Z
 - commits:
@@ -1411,7 +1422,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.187"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.9
 - date: 2021-05-10T08:13:16Z
 - commits:
@@ -1424,7 +1435,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.173"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.8
 - date: 2021-05-10T06:54:46Z
 - commits:
@@ -1437,7 +1448,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.115"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.7
 - date: 2021-05-08T07:42:53Z
 - commits:
@@ -1450,7 +1461,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.6
 - date: 2021-05-08T04:49:39Z
 - commits:
@@ -1463,7 +1474,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.185"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.5
 - date: 2021-05-08T03:40:03Z
 - commits:
@@ -1476,7 +1487,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.114"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.4
 - date: 2021-05-08T03:26:53Z
 - commits:
@@ -1489,7 +1500,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.171"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.3
 - date: 2021-05-08T03:08:45Z
 - commits:
@@ -1502,7 +1513,7 @@
 - commits:
     - subject: "patch: Update dependency eslint to ^7.26.0"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.2
 - date: 2021-05-08T01:10:25Z
 - commits:
@@ -1515,7 +1526,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.184"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.1
 - date: 2021-05-08T00:45:10Z
 - commits:
@@ -1528,7 +1539,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.18.0
 - date: 2021-05-07T13:47:41Z
 - commits:
@@ -1544,7 +1555,7 @@
 - commits:
     - subject: allow transformers to work without artifacts
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: dd4c3835dd1ac253ffc5a782def70bdb6fb356fa
 - commits:
@@ -1558,7 +1569,7 @@
 - commits:
     - subject: fix pushing to balena - ignoring our balena.yml
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 92d4d7f06c27e71cbf2352f1e4111a810342e901
 - commits:
@@ -1572,7 +1583,7 @@
 - commits:
     - subject: allow Transformers to NOT produce results
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.72
 - date: 2021-05-07T01:01:21Z
 - commits:
@@ -1585,7 +1596,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.169"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.71
 - date: 2021-05-06T21:32:10Z
 - commits:
@@ -1598,7 +1609,7 @@
 - commits:
     - subject: "patch: Update golang Docker tag to v1.16.4"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.70
 - date: 2021-05-06T13:56:27Z
 - commits:
@@ -1611,7 +1622,7 @@
 - commits:
     - subject: "patch: Update dependency fs-extra to v10"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.69
 - date: 2021-05-06T13:46:19Z
 - commits:
@@ -1627,7 +1638,7 @@
 - commits:
     - subject: don't log credentials
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: e768cd0713dc0bb872b472f437e6e9b267f9a133
 - commits:
@@ -1641,7 +1652,7 @@
 - commits:
     - subject: "fix: lockfile race-conditions"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 497ab056be6bc46517dc60d351bccad465a49a15
 - commits:
@@ -1655,7 +1666,7 @@
 - commits:
     - subject: add manifest support
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.68
 - date: 2021-05-06T01:00:27Z
 - commits:
@@ -1668,7 +1679,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.67
 - date: 2021-05-05T23:43:21Z
 - commits:
@@ -1681,7 +1692,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.66
 - date: 2021-05-05T16:59:44Z
 - commits:
@@ -1711,7 +1722,7 @@
 - commits:
     - subject: ensure we don't lose tasks while offline
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.65
 - date: 2021-05-05T16:36:47Z
 - commits:
@@ -1724,7 +1735,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.179"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.64
 - date: 2021-05-05T15:38:33Z
 - commits:
@@ -1737,7 +1748,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.63
 - date: 2021-05-05T09:10:28Z
 - commits:
@@ -1750,7 +1761,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.177"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.62
 - date: 2021-05-05T08:45:09Z
 - commits:
@@ -1763,7 +1774,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.166"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.61
 - date: 2021-05-05T08:32:47Z
 - commits:
@@ -1776,7 +1787,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.110"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.60
 - date: 2021-05-05T01:12:53Z
 - commits:
@@ -1789,7 +1800,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.176"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.59
 - date: 2021-05-05T00:57:33Z
 - commits:
@@ -1802,7 +1813,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.58
 - date: 2021-05-04T23:12:05Z
 - commits:
@@ -1815,7 +1826,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.57
 - date: 2021-05-04T21:21:35Z
 - commits:
@@ -1828,7 +1839,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.56
 - date: 2021-05-04T19:56:18Z
 - commits:
@@ -1841,7 +1852,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.55
 - date: 2021-05-04T17:40:38Z
 - commits:
@@ -1854,7 +1865,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.161"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.54
 - date: 2021-05-04T17:21:54Z
 - commits:
@@ -1867,7 +1878,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.53
 - date: 2021-05-04T05:02:10Z
 - commits:
@@ -1880,7 +1891,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.97"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.52
 - date: 2021-05-04T04:03:36Z
 - commits:
@@ -1893,7 +1904,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.152"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.51
 - date: 2021-05-04T02:34:50Z
 - commits:
@@ -1906,7 +1917,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.164"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.50
 - date: 2021-05-04T01:36:06Z
 - commits:
@@ -1919,7 +1930,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.96"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.49
 - date: 2021-05-04T01:22:55Z
 - commits:
@@ -1932,7 +1943,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.48
 - date: 2021-05-03T23:00:09Z
 - commits:
@@ -1945,7 +1956,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.47
 - date: 2021-05-03T21:55:21Z
 - commits:
@@ -1958,7 +1969,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.94"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.46
 - date: 2021-05-03T20:29:28Z
 - commits:
@@ -1971,7 +1982,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.45
 - date: 2021-05-03T18:23:56Z
 - commits:
@@ -1984,7 +1995,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.44
 - date: 2021-05-03T16:51:16Z
 - commits:
@@ -1997,7 +2008,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.43
 - date: 2021-05-03T15:20:54Z
 - commits:
@@ -2010,7 +2021,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.42
 - date: 2021-05-03T12:53:17Z
 - commits:
@@ -2023,7 +2034,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.41
 - date: 2021-05-03T10:37:29Z
 - commits:
@@ -2036,7 +2047,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.40
 - date: 2021-05-03T09:06:05Z
 - commits:
@@ -2049,7 +2060,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.156"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.39
 - date: 2021-05-03T08:49:30Z
 - commits:
@@ -2062,7 +2073,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.38
 - date: 2021-05-03T04:56:36Z
 - commits:
@@ -2075,7 +2086,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.86"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.37
 - date: 2021-05-03T03:27:24Z
 - commits:
@@ -2088,7 +2099,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.36
 - date: 2021-05-03T01:19:59Z
 - commits:
@@ -2101,7 +2112,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.35
 - date: 2021-05-02T08:58:44Z
 - commits:
@@ -2114,7 +2125,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.153"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.34
 - date: 2021-05-02T07:52:06Z
 - commits:
@@ -2127,7 +2138,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.84"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.33
 - date: 2021-05-02T07:40:06Z
 - commits:
@@ -2140,7 +2151,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.138"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.32
 - date: 2021-05-02T07:26:28Z
 - commits:
@@ -2153,7 +2164,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.31
 - date: 2021-05-02T04:39:47Z
 - commits:
@@ -2166,7 +2177,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.30
 - date: 2021-05-02T03:00:15Z
 - commits:
@@ -2179,7 +2190,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.150"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.29
 - date: 2021-05-02T02:49:29Z
 - commits:
@@ -2192,7 +2203,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.136"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.28
 - date: 2021-05-02T02:38:50Z
 - commits:
@@ -2205,7 +2216,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.27
 - date: 2021-05-02T01:07:24Z
 - commits:
@@ -2218,7 +2229,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.26
 - date: 2021-05-01T16:46:02Z
 - commits:
@@ -2231,7 +2242,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.149"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.25
 - date: 2021-05-01T16:33:48Z
 - commits:
@@ -2244,7 +2255,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.24
 - date: 2021-05-01T15:28:05Z
 - commits:
@@ -2257,7 +2268,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.23
 - date: 2021-05-01T13:26:58Z
 - commits:
@@ -2270,7 +2281,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.132"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.22
 - date: 2021-05-01T13:19:47Z
 - commits:
@@ -2283,7 +2294,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.21
 - date: 2021-05-01T11:53:17Z
 - commits:
@@ -2296,7 +2307,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.131"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.20
 - date: 2021-05-01T11:41:52Z
 - commits:
@@ -2309,7 +2320,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.76"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.19
 - date: 2021-05-01T09:55:22Z
 - commits:
@@ -2322,7 +2333,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.18
 - date: 2021-05-01T08:12:21Z
 - commits:
@@ -2335,7 +2346,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.17
 - date: 2021-05-01T04:14:11Z
 - commits:
@@ -2348,7 +2359,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.129"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.16
 - date: 2021-05-01T02:55:55Z
 - commits:
@@ -2361,7 +2372,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.15
 - date: 2021-05-01T00:03:14Z
 - commits:
@@ -2374,7 +2385,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.128"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.14
 - date: 2021-04-30T23:52:36Z
 - commits:
@@ -2387,7 +2398,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.13
 - date: 2021-04-30T11:17:37Z
 - commits:
@@ -2403,7 +2414,7 @@
 - commits:
     - subject: ensure updates don't interrupt tasks
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.12
 - date: 2021-04-30T05:23:00Z
 - commits:
@@ -2416,7 +2427,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.11
 - date: 2021-04-30T03:22:39Z
 - commits:
@@ -2429,7 +2440,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.10
 - date: 2021-04-30T01:47:06Z
 - commits:
@@ -2442,7 +2453,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.140"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.9
 - date: 2021-04-30T01:37:47Z
 - commits:
@@ -2455,7 +2466,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.8
 - date: 2021-04-30T01:21:06Z
 - commits:
@@ -2468,7 +2479,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.7
 - date: 2021-04-29T23:04:07Z
 - commits:
@@ -2481,7 +2492,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.122"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.6
 - date: 2021-04-29T22:46:43Z
 - commits:
@@ -2494,7 +2505,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.138"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.5
 - date: 2021-04-29T20:30:49Z
 - commits:
@@ -2507,7 +2518,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.4
 - date: 2021-04-29T18:52:58Z
 - commits:
@@ -2520,7 +2531,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.67"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.3
 - date: 2021-04-29T17:34:27Z
 - commits:
@@ -2533,7 +2544,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.2
 - date: 2021-04-29T17:23:19Z
 - commits:
@@ -2546,7 +2557,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.1
 - date: 2021-04-29T15:16:09Z
 - commits:
@@ -2559,7 +2570,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.17.0
 - date: 2021-04-29T14:27:42Z
 - commits:
@@ -2575,7 +2586,7 @@
 - commits:
     - subject: add CPU arch emulation for cross-compilation
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 189e10a2b988c46811020bea9f8f7d732e29508f
 - commits:
@@ -2589,7 +2600,7 @@
 - commits:
     - subject: "fix: concurrent run shared the same tmpfs volume"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: c076e99d94437a448db2b34c9fb18282ddfa95ac
 - commits:
@@ -2620,7 +2631,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.214
 - date: 2021-04-29T07:31:30Z
 - commits:
@@ -2633,7 +2644,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.213
 - date: 2021-04-29T03:16:14Z
 - commits:
@@ -2646,7 +2657,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.212
 - date: 2021-04-29T01:49:19Z
 - commits:
@@ -2659,7 +2670,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.211
 - date: 2021-04-27T15:17:55Z
 - commits:
@@ -2672,7 +2683,7 @@
 - commits:
     - subject: "patch: Update dependency @types/node to ^14.14.43"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.210
 - date: 2021-04-27T10:22:14Z
 - commits:
@@ -2688,7 +2699,7 @@
 - commits:
     - subject: Set artifactReady with ISO date string instead of bool
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.209
 - date: 2021-04-27T02:41:55Z
 - commits:
@@ -2701,7 +2712,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.208
 - date: 2021-04-27T00:51:41Z
 - commits:
@@ -2714,7 +2725,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.207
 - date: 2021-04-26T20:34:17Z
 - commits:
@@ -2727,7 +2738,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.206
 - date: 2021-04-26T18:01:53Z
 - commits:
@@ -2740,7 +2751,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.205
 - date: 2021-04-26T03:22:49Z
 - commits:
@@ -2753,7 +2764,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.109"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.204
 - date: 2021-04-26T03:12:08Z
 - commits:
@@ -2766,7 +2777,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.124"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.203
 - date: 2021-04-26T01:56:43Z
 - commits:
@@ -2779,7 +2790,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.55"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.202
 - date: 2021-04-26T01:45:52Z
 - commits:
@@ -2792,7 +2803,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.123"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.201
 - date: 2021-04-26T01:35:26Z
 - commits:
@@ -2805,7 +2816,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.108"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.200
 - date: 2021-04-26T01:24:36Z
 - commits:
@@ -2818,7 +2829,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.199
 - date: 2021-04-25T23:21:11Z
 - commits:
@@ -2831,7 +2842,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.107"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.198
 - date: 2021-04-25T22:55:37Z
 - commits:
@@ -2844,7 +2855,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.53"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.197
 - date: 2021-04-25T19:24:24Z
 - commits:
@@ -2857,7 +2868,7 @@
 - commits:
     - subject: "patch: Update dependency dockerode to ^3.3.0"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.196
 - date: 2021-04-25T04:02:58Z
 - commits:
@@ -2870,7 +2881,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.195
 - date: 2021-04-24T21:56:48Z
 - commits:
@@ -2883,7 +2894,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.194
 - date: 2021-04-24T17:43:49Z
 - commits:
@@ -2896,7 +2907,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.193
 - date: 2021-04-24T13:48:16Z
 - commits:
@@ -2909,7 +2920,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.192
 - date: 2021-04-24T03:19:12Z
 - commits:
@@ -2922,7 +2933,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.191
 - date: 2021-04-23T23:59:36Z
 - commits:
@@ -2935,7 +2946,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.190
 - date: 2021-04-23T20:13:55Z
 - commits:
@@ -2948,7 +2959,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.115"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.189
 - date: 2021-04-23T17:43:48Z
 - commits:
@@ -2961,7 +2972,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.46"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.188
 - date: 2021-04-23T17:33:47Z
 - commits:
@@ -2974,7 +2985,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.187
 - date: 2021-04-23T11:00:51Z
 - commits:
@@ -2987,7 +2998,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.186
 - date: 2021-04-23T05:08:47Z
 - commits:
@@ -3000,7 +3011,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.185
 - date: 2021-04-23T02:05:37Z
 - commits:
@@ -3013,7 +3024,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.184
 - date: 2021-04-22T00:05:34Z
 - commits:
@@ -3026,7 +3037,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.183
 - date: 2021-04-21T21:26:41Z
 - commits:
@@ -3039,7 +3050,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.182
 - date: 2021-04-21T19:30:24Z
 - commits:
@@ -3052,7 +3063,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.181
 - date: 2021-04-21T17:41:28Z
 - commits:
@@ -3065,7 +3076,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.93"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.180
 - date: 2021-04-21T17:30:16Z
 - commits:
@@ -3078,7 +3089,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.179
 - date: 2021-04-21T11:29:17Z
 - commits:
@@ -3091,7 +3102,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.178
 - date: 2021-04-21T09:18:05Z
 - commits:
@@ -3104,7 +3115,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.34"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.177
 - date: 2021-04-20T11:30:28Z
 - commits:
@@ -3117,7 +3128,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.176
 - date: 2021-04-20T05:25:24Z
 - commits:
@@ -3130,7 +3141,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.87"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.175
 - date: 2021-04-20T03:34:55Z
 - commits:
@@ -3143,7 +3154,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.174
 - date: 2021-04-20T01:35:16Z
 - commits:
@@ -3156,7 +3167,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.31"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.173
 - date: 2021-04-19T23:50:12Z
 - commits:
@@ -3169,7 +3180,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.85"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.172
 - date: 2021-04-19T13:32:30Z
 - commits:
@@ -3182,7 +3193,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.171
 - date: 2021-04-19T07:36:45Z
 - commits:
@@ -3195,7 +3206,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.84"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.170
 - date: 2021-04-19T03:24:10Z
 - commits:
@@ -3208,7 +3219,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.169
 - date: 2021-04-18T23:06:20Z
 - commits:
@@ -3221,7 +3232,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.103"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.168
 - date: 2021-04-18T22:59:13Z
 - commits:
@@ -3234,7 +3245,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.167
 - date: 2021-04-18T19:55:08Z
 - commits:
@@ -3247,7 +3258,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.166
 - date: 2021-04-18T16:40:06Z
 - commits:
@@ -3260,7 +3271,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.165
 - date: 2021-04-18T13:47:10Z
 - commits:
@@ -3273,7 +3284,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.164
 - date: 2021-04-18T11:08:59Z
 - commits:
@@ -3286,7 +3297,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.79"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.163
 - date: 2021-04-18T02:40:44Z
 - commits:
@@ -3299,7 +3310,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.162
 - date: 2021-04-18T00:41:34Z
 - commits:
@@ -3312,7 +3323,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.161
 - date: 2021-04-17T22:36:34Z
 - commits:
@@ -3325,7 +3336,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.160
 - date: 2021-04-17T20:45:37Z
 - commits:
@@ -3338,7 +3349,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.159
 - date: 2021-04-17T18:30:29Z
 - commits:
@@ -3351,7 +3362,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.158
 - date: 2021-04-17T16:51:09Z
 - commits:
@@ -3364,7 +3375,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.157
 - date: 2021-04-17T14:54:48Z
 - commits:
@@ -3377,7 +3388,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.19"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.156
 - date: 2021-04-17T13:48:13Z
 - commits:
@@ -3390,7 +3401,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.155
 - date: 2021-04-17T11:57:05Z
 - commits:
@@ -3403,7 +3414,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.154
 - date: 2021-04-17T10:46:04Z
 - commits:
@@ -3416,7 +3427,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.92"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.153
 - date: 2021-04-17T09:43:44Z
 - commits:
@@ -3429,7 +3440,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.17"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.152
 - date: 2021-04-17T09:29:24Z
 - commits:
@@ -3442,7 +3453,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.71"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.151
 - date: 2021-04-17T09:19:03Z
 - commits:
@@ -3455,7 +3466,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.150
 - date: 2021-04-17T06:14:38Z
 - commits:
@@ -3468,7 +3479,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.90"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.149
 - date: 2021-04-17T05:57:25Z
 - commits:
@@ -3481,7 +3492,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.148
 - date: 2021-04-17T03:40:54Z
 - commits:
@@ -3494,7 +3505,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.147
 - date: 2021-04-17T00:54:35Z
 - commits:
@@ -3507,7 +3518,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.146
 - date: 2021-04-16T21:05:35Z
 - commits:
@@ -3520,7 +3531,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.145
 - date: 2021-04-16T18:19:14Z
 - commits:
@@ -3533,7 +3544,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.12"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.144
 - date: 2021-04-16T18:08:43Z
 - commits:
@@ -3546,7 +3557,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.143
 - date: 2021-04-16T15:28:24Z
 - commits:
@@ -3559,7 +3570,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.142
 - date: 2021-04-16T12:52:50Z
 - commits:
@@ -3572,7 +3583,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.10"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.141
 - date: 2021-04-16T11:10:22Z
 - commits:
@@ -3588,7 +3599,7 @@
 - commits:
     - subject: Add support for transformer secrets
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.140
 - date: 2021-04-16T10:44:53Z
 - commits:
@@ -3601,7 +3612,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.84"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.139
 - date: 2021-04-16T10:34:24Z
 - commits:
@@ -3614,7 +3625,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.138
 - date: 2021-04-16T05:30:43Z
 - commits:
@@ -3627,7 +3638,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.137
 - date: 2021-04-16T03:04:50Z
 - commits:
@@ -3640,7 +3651,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.136
 - date: 2021-04-16T01:06:30Z
 - commits:
@@ -3653,7 +3664,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.81"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.135
 - date: 2021-04-16T00:47:46Z
 - commits:
@@ -3666,7 +3677,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.134
 - date: 2021-04-15T22:29:03Z
 - commits:
@@ -3679,7 +3690,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.5"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.133
 - date: 2021-04-15T20:12:38Z
 - commits:
@@ -3692,7 +3703,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.59"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.132
 - date: 2021-04-15T18:35:31Z
 - commits:
@@ -3705,7 +3716,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.79"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.131
 - date: 2021-04-15T18:24:25Z
 - commits:
@@ -3718,7 +3729,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.130
 - date: 2021-04-15T16:44:41Z
 - commits:
@@ -3731,7 +3742,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.129
 - date: 2021-04-15T14:03:07Z
 - commits:
@@ -3744,7 +3755,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.5.2"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.128
 - date: 2021-04-15T11:50:48Z
 - commits:
@@ -3757,7 +3768,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.127
 - date: 2021-04-15T10:34:32Z
 - commits:
@@ -3770,7 +3781,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.126
 - date: 2021-04-15T08:48:57Z
 - commits:
@@ -3783,7 +3794,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.125
 - date: 2021-04-15T04:42:18Z
 - commits:
@@ -3796,7 +3807,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.53"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.124
 - date: 2021-04-15T04:31:54Z
 - commits:
@@ -3809,7 +3820,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.123
 - date: 2021-04-14T23:13:15Z
 - commits:
@@ -3822,7 +3833,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.122
 - date: 2021-04-14T20:49:53Z
 - commits:
@@ -3835,7 +3846,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.121
 - date: 2021-04-14T18:23:08Z
 - commits:
@@ -3848,7 +3859,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.68"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.120
 - date: 2021-04-14T18:12:54Z
 - commits:
@@ -3861,7 +3872,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.119
 - date: 2021-04-14T15:58:34Z
 - commits:
@@ -3874,7 +3885,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.118
 - date: 2021-04-14T12:24:00Z
 - commits:
@@ -3887,7 +3898,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.117
 - date: 2021-04-14T10:34:26Z
 - commits:
@@ -3900,7 +3911,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.64"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.116
 - date: 2021-04-14T10:23:45Z
 - commits:
@@ -3913,7 +3924,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.115
 - date: 2021-04-14T08:18:19Z
 - commits:
@@ -3926,7 +3937,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.114
 - date: 2021-04-14T04:21:42Z
 - commits:
@@ -3939,7 +3950,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.113
 - date: 2021-04-14T02:30:39Z
 - commits:
@@ -3952,7 +3963,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.112
 - date: 2021-04-13T09:36:03Z
 - commits:
@@ -3965,7 +3976,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.111
 - date: 2021-04-13T07:58:32Z
 - commits:
@@ -3978,7 +3989,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.110
 - date: 2021-04-13T04:10:15Z
 - commits:
@@ -3991,7 +4002,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.38"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.109
 - date: 2021-04-13T02:57:35Z
 - commits:
@@ -4004,7 +4015,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.108
 - date: 2021-04-13T00:06:20Z
 - commits:
@@ -4017,7 +4028,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.107
 - date: 2021-04-12T22:40:35Z
 - commits:
@@ -4030,7 +4041,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.106
 - date: 2021-04-12T20:03:08Z
 - commits:
@@ -4043,7 +4054,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.56"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.105
 - date: 2021-04-12T19:45:46Z
 - commits:
@@ -4056,7 +4067,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.104
 - date: 2021-04-12T17:03:08Z
 - commits:
@@ -4072,7 +4083,7 @@
 - commits:
     - subject: fix after JF TypeScript conversion
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.103
 - date: 2021-04-12T15:46:28Z
 - commits:
@@ -4085,7 +4096,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.60"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.102
 - date: 2021-04-12T15:39:21Z
 - commits:
@@ -4098,7 +4109,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.34"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.101
 - date: 2021-04-12T15:29:00Z
 - commits:
@@ -4111,7 +4122,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.100
 - date: 2021-04-12T13:01:48Z
 - commits:
@@ -4124,7 +4135,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.99
 - date: 2021-04-12T11:42:59Z
 - commits:
@@ -4137,7 +4148,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.98
 - date: 2021-04-12T10:17:04Z
 - commits:
@@ -4150,7 +4161,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.97
 - date: 2021-04-12T08:21:54Z
 - commits:
@@ -4163,7 +4174,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.30"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.96
 - date: 2021-04-12T04:34:49Z
 - commits:
@@ -4176,7 +4187,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.95
 - date: 2021-04-12T02:29:19Z
 - commits:
@@ -4189,7 +4200,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.28"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.94
 - date: 2021-04-12T00:31:36Z
 - commits:
@@ -4202,7 +4213,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.93
 - date: 2021-04-11T22:00:54Z
 - commits:
@@ -4215,7 +4226,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.92
 - date: 2021-04-11T20:35:17Z
 - commits:
@@ -4228,7 +4239,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.91
 - date: 2021-04-11T19:13:04Z
 - commits:
@@ -4241,7 +4252,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.90
 - date: 2021-04-11T17:25:55Z
 - commits:
@@ -4254,7 +4265,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.89
 - date: 2021-04-11T15:57:55Z
 - commits:
@@ -4267,7 +4278,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.51"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.88
 - date: 2021-04-11T14:58:20Z
 - commits:
@@ -4280,7 +4291,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.44"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.87
 - date: 2021-04-11T14:48:10Z
 - commits:
@@ -4293,7 +4304,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.86
 - date: 2021-04-11T13:30:13Z
 - commits:
@@ -4306,7 +4317,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.85
 - date: 2021-04-11T09:09:06Z
 - commits:
@@ -4319,7 +4330,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.84
 - date: 2021-04-11T04:54:01Z
 - commits:
@@ -4332,7 +4343,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.83
 - date: 2021-04-11T03:08:25Z
 - commits:
@@ -4345,7 +4356,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.82
 - date: 2021-04-11T01:33:25Z
 - commits:
@@ -4358,7 +4369,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.81
 - date: 2021-04-10T23:12:06Z
 - commits:
@@ -4371,7 +4382,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.80
 - date: 2021-04-10T21:12:11Z
 - commits:
@@ -4384,7 +4395,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.79
 - date: 2021-04-10T19:26:49Z
 - commits:
@@ -4397,7 +4408,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.78
 - date: 2021-04-10T17:48:13Z
 - commits:
@@ -4410,7 +4421,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.35"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.77
 - date: 2021-04-10T17:38:29Z
 - commits:
@@ -4423,7 +4434,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.14"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.76
 - date: 2021-04-10T16:59:33Z
 - commits:
@@ -4436,7 +4447,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.34"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.75
 - date: 2021-04-10T16:44:23Z
 - commits:
@@ -4449,7 +4460,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.74
 - date: 2021-04-10T15:30:05Z
 - commits:
@@ -4462,7 +4473,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.33"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.73
 - date: 2021-04-10T15:16:23Z
 - commits:
@@ -4475,7 +4486,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.72
 - date: 2021-04-10T13:21:01Z
 - commits:
@@ -4488,7 +4499,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.71
 - date: 2021-04-10T11:55:47Z
 - commits:
@@ -4501,7 +4512,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.31"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.70
 - date: 2021-04-10T11:43:41Z
 - commits:
@@ -4514,7 +4525,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.40"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.69
 - date: 2021-04-10T09:43:26Z
 - commits:
@@ -4527,7 +4538,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.10"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.68
 - date: 2021-04-10T09:27:45Z
 - commits:
@@ -4540,7 +4551,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.30"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.67
 - date: 2021-04-10T09:16:18Z
 - commits:
@@ -4553,7 +4564,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.39"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.66
 - date: 2021-04-10T09:04:14Z
 - commits:
@@ -4566,7 +4577,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.65
 - date: 2021-04-10T05:13:34Z
 - commits:
@@ -4579,7 +4590,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.8"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.64
 - date: 2021-04-09T23:38:54Z
 - commits:
@@ -4592,7 +4603,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.63
 - date: 2021-04-07T19:57:07Z
 - commits:
@@ -4605,7 +4616,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.62
 - date: 2021-04-07T01:38:33Z
 - commits:
@@ -4618,7 +4629,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.61
 - date: 2021-04-07T00:17:13Z
 - commits:
@@ -4631,7 +4642,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.60
 - date: 2021-04-06T22:25:39Z
 - commits:
@@ -4644,7 +4655,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.59
 - date: 2021-04-06T20:36:54Z
 - commits:
@@ -4657,7 +4668,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.58
 - date: 2021-04-06T19:32:00Z
 - commits:
@@ -4670,7 +4681,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.24"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.57
 - date: 2021-04-06T18:47:47Z
 - commits:
@@ -4683,7 +4694,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.56
 - date: 2021-04-06T17:37:33Z
 - commits:
@@ -4696,7 +4707,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.23"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.55
 - date: 2021-04-06T16:05:33Z
 - commits:
@@ -4709,7 +4720,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.2.2"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.54
 - date: 2021-04-06T14:43:15Z
 - commits:
@@ -4722,7 +4733,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.22"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.53
 - date: 2021-04-06T13:07:23Z
 - commits:
@@ -4735,7 +4746,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.52
 - date: 2021-04-04T23:59:13Z
 - commits:
@@ -4748,7 +4759,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.1.18"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.51
 - date: 2021-04-04T11:21:23Z
 - commits:
@@ -4761,7 +4772,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.50
 - date: 2021-04-04T10:27:05Z
 - commits:
@@ -4774,7 +4785,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^3.1.17"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.49
 - date: 2021-04-04T10:11:09Z
 - commits:
@@ -4787,7 +4798,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.30"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.48
 - date: 2021-04-04T10:01:48Z
 - commits:
@@ -4800,7 +4811,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.47
 - date: 2021-04-04T08:30:13Z
 - commits:
@@ -4813,7 +4824,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.46
 - date: 2021-04-04T05:15:23Z
 - commits:
@@ -4826,7 +4837,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-types to ^0.4.17"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.45
 - date: 2021-04-04T02:07:44Z
 - commits:
@@ -4839,7 +4850,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.27"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.44
 - date: 2021-04-04T00:18:03Z
 - commits:
@@ -4852,7 +4863,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.43
 - date: 2021-04-03T21:32:25Z
 - commits:
@@ -4865,7 +4876,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.42
 - date: 2021-04-03T01:15:21Z
 - commits:
@@ -4878,7 +4889,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.41
 - date: 2021-04-02T23:19:46Z
 - commits:
@@ -4891,7 +4902,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.40
 - date: 2021-04-02T20:49:52Z
 - commits:
@@ -4904,7 +4915,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.39
 - date: 2021-04-02T19:09:57Z
 - commits:
@@ -4917,7 +4928,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.38
 - date: 2021-04-02T17:22:37Z
 - commits:
@@ -4930,7 +4941,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.37
 - date: 2021-04-02T11:07:30Z
 - commits:
@@ -4946,7 +4957,7 @@
 - commits:
     - subject: use JF SDK's new TypeScript support
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.36
 - date: 2021-04-02T10:38:41Z
 - commits:
@@ -4959,7 +4970,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to v3"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.35
 - date: 2021-04-02T10:31:53Z
 - commits:
@@ -4975,7 +4986,7 @@
 - commits:
     - subject: fix and simplify docuum setup
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: b234d524b0e59e03c38475645a1c07a12a867978
 - commits:
@@ -4989,7 +5000,7 @@
 - commits:
     - subject: prevent zombie processes from Transformers
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.34
 - date: 2021-04-02T03:32:06Z
 - commits:
@@ -5002,7 +5013,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.19"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.33
 - date: 2021-04-02T01:56:28Z
 - commits:
@@ -5015,7 +5026,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.18"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.32
 - date: 2021-04-02T01:49:41Z
 - commits:
@@ -5028,7 +5039,7 @@
 - commits:
     - subject: "patch: Update golang Docker tag to v1.16.3"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.31
 - date: 2021-04-01T03:24:11Z
 - commits:
@@ -5041,7 +5052,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.17"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.30
 - date: 2021-03-31T09:12:37Z
 - commits:
@@ -5054,7 +5065,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.16"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.29
 - date: 2021-03-31T07:17:20Z
 - commits:
@@ -5067,7 +5078,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.15"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.28
 - date: 2021-03-30T17:00:48Z
 - commits:
@@ -5080,7 +5091,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.14"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.27
 - date: 2021-03-29T21:26:49Z
 - commits:
@@ -5093,7 +5104,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.13"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.26
 - date: 2021-03-28T15:48:15Z
 - commits:
@@ -5106,7 +5117,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.12"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.25
 - date: 2021-03-27T03:58:45Z
 - commits:
@@ -5119,7 +5130,7 @@
 - commits:
     - subject: "patch: Update dependency @types/node to ^14.14.37"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.24
 - date: 2021-03-27T00:03:36Z
 - commits:
@@ -5132,7 +5143,7 @@
 - commits:
     - subject: "patch: Update dependency eslint to ^7.23.0"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.23
 - date: 2021-03-26T14:08:36Z
 - commits:
@@ -5145,7 +5156,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.11"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.22
 - date: 2021-03-26T13:55:52Z
 - commits:
@@ -5174,7 +5185,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.9"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.20
 - date: 2021-03-25T22:07:41Z
 - commits:
@@ -5187,7 +5198,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.19
 - date: 2021-03-25T19:13:47Z
 - commits:
@@ -5200,7 +5211,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.18
 - date: 2021-03-25T16:46:06Z
 - commits:
@@ -5213,7 +5224,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^2.19.1"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.17
 - date: 2021-03-25T14:54:27Z
 - commits:
@@ -5248,7 +5259,7 @@
 - commits:
     - subject: improve logging
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.16
 - date: 2021-03-25T14:21:34Z
 - commits:
@@ -5282,7 +5293,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.5"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.14
 - date: 2021-03-25T05:13:01Z
 - commits:
@@ -5295,7 +5306,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.4"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.13
 - date: 2021-03-24T21:53:58Z
 - commits:
@@ -5308,7 +5319,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^3.0.1"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.12
 - date: 2021-03-24T18:37:20Z
 - commits:
@@ -5321,7 +5332,7 @@
 - commits:
     - subject: Adds micah@balena.io to git-secrets
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.11
 - date: 2021-03-24T17:00:34Z
 - commits:
@@ -5350,7 +5361,7 @@
 - commits:
     - subject: fix missing id/slug for newly created contract repos
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: bab6a01cf9d316178c4ecd3670bc5b4001735c87
 - commits:
@@ -5380,7 +5391,7 @@
 - commits:
     - subject: add secret handling
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 5eada0e7a40c92dca7c0ff30b486f52218795ca1
 - commits:
@@ -5391,7 +5402,7 @@
 - commits:
     - subject: remove accidentially commited package-lock
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: feb4c27751069c4cbf7b2a5c71540aa735f9014e
 - commits:
@@ -5402,7 +5413,7 @@
 - commits:
     - subject: add tests for secret handling
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.8
 - date: 2021-03-24T11:36:40Z
 - commits:
@@ -5415,7 +5426,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to v3"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.7
 - date: 2021-03-23T20:26:19Z
 - commits:
@@ -5441,7 +5452,7 @@
 - commits:
     - subject: Add contract to specify this is a balenaCloud app
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.5
 - date: 2021-03-23T11:26:39Z
 - commits:
@@ -5454,7 +5465,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-client-sdk to ^2.19.0"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.4
 - date: 2021-03-23T08:41:58Z
 - commits:
@@ -5467,7 +5478,7 @@
 - commits:
     - subject: Adds secrets handling infrastructure
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.3
 - date: 2021-03-22T14:49:26Z
 - commits:
@@ -5480,7 +5491,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^2.1.62"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.2
 - date: 2021-03-22T14:41:09Z
 - commits:
@@ -5496,7 +5507,7 @@
 - commits:
     - subject: "fix: name of repo contained undefined"
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.1
 - date: 2021-03-22T13:51:00Z
 - commits:
@@ -5512,7 +5523,7 @@
 - commits:
     - subject: add deploy script
 - commits:
-    - ? body
+    - body: null
 - version: 0.16.0
 - date: 2021-03-22T12:05:27Z
 - commits:
@@ -5528,7 +5539,7 @@
 - commits:
     - subject: Simplify backflow mapping interface
 - commits:
-    - ? body
+    - body: null
 - version: 0.15.3
 - date: 2021-03-22T06:20:49Z
 - commits:
@@ -5541,7 +5552,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^2.1.61"
 - commits:
-    - ? body
+    - body: null
 - version: 0.15.2
 - date: 2021-03-21T21:56:41Z
 - commits:
@@ -5554,7 +5565,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^2.1.60"
 - commits:
-    - ? body
+    - body: null
 - version: 0.15.1
 - date: 2021-03-18T14:39:26Z
 - commits:
@@ -5567,7 +5578,7 @@
 - commits:
     - subject: "patch: Update dependency @balena/jellyfish-jellyscript to ^2.1.59"
 - commits:
-    - ? body
+    - body: null
 - version: 0.15.0
 - date: 2021-03-18T14:28:04Z
 - commits:
@@ -5583,7 +5594,7 @@
 - commits:
     - subject: Add support for formulas in backflow
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.9
 - date: 2021-03-18T07:54:10Z
 - commits:
@@ -5596,7 +5607,7 @@
 - commits:
     - subject: "patch: Update dependency typescript to v4"
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.8
 - date: 2021-03-18T07:44:08Z
 - commits:
@@ -5609,7 +5620,7 @@
 - commits:
     - subject: "patch: Update dependency ts-node to v9"
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.7
 - date: 2021-03-17T23:43:02Z
 - commits:
@@ -5622,7 +5633,7 @@
 - commits:
     - subject: "patch: Update non-major"
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.6
 - date: 2021-03-17T23:32:04Z
 - commits:
@@ -5635,7 +5646,7 @@
 - commits:
     - subject: "patch: Update golang Docker tag to v1.16.2"
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.5
 - date: 2021-03-17T23:23:09Z
 - commits:
@@ -5651,7 +5662,7 @@
 - commits:
     - subject: Add renovate config
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.4
 - date: 2021-03-16T15:09:11Z
 - commits:
@@ -5667,7 +5678,7 @@
 - commits:
     - subject: fix backflow source value reading 🥔
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.3
 - date: 2021-03-16T14:12:49Z
 - commits:
@@ -5683,7 +5694,7 @@
 - commits:
     - subject: fix type handling for output contracts
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.2
 - date: 2021-03-16T13:34:29Z
 - commits:
@@ -5717,7 +5728,7 @@
 - commits:
     - subject: fix missing ID for links and broken stdout piping
 - commits:
-    - ? body
+    - body: null
 - version: 0.14.0
 - date: 2021-03-15T11:57:47Z
 - commits:
@@ -5733,7 +5744,7 @@
 - commits:
     - subject: Add backflow mechanism
 - commits:
-    - ? body
+    - body: null
 - version: 0.13.0
 - date: 2021-03-12T11:13:18Z
 - commits:
@@ -5749,7 +5760,7 @@
 - commits:
     - subject: add transformer output to their contract-repositories
 - commits:
-    - ? body
+    - body: null
 - version: 0.12.3
 - date: 2021-03-09T11:15:05Z
 - commits:
@@ -5765,7 +5776,7 @@
 - commits:
     - subject: don't buffer docker stdout/stderr
 - commits:
-    - ? body
+    - body: null
 - version: 0.12.2
 - date: 2021-03-08T09:52:11Z
 - commits:
@@ -5781,7 +5792,7 @@
 - commits:
     - subject: update oras
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 2c6868e50f94d271c8662c0d0cbfd48d1cb86672
 - commits:
@@ -5795,7 +5806,7 @@
 - commits:
     - subject: unify artifact reference handling
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 29780e58c8a50d74e49f3cf48174eaf205a05fb7
 - commits:
@@ -5809,7 +5820,7 @@
 - commits:
     - subject: disable link creation as it fails without SDK adaptions
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 21a5b74a9d031cd9d0c0a16900e7d169457259e6
 - commits:
@@ -5823,7 +5834,7 @@
 - commits:
     - subject: fix image tagging
 - commits:
-    - ? body
+    - body: null
 - version: 0.12.1
 - date: 2021-03-05T12:09:56Z
 - commits:
@@ -5839,7 +5850,7 @@
 - commits:
     - subject: don't fail if status data didn't exist before the task run
 - commits:
-    - ? body
+    - body: null
 - version: 0.12.0
 - date: 2021-03-04T09:53:29Z
 - commits:
@@ -5855,7 +5866,7 @@
 - commits:
     - subject: Add output contract links
 - commits:
-    - ? body
+    - body: null
 - version: 0.11.1
 - date: 2021-03-03T14:24:43Z
 - commits:
@@ -5886,7 +5897,7 @@
 - commits:
     - subject: fix status query for tasks
 - commits:
-    - ? body
+    - body: null
 - version: 0.11.0
 - date: 2021-03-01T14:41:31Z
 - commits:
@@ -5902,7 +5913,7 @@
 - commits:
     - subject: Implement task status changes
 - commits:
-    - ? body
+    - body: null
 - version: 0.10.1
 - date: 2021-02-25T17:13:44Z
 - commits:
@@ -5918,7 +5929,7 @@
 - commits:
     - subject: fix user->username rename
 - commits:
-    - ? body
+    - body: null
 - version: 0.10.0
 - date: 2021-02-25T12:27:09Z
 - commits:
@@ -5934,7 +5945,7 @@
 - commits:
     - subject: Support pushing images from transformers
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 6610ac0e83e62f78bcdb4986f0a495a1a05c9cb7
 - commits:
@@ -5948,7 +5959,7 @@
 - commits:
     - subject: add error handling for invalid results
 - commits:
-    - ? body
+    - body: null
 - version: 0.9.2
 - date: 2021-02-25T08:19:25Z
 - commits:
@@ -5964,7 +5975,7 @@
 - commits:
     - subject: fix compose to run on prod again
 - commits:
-    - ? body
+    - body: null
 - version: 0.9.1
 - date: 2021-02-24T12:25:39Z
 - commits:
@@ -5980,7 +5991,7 @@
 - commits:
     - subject: move "reflect-cli" to productOS repo
 - commits:
-    - ? body
+    - body: null
 - version: 0.9.0
 - date: 2021-02-24T10:20:36Z
 - commits:
@@ -5997,7 +6008,7 @@
     - subject: make dev-artifact-provider login with JF and create contracts for
         artifacts
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 21efc2b34a8cea4461af13b3a083e2ac0ba1203f
 - commits:
@@ -6008,7 +6019,7 @@
 - commits:
     - subject: ensure re-running artifact-provider works
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 50632089cacf2f3e2c7e99d574dd24fd2097ebe1
 - commits:
@@ -6019,7 +6030,7 @@
 - commits:
     - subject: replace fake artifact with type that JF knows about to simplify insertion
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: fc047b20785f6af447dbc673d6cceea671410096
 - commits:
@@ -6030,7 +6041,7 @@
 - commits:
     - subject: "dev-artifact-provider: add artifactReady handling"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: d5fbae508df269ea27088ebe9e331e15372d4307
 - commits:
@@ -6044,7 +6055,7 @@
 - commits:
     - subject: Add initial implementation of the reflect CLI
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 87704c7f22eee002df73b2b42d01122f570cffa9
 - commits:
@@ -6058,7 +6069,7 @@
 - commits:
     - subject: Add initial implementation of the reflect CLI
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 61e5425c6d6c142bced9117e98a67e2a56a0bd80
 - commits:
@@ -6072,7 +6083,7 @@
 - commits:
     - subject: add worker filter to transformer definition
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 3ebc64192753aa39cc902d5fc7dacf2be2b1371c
 - commits:
@@ -6086,7 +6097,7 @@
 - commits:
     - subject: "fleet: automatically setup enrollment secret"
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: a26480da77418c6fba3186fb577f173ffc6041de
 - commits:
@@ -6100,7 +6111,7 @@
 - commits:
     - subject: add fleet containers to compose and share JF token for auth
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: d0f1de4b9ec96abf0c385e0727c11f52fca47034
 - commits:
@@ -6114,7 +6125,7 @@
 - commits:
     - subject: make local end2end flow work
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: fa031cc52e4df788d5001cdc7a21b9eb054fe86c
 - commits:
@@ -6145,7 +6156,7 @@
 - commits:
     - subject: remove obsolete dev services from main compose file
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.6
 - date: 2021-02-16T15:30:46Z
 - commits:
@@ -6161,7 +6172,7 @@
 - commits:
     - subject: Prepare runner for new registration flow / jf-auth
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.5
 - date: 2021-02-16T15:19:35Z
 - commits:
@@ -6177,7 +6188,7 @@
 - commits:
     - subject: Move heartbeat into jellyfish module
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.4
 - date: 2021-02-16T11:53:23Z
 - commits:
@@ -6193,7 +6204,7 @@
 - commits:
     - subject: Add docker-compose.dev.yml, tidy up
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.3
 - date: 2021-02-16T08:26:27Z
 - commits:
@@ -6209,7 +6220,7 @@
 - commits:
     - subject: move artifactReady to $transformer namespace
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: a85fa55a8b50ba0321fab11856b460150febcd16
 - commits:
@@ -6217,7 +6228,7 @@
 - commits:
     - subject: Merge branch 'master' into transformer-data-namespace
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.2
 - date: 2021-02-15T17:25:47Z
 - commits:
@@ -6233,7 +6244,7 @@
 - commits:
     - subject: Remove unused JF mock inside the runner
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.1
 - date: 2021-02-11T12:36:13Z
 - commits:
@@ -6249,7 +6260,7 @@
 - commits:
     - subject: remove (and warn) in/out directory if leftover from previous crash
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1cd3242e8b8971d485d4d0e40b1fefa2269da1bc
 - commits:
@@ -6260,7 +6271,7 @@
 - commits:
     - subject: centralize task status handling
 - commits:
-    - ? body
+    - body: null
 - version: 0.8.0
 - date: 2021-02-10T09:25:18Z
 - commits:
@@ -6287,7 +6298,7 @@
 - commits:
     - subject: improve fixture readability
 - commits:
-    - ? body
+    - body: null
 - version: 0.7.0
 - date: 2021-02-09T14:34:14Z
 - commits:
@@ -6303,7 +6314,7 @@
 - commits:
     - subject: Do some refactoring in the runner, add few TODO comments
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: ab4420cac78254391426ee5303f36f3f7bc0232d
 - commits:
@@ -6317,7 +6328,7 @@
 - commits:
     - subject: Add a couple of comments
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1a80202deb05f6fda3685fa60818447e7505e874
 - commits:
@@ -6331,7 +6342,7 @@
 - commits:
     - subject: Do some refactoring in the runner, add few TODO comments
 - commits:
-    - ? body
+    - body: null
 - version: 0.6.2
 - date: 2021-02-08T13:07:29Z
 - commits:
@@ -6347,7 +6358,7 @@
 - commits:
     - subject: Change to official dind image, remove comments
 - commits:
-    - ? body
+    - body: null
 - version: 0.6.1
 - date: 2021-02-08T09:43:08Z
 - commits:
@@ -6363,7 +6374,7 @@
 - commits:
     - subject: revert to official docker:dind after upgrade to Alpine 3.13
 - commits:
-    - ? body
+    - body: null
 - version: 0.6.0
 - date: 2021-02-04T18:44:06Z
 - commits:
@@ -6373,7 +6384,7 @@
 - commits:
     - subject: adapt test artifacts to match fixtures
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 13c7c5ceda1e1ec9761544e79c820186d8c40e28
 - commits:
@@ -6381,7 +6392,7 @@
 - commits:
     - subject: adapt JF fixtures to work with identity transformer
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: dc134496e101eaad3eca8a65537c36865c8da258
 - commits:
@@ -6406,7 +6417,7 @@
 - commits:
     - subject: try to workaround live-push + dind issues
 - commits:
-    - ? body
+    - body: null
 - version: 0.5.0
 - date: 2021-02-04T12:08:18Z
 - commits:
@@ -6422,7 +6433,7 @@
 - commits:
     - subject: Implement basic structure of stub server
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 37bdf272f91cc470baa0ae6cdc50e04d6184865d
 - commits:
@@ -6430,7 +6441,7 @@
 - commits:
     - subject: Merge branch 'master' into jellyfish-server-stub
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.6
 - date: 2021-02-04T11:07:45Z
 - commits:
@@ -6440,7 +6451,7 @@
 - commits:
     - subject: fix artifact import
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 1f17164eaf53325482f06629a8048e3870f11621
 - commits:
@@ -6448,7 +6459,7 @@
 - commits:
     - subject: prevent error on missing data
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 64dabe837ce61cbc0ff6437a3d1a6dc9f54d69de
 - commits:
@@ -6462,7 +6473,7 @@
 - commits:
     - subject: simplify getting of device UUID
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.5
 - date: 2021-02-04T09:39:40Z
 - commits:
@@ -6478,7 +6489,7 @@
 - commits:
     - subject: Remove importing mock from inside runner
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.4
 - date: 2021-02-03T12:24:17Z
 - commits:
@@ -6494,7 +6505,7 @@
 - commits:
     - subject: Add pushArtifact implementation
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.3
 - date: 2021-02-03T11:32:08Z
 - commits:
@@ -6510,7 +6521,7 @@
 - commits:
     - subject: add container that pre-loads artifacts into the registry
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 30f99e0176ac8084b5fe0f12e0b72eed483dcbde
 - commits:
@@ -6521,7 +6532,7 @@
 - commits:
     - subject: add identity transformer
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.2
 - date: 2021-02-03T09:56:53Z
 - commits:
@@ -6537,7 +6548,7 @@
 - commits:
     - subject: Changes from conversation
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.1
 - date: 2021-02-02T12:58:09Z
 - commits:
@@ -6553,7 +6564,7 @@
 - commits:
     - subject: catch async exceptions in task handling
 - commits:
-    - ? body
+    - body: null
 - version: 0.4.0
 - date: 2021-02-02T11:06:39Z
 - commits:
@@ -6569,7 +6580,7 @@
 - commits:
     - subject: Push mock artifact to registry
 - commits:
-    - ? body
+    - body: null
 - version: 0.3.2
 - date: 2021-02-02T10:55:01Z
 - commits:
@@ -6585,7 +6596,7 @@
 - commits:
     - subject: remove uneccessary permissions for registry container
 - commits:
-    - ? body
+    - body: null
 - version: 0.3.1
 - date: 2021-02-02T09:34:10Z
 - commits:
@@ -6601,7 +6612,7 @@
 - commits:
     - subject: Use dind for the transformer runner
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 199312925d2981868964542127312b387f3eab67
 - commits:
@@ -6609,7 +6620,7 @@
 - commits:
     - subject: fix security warning
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: a1b3d79c31b82b91b90c1be10287daf604b6007c
 - commits:
@@ -6617,7 +6628,7 @@
 - commits:
     - subject: set worker to use HTTP for LOCAL registry pulls
 - commits:
-    - ? body
+    - body: null
 - version: 0.3.0
 - date: 2021-02-01T12:10:59Z
 - commits:
@@ -6633,7 +6644,7 @@
 - commits:
     - subject: Add sanity-check validation for tasks
 - commits:
-    - ? body
+    - body: null
 - version: 0.2.0
 - date: 2021-02-01T11:59:21Z
 - commits:
@@ -6649,7 +6660,7 @@
 - commits:
     - subject: Add output manifest validation
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.7
 - date: 2021-02-01T10:32:08Z
 - commits:
@@ -6665,7 +6676,7 @@
 - commits:
     - subject: Use single dockerode instance in runner
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.6
 - date: 2021-01-29T14:54:14Z
 - commits:
@@ -6681,7 +6692,7 @@
 - commits:
     - subject: Remove MOCK_JS_SDK default
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.5
 - date: 2021-01-29T12:27:29Z
 - commits:
@@ -6710,7 +6721,7 @@
 - commits:
     - subject: Rename artefact->artifact
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.3
 - date: 2021-01-29T08:55:30Z
 - commits:
@@ -6726,7 +6737,7 @@
 - commits:
     - subject: Remove broken login retry mechanism
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.2
 - date: 2021-01-29T08:02:57Z
 - commits:
@@ -6742,7 +6753,7 @@
 - commits:
     - subject: Set up testing framework
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.1
 - date: 2021-01-28T18:47:58Z
 - commits:
@@ -6755,7 +6766,7 @@
 - commits:
     - subject: Adapt runner-transformer interface for manifests
 - commits:
-    - ? body
+    - body: null
 - version: 0.1.0
 - date: 2021-01-28T16:19:09Z
 - commits:
@@ -6771,7 +6782,7 @@
 - commits:
     - subject: Add repo.yml
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 32042880d993a7fec5c8687ffc2bd73f665b8ef0
 - commits:
@@ -6785,7 +6796,7 @@
 - commits:
     - subject: Add ORAS to Dockerfile for runner
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: eea88b88a3189ded7ea5c753fcdc26e0c1cc6c4b
 - commits:
@@ -6793,7 +6804,7 @@
 - commits:
     - subject: Initialization changes
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: b6fce8cf29d92a8bce0222d633594c73479923a5
 - commits:
@@ -6801,7 +6812,7 @@
 - commits:
     - subject: Add mock JF SDK for testing
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: b016525a884054075ad950c6cb9af6965f677ad5
 - commits:
@@ -6809,7 +6820,7 @@
 - commits:
     - subject: Implement runner
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: d5f3ea44be3ebc9da9ab53cf40b8367b3029c7c6
 - commits:
@@ -6817,7 +6828,7 @@
 - commits:
     - subject: Implement runner
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: f3a428a2cd404beb4976beb1e1b2308cd1d3aadf
 - commits:
@@ -6825,7 +6836,7 @@
 - commits:
     - subject: Refactor runner
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: a16327affb317e8e163ec5272ff5e62b0b9e39b0
 - commits:
@@ -6833,7 +6844,7 @@
 - commits:
     - subject: Refactor runner
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: c1cf425f7f907a4246b2cb79f8d84d852f70c511
 - commits:
@@ -6841,7 +6852,7 @@
 - commits:
     - subject: Implement additional runner responsibilities
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: ceca2323a0bf960021b89d0dbe84be73b5d0e2ce
 - commits:
@@ -6849,7 +6860,7 @@
 - commits:
     - subject: Refactor for separation of concerns
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 7bd71bc4d5b377a16078df758903c6ba231d3673
 - commits:
@@ -6857,7 +6868,7 @@
 - commits:
     - subject: Fix dockerfile
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: dff73cf5371642a226eb4f6f87ea893064b057ae
 - commits:
@@ -6865,7 +6876,7 @@
 - commits:
     - subject: Refactor
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 9b64dae85202cf805b14a0e0e7d03b399c9ef431
 - commits:
@@ -6873,7 +6884,7 @@
 - commits:
     - subject: Convert transformer-runner to typescript
 - commits:
-    - ? body
+    - body: null
 - commits:
     - hash: 6fa5eefcedd888850fb1bbd909f3e8501bf3fe45
 - commits:
@@ -6881,4 +6892,4 @@
 - commits:
     - subject: "Rename service: docuum -> garbage-collector"
 - commits:
-    - ? body
+    - body: null

@@ -1,4 +1,15 @@
 - commits:
+    - subject: "CI: Remove renovate config"
+      hash: d6c8816372b889745c3768e07537a2aa335a01d2
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Josh Bowling
+  version: 0.24.27
+  title: ""
+  date: 2022-12-13T02:27:26.935Z
+- commits:
     - subject: Update alpine Docker tag to v3.17
       hash: 9bcbfad3414b4d0cda08d96138b1de0f69fdee81
       body: ""

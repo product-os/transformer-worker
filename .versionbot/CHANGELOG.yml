@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update flowzone.yml
+      hash: 711330d7bededa752688b3cc9b2cece2b6fec0c1
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Kyle Harding
+  version: 0.24.28
+  title: ""
+  date: 2023-05-31T15:40:25.111Z
+- commits:
     - subject: "CI: Remove renovate config"
       hash: d6c8816372b889745c3768e07537a2aa335a01d2
       body: ""
